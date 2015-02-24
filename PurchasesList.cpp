@@ -40,11 +40,11 @@ void PurchasesList::DisplayPurchasesList() const
 
 	while(current != NULL)
 	{
-		cout << current->GetPurchaseDate() << endl
-			 << current->GetMembershipNumber() << endl
-			 << current->GetPurchaseProduct() << endl
-			 << current->GetPurchasePrice() << endl
-			 << current->GetPurchasePoints() << endl << endl;
+		cout << left << setw(12) << current->GetPurchaseDate()
+			 << setw(8) << current->GetMembershipNumber()
+			 << setw(30) << current->GetPurchaseProduct()
+			 << "$" << setw(8) << current->GetPurchasePrice()
+			 << setw(5) << current->GetPurchaseQty() << endl;
 		current = current->GetNext();
 	}
 }
