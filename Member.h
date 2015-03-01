@@ -15,24 +15,37 @@
 #include "Date.h"
 #include <iostream>
 #include <iomanip>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <ios>
+#include <limits>
 using namespace std;
 
 /**************************************************************************
  * GLOBAL CONSTANTS
  * ------------------------------------------------------------------------
- * NAME_COL	 : Formatting column for printing name
- * TYPE_COL  : Formatting column for printing membership type
- * NUM_COL   : Formatting column for printing membership number
- * SPENT_COL : Formatting column for printing total spent
- * DATE_COL	 : Formatting column for printing Date
- * COL_SPACE : Formatting spaces between columns
+ * NAME_COL	 	: Formatting column for printing name
+ * TYPE_COL  	: Formatting column for printing membership type
+ * NUM_COL   	: Formatting column for printing membership number
+ * SPENT_COL 	: Formatting column for printing total spent
+ * DATE_COL	 	: Formatting column for printing Date
+ * COL_SPACE 	: Formatting spaces between columns
+ * MIN_MEN_NUM  : Minimum member number 00000 used for error check
+ * MAX_MEN_NUM	: Maximum member number 99999 used for error check
+ * ERROR_COL	: Formatting column for printing errors
  *************************************************************************/
-const int NAME_COL  = 20;
-const int TYPE_COL  = 15;
-const int NUM_COL   = 10;
-const int SPENT_COL = 12;
-const int DATE_COL  = 12;
-const int COL_SPACE = 3;
+const int  NAME_COL    = 20;
+const int  TYPE_COL    = 15;
+const int  NUM_COL     = 10;
+const int  SPENT_COL   = 12;
+const int  DATE_COL    = 12;
+const int  COL_SPACE   = 3;
+const int  MIN_MEM_NUM = 0;
+const int  MAX_MEM_NUM = 99999;
+const char TYPE_PREF   = 'P';
+const char TYPE_BASIC  = 'B';
+const int  ERROR_COL   = 45;
 
 class Member {
 public:
@@ -53,6 +66,11 @@ public:
 	void SetNext(Member *nextNode);				// Set next node
 	void SetPrev(Member *prevNode);				// Set prev node
 	void UpdateTotalSpent(float addToTotal);	// Update total spent
+	bool ValidateMemberNumFromFile(const int CHECK_INT);	// Validate Member #
+	bool ValidateMemberTypeFromFile(const char CHECK_CHAR); // Validate Member type
+	bool ValidateMemberNumFromConsole(const int CHECK_INT); // Validate Member #
+	bool ValidateMemberTypeFromConsole(const char CHECK_CHAR); // Validate Member type
+	bool ValidateTotalSpent(const float CHECK_FLOAT);
 
 	/***************
 	 ***ACCESSORS***

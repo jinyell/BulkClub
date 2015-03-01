@@ -41,6 +41,10 @@ Date::Date(int updateMonth,	// IN & CALC - Set month
 	{
 		SetDate(updateMonth, updateDay, updateYear);
 	}
+	else
+	{
+		cout << "error\n";
+	}
 }
 
 /**************************************************************************
@@ -88,47 +92,55 @@ bool Date::CheckDate(int updateMonth, 	// IN & CALC - Update month
 	currentMonth = 1 + currentTime->tm_mon;
 	currentDay   = currentTime->tm_mday;
 
-	// PROCESSING - Error checks: The year, month & day
-	//				Note: The year must be between 1900 and the currentYear
-	if(updateYear > currentYear || updateYear < 1900)
+	// PROCESSING - Check to make sure inputs are integers
+	if(!updateMonth || !updateYear || !updateDay)
 	{
 		validDate = false;
 	}
-	//    MONTH: The month must be between 0 and 12 or
-	//           <=  currentMonth for the currentYear
-	else if ((updateYear != currentYear &&
-			 (updateMonth > 12 || updateMonth < 0)) ||
-			 (updateYear == currentYear && updateMonth > currentMonth))
-	{
-		validDate = false;
-	}
-	// PROCESSING - Note: The day must be <= the # of days in the month
-	//            - This also account for Leap Year
 	else
 	{
-		lastDayInMonth = daysInMonth[updateMonth - 1];
-
-		// PROCESSING - LEAP YEAR Adjustment to lastDayInMonth
-		if(updateMonth == 2 &&
-		  ((updateYear % 4 == 0 || updateYear % 400 == 0) &&
-		    updateYear % 100 != 0))
-		{
-			lastDayInMonth++;
-		}
-
-		// PROCESSING - Check if Day is valid
-		if ((updateDay > lastDayInMonth || updateDay < 0) ||
-			(updateYear == currentYear && updateMonth == currentMonth &&
-			 updateDay > currentDay))
+		// PROCESSING - Error checks: The year, month & day
+		//				Note: The year must be between 1900 and the currentYear
+		if(updateYear > currentYear || updateYear < 1900)
 		{
 			validDate = false;
 		}
+		//    MONTH: The month must be between 0 and 12 or
+		//           <=  currentMonth for the currentYear
+		else if ((updateYear != currentYear &&
+				 (updateMonth > 12 || updateMonth < 0)) ||
+				 (updateYear == currentYear && updateMonth > currentMonth))
+		{
+			validDate = false;
+		}
+		// PROCESSING - Note: The day must be <= the # of days in the month
+		//            - This also account for Leap Year
 		else
 		{
-			validDate = true;
+			lastDayInMonth = daysInMonth[updateMonth - 1];
 
-		} // END - DAY CHECK
-	} // END - YEAR - MONTH If-else-if
+			// PROCESSING - LEAP YEAR Adjustment to lastDayInMonth
+			if(updateMonth == 2 &&
+			  ((updateYear % 4 == 0 || updateYear % 400 == 0) &&
+				updateYear % 100 != 0))
+			{
+				lastDayInMonth++;
+			}
+
+			// PROCESSING - Check if Day is valid
+			if ((updateDay > lastDayInMonth || updateDay < 0) ||
+				(updateYear == currentYear && updateMonth == currentMonth &&
+				 updateDay > currentDay))
+			{
+				validDate = false;
+			}
+			else
+			{
+				validDate = true;
+
+			} // END - DAY CHECK
+		} // END - YEAR - MONTH If-else-if
+	} // END IF ELSE
 
 	return validDate;
 }

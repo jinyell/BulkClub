@@ -35,7 +35,7 @@ MemberList::~MemberList() {
  * CreateMemberListFromFile
  * 		This method gets a file name that contains information about
  * 		the members that are to be added to Bulk Club. The information
- * 		about a member contains: first name, last name, member number,
+ * 		about a member contains: full name (first & last), member number,
  * 		member type (basic or preferred), and member expiration date.
  * 		The information about a member will be stored into a list of
  * 		members.
@@ -46,14 +46,17 @@ void MemberList::AddMemberFromFile(string fileName)
 {
 	// Variable List
 	ifstream inFile;		// CALC      - File input
-	string 	 newName;		// IN & CALC - Full name
-	int		 newMemberNum;	// IN & CALC - Member number
+	string 	 getName;		// IN & CALC - Full name
+	int		 getMemberNum;	// IN & CALC - Member number
 	int		 expMonth;		// IN & CALC - Expiration month
 	int		 expDay;		// IN & CALC - Expiration day
 	int		 expYear;		// IN & CALC - Expiration year
-	string	 memberType;	// IN & CALC - Membership type
+	char	 memberType;	// IN & CALC - Membership type
 	Date	 *newDate;		// CALC		 - Full expiration date
 	Member   *newNode;		// CALC		 - Adds a member to list of members
+	bool	 validMemNum;	// CALC		 - Valid member number
+	bool	 validType;		// CALC		 - Valid type
+	bool	 validDate;		// CALC		 - Valid date
 
 	inFile.open(fileName.c_str());
 
@@ -67,36 +70,69 @@ void MemberList::AddMemberFromFile(string fileName)
 		// PROCESSING - Keep looping until end of input file
 		while(!inFile.eof())
 		{
-			// INPUT - Get first name, last name, member number, expiration date
-			//		 - and membership type
-			getline(inFile, newName);
-			inFile >> newMemberNum;
-			inFile.ignore(numeric_limits<streamsize>::max(), '\n');
-			getline(inFile, memberType);
-			inFile >> expMonth;
-			inFile.ignore(numeric_limits<streamsize>::max(), '/');
-			inFile >> expDay;
-			inFile.ignore(numeric_limits<streamsize>::max(), '/');
-			inFile >> expYear;
+			// INPUT - Get full name
+			getline(inFile, getName);
+
+			// INPUT - Get membership number & check if it is valid
+			if(!(inFile >> getMemberNum))
+			{
+				validMemNum = false;
+				inFile.clear();
+			}
+			validMemNum = newNode->ValidateMemberNumFromFile(getMemberNum);
 			inFile.ignore(numeric_limits<streamsize>::max(), '\n');
 
-			newDate = new Date(expMonth, expDay, expYear);
+			// INPUT - Get membership type and check if it is valid
+			inFile.get(memberType);
+			memberType = toupper(memberType);
+			validType = newNode->ValidateMemberTypeFromFile(memberType);
+			inFile.ignore(numeric_limits<streamsize>::max(), '\n');
 
-			// PROCESSING - Check if member is a Basic or Preferred member
-			if(memberType == "Basic")
+			// INPUT - Get membership date and check if it is valid
+			if(!(inFile >> expMonth))
 			{
-				// PROCESSING - Add a Basic member to the list in order
-				newNode = new Member(newName, newMemberNum, *newDate);
-				InsertInOrder(newNode);
+				inFile.clear();
+				validDate = false;
 			}
-			else
+			inFile.ignore(numeric_limits<streamsize>::max(), '/');
+			if(!(inFile >> expDay))
 			{
-				// PROCESSING - Add a Preferred member to the list in order
-				newNode = new PreferredMember(newName, newMemberNum, *newDate);
-				InsertInOrder(newNode);
+				inFile.clear();
+				validDate = false;
 			}
-		} // END - While loop (inFile)
-	} // End of If-Else (inFile)
+			inFile.ignore(numeric_limits<streamsize>::max(), '/');
+			if(!(inFile >> expYear))
+			{
+				inFile.clear();
+				validDate = false;
+			}
+			inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+
+			validDate = newDate->CheckDate(expMonth, expDay, expYear);
+
+			// PROCESSING - Add member if valid information
+			if(validMemNum && validType && validDate)
+			{
+				// PROCESSING - Setting new date
+				newDate = new Date(expMonth, expDay, expYear);
+
+				// PROCESSING - Check if member is Basic or Preferred
+				if(memberType == 'B')
+				{
+					// PROCESSING - Add a Basic member to the list in order
+					newNode = new Member(getName, getMemberNum, *newDate);
+					InsertInOrder(newNode);
+				}
+				else
+				{
+					// PROCESSING - Add a Preferred member to list in order
+					newNode = new PreferredMember(getName, getMemberNum,
+												  *newDate);
+					InsertInOrder(newNode);
+				} // END IF-ELSE (MEMBERSHIP TYPE)
+			} // END IF (validations)
+		} // END WHILE (inFile)
+	} // End IF-ELSE (inFile)
 
 	inFile.close();
 }
@@ -121,47 +157,93 @@ void MemberList::AddMemberFromConsole()
 	char	addMemType;		// IN & CALC - Membership type
 	Date	*addDate;		// CALC		 - Full Date
 	Member  *addMem;		// CALC		 - Member to add
+	bool	validMemNum;	// CALC		 - Valid membership number
+	bool	validDate;		// CALC		 - Valid date
+	bool	validType;		// CALC		 - Valid membership type
 
-	cout << "Information to Add a Bulk Club Member\n";
-	cout << "Membership Type\n"
-			"---------------------\n"
-			"B - Basic Member\n"
-			"P - Preferred Member\n"
-			"Enter Member Type: ";
-	cin.get(addMemType);
+	addMem  = NULL;
+	addDate = NULL;
+
+	// OUTPUT - Notify user filling out application to be added as a member
+	cout << "Application to become a Bulk Club Member\n";
+
+	// INPUT - Get a valid Membership Type (keep looping until valid
+	do
+	{
+		validType = true;
+
+		cout << "Membership Type\n"
+				"---------------------\n"
+				"B - Basic Member\n"
+				"P - Preferred Member\n"
+				"\nEnter Member Type: ";
+
+		cin.get(addMemType);
+		addMemType = toupper(addMemType);
+		validType = addMem->ValidateMemberTypeFromConsole(addMemType);
+
+	}while(!validType);
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
+	// INPUT - Get full name of member to add
 	cout << "Enter Full Name: ";
 	getline(cin, addName);
 
-	cout << "Enter Membership ID: ";
-	cin  >> addMemNum;
+	// INPUT - Get a valid membership id #
+	do
+	{
+		validMemNum = true;
+
+		cout << "Enter Membership ID: ";
+		cin  >> addMemNum;
+		validMemNum = addMem->ValidateMemberNumFromConsole(addMemNum);
+	}
+	while(!validMemNum);
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-	cout << "Enter Expiration Date (i.e. MM/DD/YYYY): ";
-	cin  >> addExpMonth;
-	cin.ignore(numeric_limits<streamsize>::max(), '/');
-	cin  >> addExpDay;
-	cin.ignore(numeric_limits<streamsize>::max(), '/');
-	cin  >> addExpYear;
-	cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-	addDate = new Date(addExpMonth, addExpDay, addExpYear);
-
-	// PROCESSING - Check if member is a Basic or Preferred member
-	if(addMemType == 'B')
+	// INPUT - Get a valid expiration date
+	do
 	{
-		// PROCESSING - Add a Basic member to the list in order
-		addMem = new Member(addName, addMemNum, *addDate);
-		InsertInOrder(addMem);
-	}
-	else
-	{
-		// PROCESSING - Add a Preferred member to the list in order
-		addMem = new PreferredMember(addName, addMemNum, *addDate);
-		InsertInOrder(addMem);
-	}
+		validDate = true;
 
+		cout << "Enter Expiration Date (i.e. MM/DD/YYYY): ";
+		cin  >> addExpMonth;
+		cin.ignore(numeric_limits<streamsize>::max(), '/');
+		cin  >> addExpDay;
+		cin.ignore(numeric_limits<streamsize>::max(), '/');
+		cin  >> addExpYear;
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		validDate = addDate->CheckDate(addExpMonth, addExpDay, addExpYear);
+
+		if(!validDate)
+		{
+			if(!addExpMonth || !addExpDay || !addExpYear)
+			{
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+		}
+	}while(!validDate);
+
+	if(validType && validMemNum && validDate)
+	{
+		addDate = new Date(addExpMonth, addExpDay, addExpYear);
+
+			// PROCESSING - Check if member is a Basic or Preferred member
+			if(addMemType == 'B')
+			{
+				// PROCESSING - Add a Basic member to the list in order
+				addMem = new Member(addName, addMemNum, *addDate);
+				InsertInOrder(addMem);
+			}
+			else
+			{
+				// PROCESSING - Add a Preferred member to the list in order
+				addMem = new PreferredMember(addName, addMemNum, *addDate);
+				InsertInOrder(addMem);
+			} // END IF-ELSE
+	} // END IF
 }
 
 /**************************************************************************

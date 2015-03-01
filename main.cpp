@@ -30,6 +30,13 @@ int main()
 				"Andrew Gadbois", 589855, 02, 03, 04, "Bulk Club", 'G', 1);
 
 	// PROCESSING - Create members list & print members list
+	list.AddMemberFromFile("InvalidMembers.txt");
+	list.PrintMemberList();
+	if(list.IsEmpty())
+	{
+		cout << "LIST IS EMPTY\n";
+	}
+
 	list.AddMemberFromFile("warehouse shoppers.txt");
 	list.PrintMemberList();
 

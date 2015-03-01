@@ -89,6 +89,105 @@ void Member::SetMemberNumber(int setMemberNum) // IN & CALC - Member number
 	memberNumber = setMemberNum;
 }
 
+bool Member::ValidateMemberNumFromFile(const int CHECK_INT)
+{
+	bool	 valid;
+
+	valid = true;
+
+	if(!CHECK_INT)
+	{
+		valid = false;
+	}
+	else if(CHECK_INT < MIN_MEM_NUM || CHECK_INT > MAX_MEM_NUM)
+	{
+		valid = false;
+	}
+
+	return valid;
+}
+
+bool Member::ValidateMemberNumFromConsole(const int CHECK_INT)
+{
+	bool 		  valid;
+	ostringstream oss;
+
+	cout << left;
+	valid = true;
+
+	if(!CHECK_INT)
+	{
+		oss  << "***** Invalid Member Number ";
+		cout << endl << setw(ERROR_COL) << oss.str()   << " *****\n";
+		oss.str("");
+
+		oss  << "***** Member Number's are between " << MIN_MEM_NUM
+			 << " and " << MAX_MEM_NUM;
+		cout << setw(ERROR_COL) << oss.str()   << " *****\n\n";
+		oss.str("");
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		valid = false;
+	}
+	else if(CHECK_INT < MIN_MEM_NUM || CHECK_INT > MAX_MEM_NUM)
+	{
+		oss  << "***** The number " << CHECK_INT << " is not a valid entry";
+		cout << endl << setw(ERROR_COL) << oss.str() << " *****\n";
+		oss.str("");
+
+		oss  << "***** Member Number's are between " << MIN_MEM_NUM
+			 << " and " << MAX_MEM_NUM;
+		cout << setw(ERROR_COL) << oss.str()   << " *****\n\n";
+		oss.str("");
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		valid = false;
+	}
+
+	cout << right;
+
+	return valid;
+}
+
+bool Member::ValidateMemberTypeFromFile(const char CHECK_CHAR)
+{
+	bool 	 valid;
+
+	valid = true;
+
+	if(CHECK_CHAR != TYPE_BASIC && CHECK_CHAR != TYPE_PREF)
+	{
+		valid = false;
+	}
+
+	return valid;
+}
+
+bool Member::ValidateMemberTypeFromConsole(const char CHECK_CHAR)
+{
+	bool 		  valid;
+	ostringstream oss;
+
+	valid = true;
+	cout << left;
+
+	if(CHECK_CHAR != TYPE_BASIC && CHECK_CHAR != TYPE_PREF)
+	{
+		oss  << "***** The membership type " << CHECK_CHAR << " is invalid";
+		cout << endl << setw(ERROR_COL) << oss.str() << " *****\n\n";
+		oss.str("");
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		valid = false;
+	}
+
+	cout << right;
+
+	return valid;
+}
+
 /**************************************************************************
  * GetNext
  * 		This method gets the next node in the members list.
