@@ -41,11 +41,13 @@ public:
 	 ***ACCESSORS***
 	 ***************/
 	float GetRebate() const;				// Get rebate
+	virtual float GetAnnualDues() const;	// Get annual dues
 	virtual string GetMemberType() const;	// Get membership type
 	virtual void Print() const;				// Print preferred member info
 
 private:
 	float rebate;	// Rebate
+	float annualDues; //Annual dues
 };
 
 #endif /* PREFERREDMEMBER_H_ */

@@ -9,29 +9,19 @@
 *       `"`"`"`
 *     TEAM APPLE
 **************************************************************************/
+#ifndef BULKCLUB_H_
+#define BULKCLUB_H_
 
-#ifndef PURCHASESLIST_H_
-#define PURCHASESLIST_H_
+#include "MemberList.h"
 
-#include "Purchase.h"
-
-class PurchasesList
+class BulkClub
 {
 	public:
-		//CONSTRUCTORS & DESTRUCTOR
-		PurchasesList();
-		virtual ~PurchasesList();
+		//CONSTRUCTOR/DESTRUCTOR
+		BulkClub();
+		virtual ~BulkClub();
 
-		//MUTATORS
-		void AddPurchaseFromFile(string inputFileName);
-		void AddPurchase(Purchase* newPurchase);
-
-		//ACCESORS
-		void DisplayPurchasesList() const;
-
-	private:
-		Purchase *head;
-		Purchase *tail;
+		void CheckExpMembers(MemberList& list); //Checks expiring membership
 };
 
-#endif /* PURCHASESLIST_H_ */
+#endif /* BULKCLUB_H_ */

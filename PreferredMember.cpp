@@ -15,7 +15,8 @@
  * DEFAULT CONSTRUCTOR
  *************************************************************************/
 PreferredMember::PreferredMember() {
-	rebate = 0.06;
+	rebate 	   = 0.06;
+	annualDues = 95;
 }
 
 /**************************************************************************
@@ -26,7 +27,8 @@ PreferredMember::PreferredMember(string setName,	  // IN & CALC - Name
 								 Date	setDate)	  // IN & CALC - Exp Date
 			: Member(setName, setMemberNum, setDate)
 {
-	rebate = 0.06;
+	rebate 	   = 0.06;
+	annualDues = 95;
 }
 
 /**************************************************************************
@@ -76,6 +78,12 @@ string PreferredMember::GetMemberType() const
  *
  * 		Returns - nothing (Prints Preferred member info to console)
  *************************************************************************/
+
+float PreferredMember::GetAnnualDues() const
+{
+	return annualDues;
+}
+
 void PreferredMember::Print() const
 {
 	// OUTPUT - Display Preferred member info to console
@@ -84,4 +92,3 @@ void PreferredMember::Print() const
 	cout << setw(REBATE_COL) << rebate;
 	cout << right;
 }
-

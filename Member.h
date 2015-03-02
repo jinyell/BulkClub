@@ -31,6 +31,7 @@ using namespace std;
  * SPENT_COL 	: Formatting column for printing total spent
  * DATE_COL	 	: Formatting column for printing Date
  * COL_SPACE 	: Formatting spaces between columns
+ * DUES_COL		: Formatting column for printing membership dues
  * MIN_MEN_NUM  : Minimum member number 00000 used for error check
  * MAX_MEN_NUM	: Maximum member number 99999 used for error check
  * ERROR_COL	: Formatting column for printing errors
@@ -41,6 +42,7 @@ const int  NUM_COL     = 10;
 const int  SPENT_COL   = 12;
 const int  DATE_COL    = 12;
 const int  COL_SPACE   = 3;
+const int  DUES_COL	   = 6;
 const int  MIN_MEM_NUM = 0;
 const int  MAX_MEM_NUM = 99999;
 const char TYPE_PREF   = 'P';
@@ -78,6 +80,8 @@ public:
 	string  GetName() const;					// Get name of member
 	int     GetMemberNumber() const;			// Get member number
 	float	GetTotalSpent() const;				// Get total amount spent
+	Date	GetExpDate() const;					// Get expiration date
+	virtual float GetAnnualDues() const;		// Get annual dues
 	Member* GetNext() const;					// Get next node
 	Member* GetPrev() const;					// Get prev node
 	virtual string GetMemberType() const;		// Get membership type
@@ -85,9 +89,10 @@ public:
 
 private:
 	string	name;			// Name of member
-	int		memberNumber;	// Member number
+	int	memberNumber;	// Member number
 	float   totalSpent;		// Total amount spent
 	Date	expDate;		// Membership expiration date
+	float	annualDues;		// Member's annual dues
 	Member *nextMember;		// Next member
 	Member *prevMember;		// Previous member
 };
