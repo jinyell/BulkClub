@@ -11,6 +11,8 @@
 **************************************************************************/
 #include "MyHeader.h"
 #include "MemberList.h"
+#include "PurchasesList.h"
+#include "BulkClub.h"
 /**************************************************************************
  * BULK CLUB CLASS PROJECT
  * ------------------------------------------------------------------------
@@ -23,7 +25,15 @@
  *************************************************************************/
 int main()
 {
-	MemberList list;
+	//VARIABLE DECLARATIONS
+	MemberList 	  list;			// list of members
+	PurchasesList purchases;	// list of purchases
+	BulkClub	  theClub;		// BulkClub object for operations/reports
+	int			  selection;	// user's selection for main menu
+	bool		  run;			// T/F for program run
+
+	//VARIABLE INITIALIZATIONS
+	run = true;
 
 	// OUTPUT - Print header to console
 	PrintHeader("Jinyoung Ko", "Nicole Montecillo", "Augusto Cabrejos",
@@ -40,9 +50,53 @@ int main()
 	list.AddMemberFromFile("warehouse shoppers.txt");
 	list.PrintMemberList();
 
-	list.AddMemberFromConsole();
-	list.PrintMemberList();
+	cout << endl;
 
+	//Adds contents of purchase files to the list. Hard coded for now
+	//All contents are added into a single list called purchases
+	purchases.AddPurchaseFromFile("day1.txt");
+	purchases.AddPurchaseFromFile("day2.txt");
+	purchases.AddPurchaseFromFile("day3.txt");
+	purchases.AddPurchaseFromFile("day4.txt");
+	purchases.AddPurchaseFromFile("day5.txt");
+
+	//PROCESSING - DO-WHILE LOOP - Used to output the main menu, prompt for
+	//			   user input, and go into the different operations.
+	do
+	{
+		//DisplayMainMenu - this will display the main menu
+		DisplayMainMenu();
+
+		//GetAndCheckInt - this will prompt for user input and validate it
+		selection = GetAndCheckInt(MAIN_MENU_MIN, MAIN_MENU_MAX);
+		cout << endl;
+
+		//PROCESSING - SWITCH - Used to route the program into different
+		//			   operations based on user's selection from menu
+		switch(selection)
+		{
+			case EXIT: 		//Program ends
+							cout << "PROGRAM ENDED" << endl;
+							run = false;
+							break;
+			case MEMBERS: 	//Prints a list of members
+							cout << "LIST OF MEMBERS:" << endl;
+						  	list.PrintMemberList();
+						  	break;
+			case PURCHASES: //Prints a list of purchases
+							cout << "LIST OF PURCHASES:" << endl;
+							purchases.DisplayPurchasesList();
+							break;
+			case ADD_MEMBER: //Adds member
+							list.AddMemberFromConsole();
+							break;
+			case EXPIRING:  //Prints a report of memberships expiring on
+							//a give date (prompts the user)
+							cout << "CHECK FOR EXPIRING MEMBERSHIPS" << endl;
+							theClub.CheckExpMembers(list);
+							break;
+		}
+	}while(run);
 
 	return 0;
 }
