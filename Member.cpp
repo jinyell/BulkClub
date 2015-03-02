@@ -20,8 +20,8 @@ Member::Member()
 	prevMember   = NULL;
 	name.clear();
 	memberNumber = 0;
+	annualDues   = 55;
 	totalSpent   = 0;
-
 }
 
 /**************************************************************************
@@ -36,6 +36,7 @@ Member::Member(string setName,			// IN & CALC - Name
 	name 		 = setName;
 	memberNumber = setMemberNumber;
 	expDate		 = setDate;
+	annualDues   = 55;
 	totalSpent   = 0;
 }
 
@@ -241,6 +242,16 @@ int Member::GetMemberNumber() const
 string Member::GetMemberType() const
 {
 	return "Basic";
+}
+
+Date Member::GetExpDate() const
+{
+	return expDate;
+}
+
+float Member::GetAnnualDues() const
+{
+	return annualDues;
 }
 
 /**************************************************************************
