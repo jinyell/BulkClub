@@ -78,6 +78,8 @@ public:
 	string  GetName() const;					// Get name of member
 	int     GetMemberNumber() const;			// Get member number
 	float	GetTotalSpent() const;				// Get total amount spent
+	Date	GetExpDate() const;			//Get expiration date
+	virtual float GetAnnualDues() const;		// Get annual dues
 	Member* GetNext() const;					// Get next node
 	Member* GetPrev() const;					// Get prev node
 	virtual string GetMemberType() const;		// Get membership type
@@ -85,9 +87,10 @@ public:
 
 private:
 	string	name;			// Name of member
-	int		memberNumber;	// Member number
+	int	memberNumber;		// Member number
 	float   totalSpent;		// Total amount spent
 	Date	expDate;		// Membership expiration date
+	float   annualDues;
 	Member *nextMember;		// Next member
 	Member *prevMember;		// Previous member
 };
