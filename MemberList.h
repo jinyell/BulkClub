@@ -36,8 +36,11 @@ public:
 	 ***************/
 	bool    IsEmpty() const;					// Check if list is empty
 	Member* SearchForMember(string key) const;	// Search for a member
+	void	SearchByMonth(MemberList& expMembers, // Search for month and year
+						  int monthKey,
+						  int yearKey) const;
 	void    PrintMemberList() const;			// Print members in list
-
+	void	PrintExpMembers() const;
 private:
 	Member *headMember;	// Head of list
 	Member *tailMember;	// Tail of list
