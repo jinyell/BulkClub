@@ -166,7 +166,7 @@ void MemberList::AddMemberFromConsole()
 
 	// OUTPUT - Notify user filling out application to be added as a member
 	cout << "Application to become a Bulk Club Member\n";
-
+	cin.ignore(1000, '\n');
 	// INPUT - Get a valid Membership Type (keep looping until valid
 	do
 	{
@@ -471,6 +471,30 @@ Member* MemberList::SearchForMember(string key) const // IN & CALC - Name
 	return tempPtr;
 }
 
+void MemberList::SearchByMonth(MemberList& expMembers, int monthKey, int yearKey) const
+{
+	Member *tempPtr;
+	Member *tempPtr2;
+
+	tempPtr = headMember;
+
+	while(tempPtr != NULL)
+	{
+		if(tempPtr->GetExpDate().GetMonth() == monthKey &&
+		   tempPtr->GetExpDate().GetYear() == yearKey)
+		{
+			tempPtr2 = tempPtr->GetNext();
+			tempPtr->SetNext(NULL);
+			expMembers.InsertInOrder(tempPtr);
+			tempPtr = tempPtr2;
+		}
+		else
+		{
+			tempPtr = tempPtr->GetNext();
+		}
+	}
+}
+
 /**************************************************************************
  * Print
  * 		This method prints information about all the members in the list.
@@ -494,4 +518,33 @@ void MemberList::PrintMemberList() const
 	}
 
 	cout << endl;
+}
+
+void MemberList::PrintExpMembers() const
+{
+	Member *current;
+
+	current = headMember;
+
+	cout << left << endl
+		 << setw(NAME_COL) << "MEMBER NAME" << setw(NUM_COL) << "MEMBER#"
+		 << setw(TYPE_COL) << "MEMBER TYPE" << setw(DATE_COL) << "EXP DATE"
+		 << setw(DUES_COL) << "DUES" << endl
+		 << setw(NAME_COL) << "-------------------"
+		 << setw(NUM_COL) << "---------"
+		 << setw(TYPE_COL) << "--------------"
+		 << setw(DATE_COL) << "-----------"
+		 << setw(DUES_COL) << "------"
+		 << endl;
+	while(current != NULL)
+	{
+
+		cout << left << setw(NAME_COL) << current->GetName()
+			 << setw(NUM_COL) << current->GetMemberNumber()
+			 << setw(TYPE_COL) << current->GetMemberType()
+			 << setw(DATE_COL) << current->GetExpDate().DisplayDate()
+			 << "$" << fixed << setprecision(2)
+			 << setw(DUES_COL) << current->GetAnnualDues() << endl;
+		current = current->GetNext();
+	}
 }
