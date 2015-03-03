@@ -45,11 +45,14 @@ class PurchasesList
 		/***************
 		 ***ACCESSORS***
 		 ***************/
-		void DisplayPurchasesList() const;
+		void DisplayPurchasesList() const; //Displays the purchases list
+		int GetPurchaseCount() const;	//Gets total number of purchases
 
 	private:
-		Purchase *head;
-		Purchase *tail;
+		Purchase *head;			//head pointer for the list
+		Purchase *tail;			//tail pointer for the list
+		int	 purchaseCount;		//keeps a count of number of purchases
+
 };
 
 #endif /* PURCHASESLIST_H_ */
