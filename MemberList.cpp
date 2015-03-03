@@ -424,6 +424,17 @@ bool MemberList::RemoveMember(string fullName)	// IN & CALC - Remove name
 }
 
 /**************************************************************************
+ * MemberListSize
+ * 		This method returns the size of the member list.
+ *
+ * 		Returns - memberSize (int)
+ *************************************************************************/
+int MemberList::MemberListSize() const
+{
+	return memberSize;
+}
+
+/**************************************************************************
  * IsEmpty
  * 		This method determines whether or not the list of members is
  * 		empty or not.
@@ -538,6 +549,36 @@ void MemberList::SearchByMonth(MemberList& expMembers, int monthKey, int yearKey
 	}
 }
 
+void MemberList::PrintMemListHeader() const
+{
+	cout << left;
+	cout << setfill(' ');
+	cout << setw(NAME_COL)  << "MEMBER NAME"   << setw(COL_SPACE) << " ";
+	cout << setw(TYPE_COL)  << "MEMBER TYPE"   << setw(COL_SPACE) << " ";
+	cout << setw(NUM_COL)   << "MEMBER #"      << setw(COL_SPACE) << "  ";
+	cout << right 			<< fixed 		   << setprecision(2);
+	cout << setw(SPENT_COL) << "TOTAL SPENT"
+		 << setw(COL_SPACE) << " ";
+	cout << left 			<< setprecision(6);
+	cout.unsetf(ios::fixed);
+	cout << setw(DATE_COL)  << "EXPIRATION DATE"
+		 << setw(COL_SPACE) << " "
+		 << setw(REBATE_COL) << "REBATE\n";
+	cout << setfill('-');
+	cout << setw(NAME_COL)  << "-"   << setw(COL_SPACE) << " ";
+	cout << setw(TYPE_COL)  << "-"   << setw(COL_SPACE) << " ";
+	cout << setw(NUM_COL)   << "-"      << setw(COL_SPACE) << "  ";
+	cout << right 			<< fixed 		   << setprecision(2);
+	cout << setw(SPENT_COL) << "-"
+		 << setw(COL_SPACE) << " ";
+	cout << left 			<< setprecision(6);
+	cout.unsetf(ios::fixed);
+	cout << setw(DATE_COL)  << "-"
+		 << setw(COL_SPACE) << " "
+		 << setw(REBATE_COL) << "-" << endl;
+	cout << right;
+}
+
 /**************************************************************************
  * Print
  * 		This method prints information about all the members in the list.
@@ -549,6 +590,8 @@ void MemberList::PrintMemberList() const
 {
 	// Variable List
 	Member *currPtr; // CALC & OUT - Prints list of members
+
+	PrintMemListHeader();
 
 	currPtr = headMember;
 

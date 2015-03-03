@@ -34,12 +34,14 @@ public:
 	/***************
 	 ***ACCESSORS***
 	 ***************/
-	bool    IsEmpty() const;						// Check if list is empty
+	bool    IsEmpty() const;						// Check empty list
+	int		MemberListSize() const;
 	Member* SearchForMember(string keyName) const;	// Search by name
 	Member* SearchForMember(int keyNum) const;		// Search by member #
 	void	SearchByMonth(MemberList& expMembers, 	// Search month & year
 						  int 		  monthKey,
 						  int 		  yearKey) const;
+	void	PrintMemListHeader() const;
 	void    PrintMemberList() const;			// Print members in list
 	void	PrintExpMembers() const;
 private:

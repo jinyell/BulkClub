@@ -266,6 +266,7 @@ void Member::Print() const
 {
 	// OUTPUT - Display Basic member info to console
 	cout << left;
+	cout << setfill(' ');
 	cout << setw(NAME_COL)  << name 		   << setw(COL_SPACE) << " ";
 	cout << setw(TYPE_COL)  << GetMemberType() << setw(COL_SPACE) << " ";
 	cout << setw(NUM_COL)   << memberNumber    << setw(COL_SPACE) << " ";

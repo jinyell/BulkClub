@@ -88,6 +88,7 @@ void PreferredMember::Print() const
 {
 	// OUTPUT - Display Preferred member info to console
 	cout << left;
+	cout << setfill(' ');
 	Member::Print();
 	cout << setw(REBATE_COL) << rebate;
 	cout << right;
