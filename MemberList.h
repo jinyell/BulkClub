@@ -16,9 +16,9 @@
 
 class MemberList {
 public:
-	/***************************
-	 ***CONSTRUCTOR & DESTRUCTOR
-	 ***************************/
+	/*******************************
+	 ***CONSTRUCTOR & DESTRUCTOR****
+	 *******************************/
 	MemberList();			// Default Constructor
 	virtual ~MemberList();	// Destructor
 
@@ -34,11 +34,12 @@ public:
 	/***************
 	 ***ACCESSORS***
 	 ***************/
-	bool    IsEmpty() const;					// Check if list is empty
-	Member* SearchForMember(string key) const;	// Search for a member
-	void	SearchByMonth(MemberList& expMembers, // Search for month and year
-						  int monthKey,
-						  int yearKey) const;
+	bool    IsEmpty() const;						// Check if list is empty
+	Member* SearchForMember(string keyName) const;	// Search by name
+	Member* SearchForMember(int keyNum) const;		// Search by member #
+	void	SearchByMonth(MemberList& expMembers, 	// Search month & year
+						  int 		  monthKey,
+						  int 		  yearKey) const;
 	void    PrintMemberList() const;			// Print members in list
 	void	PrintExpMembers() const;
 private:

@@ -75,22 +75,30 @@ int main()
 		//			   operations based on user's selection from menu
 		switch(selection)
 		{
-			case EXIT: 		//Program ends
+		case EXIT: 			//Program ends
 							cout << "PROGRAM ENDED" << endl;
 							run = false;
 							break;
-			case MEMBERS: 	//Prints a list of members
+
+		case MEMBERS: 		//Prints a list of members
 							cout << "LIST OF MEMBERS:" << endl;
-						  	list.PrintMemberList();
-						  	break;
-			case PURCHASES: //Prints a list of purchases
+							list.PrintMemberList();
+							break;
+
+		case PURCHASES: 	//Prints a list of purchases
 							cout << "LIST OF PURCHASES:" << endl;
 							purchases.DisplayPurchasesList();
 							break;
-			case ADD_MEMBER: //Adds member
+
+		case ADD_MEMBER: 	//Adds member
 							list.AddMemberFromConsole();
 							break;
-			case EXPIRING:  //Prints a report of memberships expiring on
+
+		case ADD_PURCHASE:	// Purchase from console
+							purchases.AddPurchaseFromConsole(list);
+							break;
+
+		case EXPIRING:  	//Prints a report of memberships expiring on
 							//a give date (prompts the user)
 							cout << "CHECK FOR EXPIRING MEMBERSHIPS" << endl;
 							theClub.CheckExpMembers(list);

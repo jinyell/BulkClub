@@ -15,18 +15,36 @@
 
 #include "Purchase.h"
 
+/**************************************************************************
+ * GLOBAL CONSTANTS
+ * ------------------------------------------------------------------------
+ * YES_BUY		: To make more purchases
+ * NO_BUY		: Stop making more purchases
+ *************************************************************************/
+const char YES_BUY = 'Y';
+const char NO_BUY  = 'N';
+
 class PurchasesList
 {
 	public:
-		//CONSTRUCTORS & DESTRUCTOR
+		/******************************
+		 ***CONSTRUCTOR & DESTRUCTOR***
+	 	 ******************************/
 		PurchasesList();
 		virtual ~PurchasesList();
 
-		//MUTATORS
+		bool ValidateToBuyMore(const char CHECK_CHAR);
+
+		/**************
+		 ***MUTATORS***
+		 **************/
 		void AddPurchaseFromFile(string inputFileName);
+		void AddPurchaseFromConsole(MemberList &tempMemList);
 		void AddPurchase(Purchase* newPurchase);
 
-		//ACCESORS
+		/***************
+		 ***ACCESSORS***
+		 ***************/
 		void DisplayPurchasesList() const;
 
 	private:

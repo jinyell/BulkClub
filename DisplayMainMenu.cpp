@@ -25,12 +25,13 @@
 void DisplayMainMenu()
 {
 	//OUTPUT - Displays the main menu
-	cout << "WELCOME TO BULK CLUB" << endl
-		 << "MAIN MENU" << endl
-		 << "1 - Display List of Members" << endl
-		 << "2 - Display List of Purchases" << endl
-		 << "3 - Add member" << endl
-		 << "4 - Check for expiring members" << endl
-		 << "0 - EXIT" << endl
-		 << "Please enter a command: ";
+	cout << "WELCOME TO BULK CLUB\n"
+			"MAIN MENU\n"
+			"1 - Display List of Members\n"
+			"2 - Display List of Purchases\n"
+			"3 - Add member\n"
+		    "4 - Add Purchase\n"
+			"4 - Check for expiring members\n"
+			"0 - EXIT\n"
+			"Please enter a command: ";
 }

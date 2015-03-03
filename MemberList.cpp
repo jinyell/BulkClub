@@ -455,17 +455,60 @@ bool MemberList::IsEmpty() const
  *
  *		Returns - tempPtr (Member)
  *************************************************************************/
-Member* MemberList::SearchForMember(string key) const // IN & CALC - Name
+Member* MemberList::SearchForMember(string keyName) const // IN & CALC - Name
 {
 	// Variable List
 	Member *tempPtr;	// CALC & OUT - Temp ptr to index list
+	bool	found;		// CALC		  - Find name
 
 	tempPtr = headMember;
+	found   = false;
 
 	// Processing - Keep looping until member found or end of list
-	while(tempPtr != NULL && tempPtr->GetName() != key)
+	while(tempPtr != NULL && !found)
 	{
-		tempPtr = tempPtr->GetNext();
+		if(tempPtr->GetName() == keyName)
+		{
+			found = true;
+		}
+		else
+		{
+			tempPtr = tempPtr->GetNext();
+		}
+	}
+
+	return tempPtr;
+}
+
+/**************************************************************************
+ *	SearchForMember
+ *		This method searches for a member in the list. It receives a
+ *		member number that is to be searched for. Then it loops through
+ *		the entire list of members until the member is found or the end
+ *		of the list has been reached.
+ *
+ *		Returns - tempPtr (Member)
+ *************************************************************************/
+Member* MemberList::SearchForMember(int keyNum) const // IN & CALC - Name
+{
+	// Variable List
+	Member *tempPtr;	// CALC & OUT - Temp ptr to index list
+	bool	found;		// CALC		  - Find membership number
+
+	tempPtr = headMember;
+	found   = false;
+
+	// Processing - Keep looping until member found or end of list
+	while(tempPtr != NULL && !found)
+	{
+		if(tempPtr->GetMemberNumber() == keyNum)
+		{
+			found = true;
+		}
+		else
+		{
+			tempPtr = tempPtr->GetNext();
+		}
 	}
 
 	return tempPtr;

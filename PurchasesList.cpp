@@ -63,6 +63,163 @@ void PurchasesList::AddPurchaseFromFile(string inputFileName)
 	inFile.close();
 }
 
+/**************************************************************************
+ * AddPurchaseFromConsole
+ * 		This method allows a member to make a purchase from the console.
+ * 		First the membership number is required. If the member number
+ * 		does not exist then the user will be notified until the member
+ * 		number is correct. Then the member will input information
+ * 		including: transaction/purchase date (month, day, year), the
+ * 		name of the item the member would like to purchase, the quantity
+ * 		of that item the user would like to purchase, and the cost
+ * 		of that item. The member can make as many purchases so long as
+ * 		the total quantity purchase amount (200) is not exceeded.
+ *
+ * 		Returns - nothing (Add purchase(s) to the purchase list)
+ *************************************************************************/
+void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
+{
+	// Variable List
+	Member		*tempMem;		// CALC 	 - Temp member to check inputs
+	Purchase 	*newPurchase;	// CALC 	 - Add new purchase
+	int  	 	memNum;			// IN & CALC - Membership #
+	int  	 	addTrnMonth;	// IN & CALC - Transaction month
+	int  	 	addTrnDay;		// IN & CALC - Transaction day
+	int  	 	addTrnYear;		// IN & CALC - Transaction year
+	string	 	itemName;		// IN & CALC - Item name to purchase
+	int		 	itemQty;		// IN & CALC - Quantity of item to buy
+	float	 	itemCost;		// IN & CALC - Cost of item
+	Date 	 	*addTrnDate;	// CALC		 - Full transaction date
+	char		answer;			// CALC		 - Member response to buy more
+	bool	 	buyMore;		// CALC		 - Check to buy more
+	bool	 	validCost;		// CALC		 - Check valid cost
+	bool	 	validQty;		// CALC		 - Check valid quantity
+	bool 	 	validDate;		// CALC		 - Check valid date
+	bool 	 	validMemNum;	// CALC		 - Check member number
+
+	tempMem     = NULL;
+	addTrnDate  = NULL;
+
+	/*
+	 * NOTE MEMBER CANNOT EXCEED MORE THAN A 200 ITEM TRANSACTION
+	 * PER DAY. SO FIRST WE NEED TO GET A TOTAL COUNT. AND THEN UPDATE
+	 * AROUND THAT. (: GETTING THERE YEE
+	 */
+
+	cout << "Information to purchase an item\n";
+
+	// INPUT - Get valid member number from member & member is in list
+	do
+	{
+		validMemNum = true;
+
+		cout << "Membership number (5 digit #): ";
+		cin >> memNum;
+
+		// PROCESSING - Check if input is valid
+		validMemNum = tempMem->ValidateMemberNumFromConsole(memNum);
+
+		if(validMemNum)
+		{
+			// PROCESSING - Check if member exists in member list
+			tempMem = tempMemList.SearchForMember(memNum);
+
+			// PROCESSING - If member does NOT exist in list
+			if(tempMem == NULL)
+			{
+				validMemNum = false;
+				cout << "here\n";
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+			else
+			{
+				validMemNum = true;
+			}
+		}
+	}while(!validMemNum || tempMem == NULL);
+
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+	// INPUT - Get valid purchase date from member
+	do
+	{
+		cout << "PurchaseDate Date (i.e. MM/DD/YYYY): ";
+		cin  >> addTrnMonth;
+		cin.ignore(numeric_limits<streamsize>::max(), '/');
+		cin  >> addTrnDay;
+		cin.ignore(numeric_limits<streamsize>::max(), '/');
+		cin  >> addTrnYear;
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		validDate = addTrnDate->CheckDate(addTrnMonth, addTrnDay, addTrnYear);
+
+		// PROCESSING - If the input date is not valid
+		if(!validDate)
+		{
+			if(!addTrnMonth || !addTrnDay || !addTrnYear)
+			{
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+		}
+	}while(!validDate);
+
+	// PROCESSING - Add transaction date since valid
+	addTrnDate = new Date(addTrnMonth, addTrnDay, addTrnYear);
+
+	// PROCESSING - Initialize variables
+	buyMore = true;
+	answer  = 'Y';
+
+	// PROCESSING - Keep adding items to purchase
+	while(buyMore && answer == 'Y')
+	{
+		// INPUT - Get name of item member would like to purcahse
+		cout << "Item Name: ";
+		getline(cin, itemName);
+
+		// INPUT - Get valid quantity of item member would like to purchase
+		do
+		{
+			validQty = true;
+
+			cout << "Quantity of item: ";
+			cin  >> itemQty;
+			validQty = newPurchase->ValidateItemQuantity(itemQty);
+		}while(!validQty);
+
+		// INPUT - Get valid price of item member would like to purchase
+		do
+		{
+			validCost = true;
+
+			cout << "Price of item: ";
+			cin  >> itemCost;
+			validCost = newPurchase->ValidateItemPrice(itemCost);
+		}while(!validCost);
+
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		// PROCESSING - Only add purchase if information is valid
+		if(validMemNum && validDate && validQty && validCost )
+		{
+			newPurchase = new Purchase(*addTrnDate, memNum, itemName,
+										itemCost, itemQty);
+
+			AddPurchase(newPurchase);
+		}
+
+		// INPUT - Check if member would like to purchase more items (y/n)
+		do
+		{
+			cout << "Would you like to purchase more items (Y/N) ";
+			cin.get(answer);
+			answer = toupper(answer);
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			buyMore = ValidateToBuyMore(answer);
+		}while(!buyMore);
+	} // END WHILE
+}
 
 void PurchasesList::AddPurchase(Purchase *newPurchase)
 {
@@ -102,4 +259,29 @@ void PurchasesList::DisplayPurchasesList() const
 		current = current->GetNext();
 	}
 	cout << endl;
+}
+
+/**************************************************************************
+ * ValidateToBuyMore
+ * 		This method checks a character to see whether or not the member
+ * 		entered a valid character. This character should be either 'Y'
+ * 		or 'N' to indicate whether or not the member would like to purchase
+ * 		more items.
+ *
+ * 		Returns - valid (bool)
+ *************************************************************************/
+bool PurchasesList::ValidateToBuyMore(const char CHECK_CHAR)
+{
+	// Variable List
+	bool valid;		// CALC & OUT - Check if valid buy more input
+
+	valid = true;
+
+	// PROCESSING - Check if member input was either 'Y' or 'N'
+	if(CHECK_CHAR != YES_BUY && CHECK_CHAR != NO_BUY)
+	{
+		valid = false;
+	}
+
+	return valid;
 }

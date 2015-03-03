@@ -4,7 +4,10 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../BulkClub.cpp \
 ../Date.cpp \
+../DisplayMainMenu.cpp \
+../GetAndCheckInt.cpp \
 ../Member.cpp \
 ../MemberList.cpp \
 ../PreferredMember.cpp \
@@ -14,7 +17,10 @@ CPP_SRCS += \
 ../main.cpp 
 
 OBJS += \
+./BulkClub.o \
 ./Date.o \
+./DisplayMainMenu.o \
+./GetAndCheckInt.o \
 ./Member.o \
 ./MemberList.o \
 ./PreferredMember.o \
@@ -24,7 +30,10 @@ OBJS += \
 ./main.o 
 
 CPP_DEPS += \
+./BulkClub.d \
 ./Date.d \
+./DisplayMainMenu.d \
+./GetAndCheckInt.d \
 ./Member.d \
 ./MemberList.d \
 ./PreferredMember.d \

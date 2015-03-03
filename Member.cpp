@@ -141,7 +141,6 @@ bool Member::ValidateMemberNumFromConsole(const int CHECK_INT)
 			 << " and " << MAX_MEM_NUM;
 		cout << setw(ERROR_COL) << oss.str()   << " *****\n\n";
 		oss.str("");
-		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 		valid = false;
