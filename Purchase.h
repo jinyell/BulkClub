@@ -47,8 +47,10 @@ class Purchase
 		 **************/
 		void SetNext(Purchase *nextNode);
 
-		bool ValidateItemQuantity(const int CHECK_INT);
-		bool ValidateItemPrice(const int CHECK_FLOAT);
+		bool ValidateItemQuantityFromConsole(const int CHECK_INT);
+		bool ValidateItemPriceFromConsole(const int CHECK_FLOAT);
+		bool ValidateItemQuantityFromFile(const int CHECK_INT);
+		bool ValidateItemPriceFromFile(const int CHECK_FLOAT);
 
 
 		/***************

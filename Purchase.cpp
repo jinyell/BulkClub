@@ -72,7 +72,7 @@ Purchase* Purchase::GetNext() const
 	return next;
 }
 
-bool Purchase::ValidateItemQuantity(const int CHECK_INT)
+bool Purchase::ValidateItemQuantityFromConsole(const int CHECK_INT)
 {
 	bool 		  valid;
 	ostringstream oss;
@@ -115,7 +115,26 @@ bool Purchase::ValidateItemQuantity(const int CHECK_INT)
 	return valid;
 }
 
-bool Purchase::ValidateItemPrice(const int CHECK_FLOAT)
+bool Purchase::ValidateItemQuantityFromFile(const int CHECK_INT)
+{
+	bool 		  valid;
+	ostringstream oss;
+
+	valid = true;
+
+	if(!CHECK_INT)
+	{
+		valid = false;
+	}
+	else if(CHECK_INT < QTY_MIN || CHECK_INT > QTY_MAX)
+	{
+		valid = false;
+	}
+
+	return valid;
+}
+
+bool Purchase::ValidateItemPriceFromConsole(const int CHECK_FLOAT)
 {
 	bool 		  valid;
 	ostringstream oss;
@@ -154,6 +173,26 @@ bool Purchase::ValidateItemPrice(const int CHECK_FLOAT)
 	}
 
 	cout << right;
+
+	return valid;
+}
+
+bool Purchase::ValidateItemPriceFromFile(const int CHECK_FLOAT)
+{
+	bool 		  valid;
+	ostringstream oss;
+
+	cout << left;
+	valid = true;
+
+	if(!CHECK_FLOAT)
+	{
+		valid = false;
+	}
+	else if(CHECK_FLOAT < COST_MIN || CHECK_FLOAT > COST_MAX)
+	{
+		valid = false;
+	}
 
 	return valid;
 }

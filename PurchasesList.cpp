@@ -20,10 +20,12 @@ PurchasesList::PurchasesList()
 
 PurchasesList::~PurchasesList() {}
 
-void PurchasesList::AddPurchaseFromFile(string inputFileName)
+void PurchasesList::AddPurchaseFromFile(string inputFileName,
+										MemberList &theMemList)
 {
 	//VARIABLE DECLARATION
 	ifstream inFile;
+	Member	 *tempMem;
 	Purchase *newPurchase;
 	Date	 *transDate;
 	int		 transMonth;
@@ -33,33 +35,120 @@ void PurchasesList::AddPurchaseFromFile(string inputFileName)
 	string	 transItem;
 	float	 transPrice;
 	int		 transQty;
+	bool	 validCost;		// CALC		 - Check valid cost
+	bool	 validQty;		// CALC		 - Check valid quantity
+	bool	 validDate;
+	bool	 validMemNum;
+
+	tempMem = NULL;
 
 	inFile.open(inputFileName.c_str());
 
-	while(!inFile.eof())
+	// PROCESSING - Check if file exists
+	if(!inFile)
 	{
-		inFile >> transMonth;
-		inFile.ignore(1);
-		inFile >> transDay;
-		inFile.ignore(1);
-		inFile >> transYear;
-		inFile.ignore(1);
-
-		transDate = new Date(transMonth, transDay, transYear);
-
-		inFile >> transMemberNum;
-		inFile.ignore(1000, '\n');
-		getline(inFile, transItem);
-		inFile >> transPrice;
-		inFile >> transQty;
-		inFile.ignore(1000, '\n');
-
-		newPurchase = new Purchase(*transDate, transMemberNum,
-									transItem, transPrice,
-									transQty);
-
-		AddPurchase(newPurchase);
+		cout << "Sorry! This file is not found.\n";
 	}
+	else
+	{
+		// PROCESSING - Read & get info until end of file
+		while(!inFile.eof())
+		{
+			// INPUT - Get purchase month
+			if(!(inFile >> transMonth))
+			{
+				inFile.clear();
+				validDate = false;
+			}
+			inFile.ignore(numeric_limits<streamsize>::max(), '/');
+
+			// INPUT - Get purchase day
+			if(!(inFile >> transDay))
+			{
+				inFile.clear();
+				validDate = false;
+			}
+			inFile.ignore(numeric_limits<streamsize>::max(), '/');
+
+			// INPUT - Get purchase year
+			if(!(inFile >> transYear))
+			{
+				inFile.clear();
+				validDate = false;
+			}
+			inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+
+			validDate = transDate->CheckDate(transMonth, transDay, transYear);
+
+			// PROCESSING - If the input date is not valid
+			if(!validDate)
+			{
+				if(!transMonth || !transDay || !transYear)
+				{
+					inFile.clear();
+					inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+				}
+			}
+			else
+			{
+				transDate = new Date(transMonth, transDay, transYear);
+			}
+
+			if(!(inFile >> transMemberNum))
+			{
+				inFile.clear();
+				validMemNum = false;
+			}
+			validMemNum = tempMem->ValidateMemberNumFromFile(transMemberNum);
+			inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+
+			if(validMemNum)
+			{
+				// PROCESSING - Check if member exists in member list
+				tempMem = theMemList.SearchForMember(transMemberNum);
+
+				// PROCESSING - If member does NOT exist in list
+				if(tempMem == NULL)
+				{
+					validMemNum = false;
+					inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+				}
+				else
+				{
+					validMemNum = true;
+				}
+			}
+
+			getline(inFile, transItem);
+
+			if(!(inFile >> transPrice))
+			{
+				inFile.clear();
+				inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+
+			validCost = newPurchase->ValidateItemPriceFromFile(transPrice);
+
+			if(!(inFile >> transQty))
+			{
+				inFile.clear();
+				inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+
+			inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+
+			validQty = newPurchase->ValidateItemQuantityFromFile(transQty);
+
+			if(validDate && validQty && validCost && validMemNum)
+			{
+				newPurchase = new Purchase(*transDate, transMemberNum,
+											transItem, transPrice,
+											transQty);
+
+				AddPurchase(newPurchase);
+			} // END IF
+		} // END WHILE
+	} // END IF-ELSE
 	inFile.close();
 }
 
@@ -128,7 +217,6 @@ void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 			if(tempMem == NULL)
 			{
 				validMemNum = false;
-				cout << "here\n";
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			}
 			else
@@ -185,7 +273,7 @@ void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 
 			cout << "Quantity of item: ";
 			cin  >> itemQty;
-			validQty = newPurchase->ValidateItemQuantity(itemQty);
+			validQty = newPurchase->ValidateItemQuantityFromConsole(itemQty);
 		}while(!validQty);
 
 		// INPUT - Get valid price of item member would like to purchase
@@ -195,7 +283,7 @@ void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 
 			cout << "Price of item: ";
 			cin  >> itemCost;
-			validCost = newPurchase->ValidateItemPrice(itemCost);
+			validCost = newPurchase->ValidateItemPriceFromConsole(itemCost);
 		}while(!validCost);
 
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');

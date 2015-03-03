@@ -54,11 +54,11 @@ int main()
 
 	//Adds contents of purchase files to the list. Hard coded for now
 	//All contents are added into a single list called purchases
-	purchases.AddPurchaseFromFile("day1.txt");
-	purchases.AddPurchaseFromFile("day2.txt");
-	purchases.AddPurchaseFromFile("day3.txt");
-	purchases.AddPurchaseFromFile("day4.txt");
-	purchases.AddPurchaseFromFile("day5.txt");
+	purchases.AddPurchaseFromFile("day1.txt", list);
+	purchases.AddPurchaseFromFile("day2.txt", list);
+	purchases.AddPurchaseFromFile("day3.txt", list);
+	purchases.AddPurchaseFromFile("day4.txt", list);
+	purchases.AddPurchaseFromFile("day5.txt", list);
 
 	//PROCESSING - DO-WHILE LOOP - Used to output the main menu, prompt for
 	//			   user input, and go into the different operations.

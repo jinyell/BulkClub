@@ -38,7 +38,7 @@ class PurchasesList
 		/**************
 		 ***MUTATORS***
 		 **************/
-		void AddPurchaseFromFile(string inputFileName);
+		void AddPurchaseFromFile(string inputFileName, MemberList &tempMemList);
 		void AddPurchaseFromConsole(MemberList &tempMemList);
 		void AddPurchase(Purchase* newPurchase);
 
