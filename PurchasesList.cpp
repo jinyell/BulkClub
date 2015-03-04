@@ -324,26 +324,49 @@ void PurchasesList::AddPurchase(Purchase *newPurchase)
 	tail = newPurchase;
 }
 
+void PurchasesList::SearchForPurchaseDate(Date searchDate)
+{
+	// Variable List
+	Purchase *tempPtr;
+
+	tempPtr = head;
+
+	DisplayPurchaseHeader();
+
+	// PROCESSING - Loop through entire purchase list
+	while(tempPtr != NULL)
+	{
+		if(tempPtr->GetPurchaseDate().GetDay() == searchDate.GetDay()
+		   && tempPtr->GetPurchaseDate().GetMonth() == searchDate.GetMonth()
+		   && tempPtr->GetPurchaseDate().GetYear() == searchDate.GetYear())
+		{
+			tempPtr->PrintPurchase();
+		}
+		tempPtr = tempPtr->GetNext();
+	}
+}
+
+void PurchasesList::DisplayPurchaseHeader() const
+{
+	cout << left
+		 << setw(13) << "SALE DATE" << setw(10) << "MEMBER#"
+		 << setw(32) << "ITEM PURCHASED" << setw(11) << "PRICE"
+		 << setw(8) << "QTY" << endl
+		 << setw(13) << "----------" << setw(10) << "-------"			 << setw(32) << "-----------------------------" << setw(11)
+		 << "--------" << setw(11) << "---" << endl;
+}
+
 void PurchasesList::DisplayPurchasesList() const
 {
 	Purchase *current;
 
 	current = head;
-	cout << left << setw(13) << "SALE DATE" << setw(10) << "MEMBER#"
-			 << setw(32) << "ITEM PURCHASED" << setw(11) << "PRICE"
-			 << setw(8) << "QTY" << endl
-			 << setw(13) << "----------" << setw(10) << "-------"
-			 << setw(32) << "-----------------------------" << setw(11)
-			 << "--------" << setw(11) << "---" << endl;
+
+	DisplayPurchaseHeader();
+
 	while(current != NULL)
 	{
-
-		cout << left << setw(13) << current->GetPurchaseDate().DisplayDate()
-			 << setw(10) << current->GetMembershipNumber()
-			 << setw(32) << current->GetPurchaseProduct() << "$" << right
-			 << setw(7) << fixed << setprecision(2)
-			 << current->GetPurchasePrice()
-			 << setw(6) << current->GetPurchaseQty() << endl;
+		current->PrintPurchase();
 		current = current->GetNext();
 	}
 	cout << endl;

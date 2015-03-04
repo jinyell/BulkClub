@@ -41,10 +41,12 @@ class PurchasesList
 		void AddPurchaseFromFile(string inputFileName, MemberList &tempMemList);
 		void AddPurchaseFromConsole(MemberList &tempMemList);
 		void AddPurchase(Purchase* newPurchase);
+		void SearchForPurchaseDate(Date searchDate);
 
 		/***************
 		 ***ACCESSORS***
 		 ***************/
+		void DisplayPurchaseHeader() const;
 		void DisplayPurchasesList() const;
 
 	private:

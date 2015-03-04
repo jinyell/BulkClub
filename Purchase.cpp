@@ -196,3 +196,14 @@ bool Purchase::ValidateItemPriceFromFile(const int CHECK_FLOAT)
 
 	return valid;
 }
+
+void Purchase::PrintPurchase() const
+{
+	cout << left << setw(13) << purchaseDate.DisplayDate()
+		 << setw(10) << membershipNumber
+		 << setw(32) << purchaseProduct << "$" << right
+		 << setw(7) << fixed << setprecision(2)
+		 << purchasePrice
+		 << setw(6) << purchaseQty << endl;
+
+}

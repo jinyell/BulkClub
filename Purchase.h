@@ -62,6 +62,7 @@ class Purchase
 		float  	  GetPurchasePrice() const;
 		int	   	  GetPurchaseQty() const;
 		Purchase* GetNext() const;
+		void	  PrintPurchase() const;
 
 	private:
 		Date   	 purchaseDate;		//Date of purchase
