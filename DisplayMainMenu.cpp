@@ -31,7 +31,8 @@ void DisplayMainMenu()
 			"2 - Display List of Purchases\n"
 			"3 - Add member\n"
 		    "4 - Add Purchase\n"
-			"4 - Check for expiring members\n"
+			"5 - Check for expiring members\n"
+			"6 - Sales Report: of a specific day\n"
 			"0 - EXIT\n"
 			"Please enter a command: ";
 }

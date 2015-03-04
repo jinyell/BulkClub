@@ -41,7 +41,8 @@ class PurchasesList
 		void AddPurchaseFromFile(string inputFileName, MemberList &tempMemList);
 		void AddPurchaseFromConsole(MemberList &tempMemList);
 		void AddPurchase(Purchase* newPurchase);
-		void SearchForPurchaseDate(Date searchDate);
+		void SearchForPurchase(int searchMonth, int searchDay, int searchYear);
+		void GetASearchDate(int &searchMonth, int &searchDay, int &searchYear);
 
 		/***************
 		 ***ACCESSORS***

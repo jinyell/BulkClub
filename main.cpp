@@ -31,6 +31,10 @@ int main()
 	BulkClub	  theClub;		// BulkClub object for operations/reports
 	int			  selection;	// user's selection for main menu
 	bool		  run;			// T/F for program run
+	Date		  aDate;
+	int aMonth;
+	int aDay;
+	int aYear;
 
 	//VARIABLE INITIALIZATIONS
 	run = true;
@@ -103,6 +107,10 @@ int main()
 							cout << "CHECK FOR EXPIRING MEMBERSHIPS" << endl;
 							theClub.CheckExpMembers(list);
 							break;
+
+		case SALES_REPORT:	// Prints a sales report of a particular day
+							purchases.GetASearchDate(aMonth, aDay, aYear);
+							purchases.SearchForPurchase(aMonth, aDay, aYear);
 		}
 	}while(run);
 

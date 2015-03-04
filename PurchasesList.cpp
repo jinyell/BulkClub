@@ -327,25 +327,38 @@ void PurchasesList::AddPurchase(Purchase *newPurchase)
 	purchaseCount++; //Increments purchase count
 }
 
-void PurchasesList::SearchForPurchaseDate(Date searchDate)
+void PurchasesList::SearchForPurchase(int searchMonth, int searchDay, int searchYear)
 {
 	// Variable List
 	Purchase *tempPtr;
+	bool     found;
+	int		 count;
 
 	tempPtr = head;
-
-	DisplayPurchaseHeader();
+	found   = false;
+	count   = 0;
 
 	// PROCESSING - Loop through entire purchase list
 	while(tempPtr != NULL)
 	{
-		if(tempPtr->GetPurchaseDate().GetDay() == searchDate.GetDay()
-		   && tempPtr->GetPurchaseDate().GetMonth() == searchDate.GetMonth()
-		   && tempPtr->GetPurchaseDate().GetYear() == searchDate.GetYear())
+		if(tempPtr->GetPurchaseDate().GetDay()   == searchDay   &&
+		   tempPtr->GetPurchaseDate().GetMonth() == searchMonth &&
+		   tempPtr->GetPurchaseDate().GetYear()  == searchYear)
 		{
+			count++;
+			if(count == 1)
+			{
+				DisplayPurchaseHeader();
+			}
 			tempPtr->PrintPurchase();
+			found = true;
 		}
 		tempPtr = tempPtr->GetNext();
+	}
+
+	if(!found)
+	{
+		cout << "No sales report of that date\n\n";
 	}
 }
 
@@ -355,7 +368,8 @@ void PurchasesList::DisplayPurchaseHeader() const
 		 << setw(13) << "SALE DATE" << setw(10) << "MEMBER#"
 		 << setw(32) << "ITEM PURCHASED" << setw(11) << "PRICE"
 		 << setw(8) << "QTY" << endl
-		 << setw(13) << "----------" << setw(10) << "-------"			 << setw(32) << "-----------------------------" << setw(11)
+		 << setw(13) << "----------" << setw(10) << "-------"
+		 << setw(32) << "-----------------------------" << setw(11)
 		 << "--------" << setw(11) << "---" << endl;
 }
 
@@ -403,4 +417,38 @@ bool PurchasesList::ValidateToBuyMore(const char CHECK_CHAR)
 int PurchasesList::GetPurchaseCount() const
 {
 	return purchaseCount;
+}
+
+
+void PurchasesList::GetASearchDate(int &searchMonth, int &searchDay, int &searchYear)
+{
+	Date *tempDate;
+	bool validDate;
+
+	tempDate = NULL;
+
+	// INPUT - Get a valid expiration date
+	do
+	{
+		validDate = true;
+
+		cout << "Enter Expiration Date (i.e. MM/DD/YYYY): ";
+		cin  >> searchMonth;
+		cin.ignore(numeric_limits<streamsize>::max(), '/');
+		cin  >> searchDay;
+		cin.ignore(numeric_limits<streamsize>::max(), '/');
+		cin  >> searchYear;
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		validDate = tempDate->CheckDate(searchMonth, searchDay, searchYear);
+
+		if(!validDate)
+		{
+			if(!searchMonth || !searchDay || !searchYear)
+			{
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
+		}
+	}while(!validDate);
 }
