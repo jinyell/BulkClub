@@ -14,8 +14,9 @@
 
 PurchasesList::PurchasesList()
 {
-	head = NULL;
-	tail = NULL;
+	head 		  = NULL;
+	tail 		  = NULL;
+	purchaseCount = 0;
 }
 
 PurchasesList::~PurchasesList() {}
@@ -322,6 +323,8 @@ void PurchasesList::AddPurchase(Purchase *newPurchase)
 		tail->SetNext(newPurchase);
 	}
 	tail = newPurchase;
+
+	purchaseCount++; //Increments purchase count
 }
 
 void PurchasesList::SearchForPurchaseDate(Date searchDate)
@@ -395,4 +398,9 @@ bool PurchasesList::ValidateToBuyMore(const char CHECK_CHAR)
 	}
 
 	return valid;
+}
+
+int PurchasesList::GetPurchaseCount() const
+{
+	return purchaseCount;
 }
