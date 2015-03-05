@@ -13,6 +13,7 @@
 #define BULKCLUB_H_
 
 #include "MemberList.h"
+#include "PurchasesList.h"
 
 class BulkClub
 {
@@ -22,6 +23,8 @@ class BulkClub
 		virtual ~BulkClub();
 
 		void CheckExpMembers(MemberList& list); //Checks expiring membership
+		void PurchasesbyMember(MemberList& list, //Gets purchases by member
+				       PurchasesList& purchases);
 };
 
 #endif /* BULKCLUB_H_ */

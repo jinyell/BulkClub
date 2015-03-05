@@ -17,6 +17,7 @@ PurchasesList::PurchasesList()
 	head 		  = NULL;
 	tail 		  = NULL;
 	purchaseCount = 0;
+	purchaseTotal = 0.0;
 }
 
 PurchasesList::~PurchasesList() {}
@@ -312,8 +313,13 @@ void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 
 void PurchasesList::AddPurchase(Purchase *newPurchase)
 {
+	//VARIABLE DECLARATION
+	float total;		//CALC - result of item price * item quantity
+
 	newPurchase->SetNext(NULL);
 
+	//PROCESSING - IF-THEN-ELSE - Used to check if the list is empty and
+	//			   insert node in correct place
 	if(head == NULL)
 	{
 		head = newPurchase;
@@ -325,6 +331,8 @@ void PurchasesList::AddPurchase(Purchase *newPurchase)
 	tail = newPurchase;
 
 	purchaseCount++; //Increments purchase count
+	total = newPurchase->GetPurchasePrice() * newPurchase->GetPurchaseQty();
+	purchaseTotal = purchaseTotal + total;
 }
 
 void PurchasesList::SearchForPurchase(MemberList &tempMemList,
@@ -466,6 +474,10 @@ int PurchasesList::GetPurchaseCount() const
 	return purchaseCount;
 }
 
+float PurchasesList::GetPurchaseTotal() const
+{
+	return purchaseTotal;
+}
 
 void PurchasesList::GetASearchDate(int &searchMonth, int &searchDay, int &searchYear)
 {
@@ -499,3 +511,36 @@ void PurchasesList::GetASearchDate(int &searchMonth, int &searchDay, int &search
 		}
 	}while(!validDate);
 }
+
+void PurchasesList::FindPurchasesByMember(PurchasesList& purchasesFound,
+									  int membershipNum) const
+{
+	//VARIABLE DECLARATIONS
+	Purchase *tempPtr;		//temporary pointer to traverse the list
+	Purchase *newPurchase;	//pointer to create nodes for found purchases
+
+	//VARIABLE INITIALIZATION
+	tempPtr = head;
+
+	//PROCESSING - DO-WHILE - Used to traverse the list. Exits once end of
+	//			   list is reached
+	while(tempPtr != NULL)
+	{
+		//PROCESSING - IF-THEN - Used to check if the current's node
+		//			   membership number matches the search key
+		if(tempPtr->GetMembershipNumber() == membershipNum)
+		{
+			//Creates a new purchase node
+			newPurchase = new Purchase(tempPtr->GetPurchaseDate(),
+									   tempPtr->GetMembershipNumber(),
+									   tempPtr->GetPurchaseProduct(),
+									   tempPtr->GetPurchasePrice(),
+									   tempPtr->GetPurchaseQty());
+			//AddPurchase - adds node to the list
+			purchasesFound.AddPurchase(newPurchase);
+		}
+		//Moves to the next node of the list
+		tempPtr = tempPtr->GetNext();
+	}
+}
+

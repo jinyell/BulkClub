@@ -9,7 +9,6 @@
 *       `"`"`"`
 *     TEAM APPLE
 **************************************************************************/
-
 #ifndef PURCHASESLIST_H_
 #define PURCHASESLIST_H_
 
@@ -50,11 +49,17 @@ class PurchasesList
 		void DisplayPurchaseHeader() const;
 		void DisplayPurchasesList() const; //Displays the purchases list
 		int GetPurchaseCount() const;	//Gets total number of purchases
+		float GetPurchaseTotal() const;		//Gets total purchases amounth
+
+		//Finds purchases by membership number
+		void FindPurchasesByMember(PurchasesList& purchasesFound,
+							   	   int membershipNum) const;
 
 	private:
 		Purchase *head;			//head pointer for the list
 		Purchase *tail;			//tail pointer for the list
 		int	 purchaseCount;		//keeps a count of number of purchases
+		float purchaseTotal;	//keeps a total for money spent
 
 };
 

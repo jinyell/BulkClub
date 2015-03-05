@@ -525,27 +525,55 @@ Member* MemberList::SearchForMember(int keyNum) const // IN & CALC - Name
 	return tempPtr;
 }
 
-void MemberList::SearchByMonth(MemberList& expMembers, int monthKey, int yearKey) const
+/**************************************************************************
+ *	SearchByMonth
+ *		This method receives a list for expiring members, a month search
+ *		key, and a year search key. The method then traverses the list
+ *		searching for a match for month and year. If a match is found, the
+ *		node's content is added to the expMembers list.
+ *		Returns - nothing
+ *************************************************************************/
+void MemberList::SearchByMonth(MemberList& expMembers,    //List to fill
+							   int 		   monthKey, 	  //month search key
+							   int 		   yearKey) const //year search key
 {
-	Member *tempPtr;
-	Member *tempPtr2;
+	//VARIABLE DECLARATIONS
+	Member *tempPtr;	//temporary pointer to traverse the list
+	Member *expMember;	//pointer to create new nodes for expiring members
 
-	tempPtr = headMember;
+	//VARIABLE INITIALIZATIONS
+	tempPtr = headMember;	//Initializes tempPtr to head pointer of list
 
+	//PROCESSING - DO-WHILE - Used to traverse the list. Exits once end of
+	//			   list is reached
 	while(tempPtr != NULL)
 	{
+		//PROCESSING - IF-THEN - Used to check if the current node's month
+		//			   and year match the monthKye and yearKey
 		if(tempPtr->GetExpDate().GetMonth() == monthKey &&
 		   tempPtr->GetExpDate().GetYear() == yearKey)
 		{
-			tempPtr2 = tempPtr->GetNext();
-			tempPtr->SetNext(NULL);
-			expMembers.InsertInOrder(tempPtr);
-			tempPtr = tempPtr2;
+			//PROCESSING - IF-THEN-ELSE - Used to check if the member found
+			//			   is a Basic or Preferred member
+			if(tempPtr->GetMemberType() == "Basic")
+			{
+				//Creates a new Member node
+				expMember = new Member(tempPtr->GetName(),
+							   	   tempPtr->GetMemberNumber(),
+								   tempPtr->GetExpDate());
+			}
+			else
+			{
+				//Creates a new PreferredMember node
+				expMember = new PreferredMember(tempPtr->GetName(),
+					   	   	   	   	   	   	    tempPtr->GetMemberNumber(),
+												tempPtr->GetExpDate());
+			}
+			//InsertInOder - adds node to the list
+			expMembers.InsertInOrder(expMember);
 		}
-		else
-		{
-			tempPtr = tempPtr->GetNext();
-		}
+		//Moves to the next node of the list
+		tempPtr = tempPtr->GetNext();
 	}
 }
 

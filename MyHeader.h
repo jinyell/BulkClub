@@ -25,7 +25,8 @@ enum Menu
 	ADD_MEMBER,
 	ADD_PURCHASE,
 	EXPIRING,
-	SALES_REPORT
+	SALES_REPORT,
+	SALES_BY_MEMBER,
 };
 
 /**************************************************************************
@@ -39,7 +40,7 @@ enum Menu
 * EXP_YEAR_MAX  : The maximum allowable value for year
 **************************************************************************/
 const int MAIN_MENU_MIN = 0;
-const int MAIN_MENU_MAX = 6;
+const int MAIN_MENU_MAX = 7;
 const int EXP_MONTH_MIN = 1;
 const int EXP_MONTH_MAX = 12;
 const int EXP_YEAR_MIN = 2000;
