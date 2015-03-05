@@ -327,16 +327,25 @@ void PurchasesList::AddPurchase(Purchase *newPurchase)
 	purchaseCount++; //Increments purchase count
 }
 
-void PurchasesList::SearchForPurchase(int searchMonth, int searchDay, int searchYear)
+void PurchasesList::SearchForPurchase(MemberList &tempMemList,
+									  int 		 searchMonth,
+									  int 		 searchDay,
+									  int 		 searchYear)
 {
 	// Variable List
-	Purchase *tempPtr;
-	bool     found;
-	int		 count;
+	Member		*tempMem;
+	Purchase 	*tempPtr;
+	bool     	found;
+	int		 	countTotMem;
+	int			countBasic;
+	int			countPref;
 
 	tempPtr = head;
+	tempMem = NULL;
 	found   = false;
-	count   = 0;
+	countTotMem   = 0;
+	countBasic = 0;
+	countPref = 0;
 
 	// PROCESSING - Loop through entire purchase list
 	while(tempPtr != NULL)
@@ -345,16 +354,54 @@ void PurchasesList::SearchForPurchase(int searchMonth, int searchDay, int search
 		   tempPtr->GetPurchaseDate().GetMonth() == searchMonth &&
 		   tempPtr->GetPurchaseDate().GetYear()  == searchYear)
 		{
-			count++;
-			if(count == 1)
+			countTotMem++;
+			if(countTotMem == 1)
 			{
-				DisplayPurchaseHeader();
+				cout << left
+					 << setfill(' ')
+					 << setw(32) 	   	<< "ITEM PURCHASED" << " "
+					 << setw(12) 	   	<< "QUANTITY" 		 << " "
+					 << setw(NAME_COL) 	<< "MEMBER NAME" << " "
+					 << setw(TYPE_COL)  << "MEMBER TYPE" << "\n"
+					 << setfill('-')
+					 << setw(32) << "-" << " "
+					 << setw(12) << "-" << " "
+					 << setw(NAME_COL) << "-" << " "
+					 << setw(TYPE_COL) 	<< "-" << "\n"
+					 << setfill(' ');
 			}
-			tempPtr->PrintPurchase();
+			cout << setw(32) << tempPtr->GetPurchaseProduct() << " "
+				 << setw(12) << tempPtr->GetPurchaseQty() << " ";
+
+			tempMem = tempMemList.SearchForMember(tempPtr->GetMembershipNumber());
+
+			if(tempMem == NULL)
+			{
+				cout << setw(NAME_COL) << "Name D.N.E" << " ";
+				cout << setw(TYPE_COL) << "Type D.N.E" << endl;
+			}
+			else
+			{
+				cout << setw(NAME_COL) << tempMem->GetName() << " ";
+				cout << setw(TYPE_COL) << tempMem->GetMemberType() << endl;
+
+				if(tempMem->GetMemberType() == "Basic")
+				{
+					countBasic++;
+				}
+				else
+				{
+					countPref++;
+				}
+			}
+
 			found = true;
 		}
 		tempPtr = tempPtr->GetNext();
 	}
+
+	cout << "Total Basic Customers: " << countBasic << endl;
+	cout << "Total Preferred Customers: " << countPref << endl;
 
 	if(!found)
 	{

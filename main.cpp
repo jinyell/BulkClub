@@ -110,7 +110,7 @@ int main()
 
 		case SALES_REPORT:	// Prints a sales report of a particular day
 							purchases.GetASearchDate(aMonth, aDay, aYear);
-							purchases.SearchForPurchase(aMonth, aDay, aYear);
+							purchases.SearchForPurchase(list, aMonth, aDay, aYear);
 		}
 	}while(run);
 
