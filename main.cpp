@@ -29,7 +29,7 @@ int main()
 	MemberList 	  list;			// list of members
 	PurchasesList purchases;	// list of purchases
 	BulkClub	  theClub;		// BulkClub object for operations/reports
-	int			  selection;	// user's selection for main menu
+	int		  selection;	// user's selection for main menu
 	bool		  run;			// T/F for program run
 	Date		  aDate;
 	int aMonth;
@@ -76,41 +76,44 @@ int main()
 		cout << endl;
 
 		//PROCESSING - SWITCH - Used to route the program into different
-		//			   operations based on user's selection from menu
+		//	       operations based on user's selection from menu
 		switch(selection)
 		{
-		case EXIT: 			//Program ends
-							cout << "PROGRAM ENDED" << endl;
-							run = false;
-							break;
+		case EXIT: 		//Program ends
+					cout << "PROGRAM ENDED" << endl;
+					run = false;
+					break;
 
 		case MEMBERS: 		//Prints a list of members
-							cout << "LIST OF MEMBERS:" << endl;
-							list.PrintMemberList();
-							break;
+					cout << "LIST OF MEMBERS:" << endl;
+					list.PrintMemberList();
+					break;
 
 		case PURCHASES: 	//Prints a list of purchases
-							cout << "LIST OF PURCHASES:" << endl;
-							purchases.DisplayPurchasesList();
-							break;
+					cout << "LIST OF PURCHASES:" << endl;
+					purchases.DisplayPurchasesList();
+					break;
 
 		case ADD_MEMBER: 	//Adds member
-							list.AddMemberFromConsole();
-							break;
+					list.AddMemberFromConsole();
+					break;
 
 		case ADD_PURCHASE:	// Purchase from console
-							purchases.AddPurchaseFromConsole(list);
-							break;
+					purchases.AddPurchaseFromConsole(list);
+					break;
 
 		case EXPIRING:  	//Prints a report of memberships expiring on
-							//a give date (prompts the user)
-							cout << "CHECK FOR EXPIRING MEMBERSHIPS" << endl;
-							theClub.CheckExpMembers(list);
-							break;
+					//a give date (prompts the user)
+					cout << "CHECK FOR EXPIRING MEMBERSHIPS" << endl;
+					theClub.CheckExpMembers(list);
+					break;
 
 		case SALES_REPORT:	// Prints a sales report of a particular day
-							purchases.GetASearchDate(aMonth, aDay, aYear);
-							purchases.SearchForPurchase(aMonth, aDay, aYear);
+					purchases.GetASearchDate(aMonth, aDay, aYear);
+					purchases.SearchForPurchase(aMonth, aDay, aYear);
+					
+		case SALES_BY_MEMBER: 	// Prints a report showing purchases by member
+					theClub.PurchasesbyMember(list, purchases);
 		}
 	}while(run);
 
