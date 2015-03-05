@@ -17,6 +17,7 @@ PurchasesList::PurchasesList()
 	head 		  = NULL;
 	tail 		  = NULL;
 	purchaseCount = 0;
+	purchaseTotal = 0.0;
 }
 
 PurchasesList::~PurchasesList() {}
@@ -312,8 +313,13 @@ void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 
 void PurchasesList::AddPurchase(Purchase *newPurchase)
 {
+	//VARIABLE DECLARATION
+	float total;		//CALC - result of item price * item quantity
+
 	newPurchase->SetNext(NULL);
 
+	//PROCESSING - IF-THEN-ELSE - Used to check if the list is empty and
+	//			   insert node in correct place
 	if(head == NULL)
 	{
 		head = newPurchase;
@@ -325,6 +331,8 @@ void PurchasesList::AddPurchase(Purchase *newPurchase)
 	tail = newPurchase;
 
 	purchaseCount++; //Increments purchase count
+	total = newPurchase->GetPurchasePrice() * newPurchase->GetPurchaseQty();
+	purchaseTotal = purchaseTotal + total;
 }
 
 void PurchasesList::SearchForPurchase(int searchMonth, int searchDay, int searchYear)
@@ -419,6 +427,10 @@ int PurchasesList::GetPurchaseCount() const
 	return purchaseCount;
 }
 
+float PurchasesList::GetPurchaseTotal() const
+{
+	return purchaseTotal;
+}
 
 void PurchasesList::GetASearchDate(int &searchMonth, int &searchDay, int &searchYear)
 {
@@ -484,3 +496,4 @@ void PurchasesList::FindPurchasesByMember(PurchasesList& purchasesFound,
 		tempPtr = tempPtr->GetNext();
 	}
 }
+
