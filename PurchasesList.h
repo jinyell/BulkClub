@@ -53,10 +53,6 @@ class PurchasesList
 		//Finds purchases by membership number
 		void FindPurchasesByMember(PurchasesList& purchasesFound,
 							   	   int membershipNum) const;
-		//Finds purchases by member name
-		void FindPurchasesByMember(MemberList& 	  list,
-								   PurchasesList& purchasesFound,
-								   string 		  memberName) const;
 
 	private:
 		Purchase *head;			//head pointer for the list
