@@ -131,6 +131,10 @@ void BulkClub::PurchasesbyMember(MemberList& list,
 					
 					//DisplayPurchasesList - displays list of purchases
 					purchaseByMember.DisplayPurchasesList();
+
+					cout << "Total spent: $" << fixed << setprecision(2)
+						 <<	purchaseByMember.GetPurchaseTotal() << endl
+						 << endl;
 				}
 				break;
 		case 2: //Searches purchases by member name
@@ -162,6 +166,10 @@ void BulkClub::PurchasesbyMember(MemberList& list,
 					
 					//DisplayPurchaseList- displays list of purchases
 					purchaseByMember.DisplayPurchasesList();
+
+					cout << "Total spent: $" << fixed << setprecision(2)
+						 <<	purchaseByMember.GetPurchaseTotal() << endl
+						 << endl;
 				}
 				break;
 	}
