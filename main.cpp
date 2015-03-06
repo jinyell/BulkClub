@@ -108,13 +108,18 @@ int main()
 					theClub.CheckExpMembers(list);
 					break;
 
-		case SALES_REPORT:	// Prints a sales report of a particular day
+		case SALES_BY_DATE:	// Prints a sales report of a particular day
 							purchases.GetASearchDate(aMonth, aDay, aYear);
 							purchases.SearchForPurchase(list, aMonth, aDay, aYear);
 					break;
 					
 		case SALES_BY_MEMBER: 	// Prints a report showing purchases by member
 					theClub.PurchasesbyMember(list, purchases);
+					break;
+		case SALES_ALL_MEMBER: purchases.PrintAllMemberPurchases(list);
+			break;
+		default:
+			break;
 		}
 	}while(run);
 

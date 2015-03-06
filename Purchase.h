@@ -9,10 +9,11 @@
 *       `"`"`"`
 *     TEAM APPLE
 **************************************************************************/
-#include "MemberList.h"
-
 #ifndef PURCHASE_H_
 #define PURCHASE_H_
+
+#include "Member.h"
+
 
 /*************************************************************************
  * GLOBAL CONSTANTS

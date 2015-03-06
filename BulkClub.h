@@ -24,7 +24,9 @@ class BulkClub
 
 		void CheckExpMembers(MemberList& list); //Checks expiring membership
 		void PurchasesbyMember(MemberList& list, //Gets purchases by member
-				       PurchasesList& purchases);
+				       	   	   PurchasesList& purchases);
+		void TotalPurchasesByAllMembers(MemberList    &list,
+										PurchasesList &purchases);
 };
 
 #endif /* BULKCLUB_H_ */

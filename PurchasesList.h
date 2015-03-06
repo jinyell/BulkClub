@@ -13,6 +13,7 @@
 #define PURCHASESLIST_H_
 
 #include "Purchase.h"
+#include "MemberList.h"
 
 /**************************************************************************
  * GLOBAL CONSTANTS
@@ -40,20 +41,30 @@ class PurchasesList
 		void AddPurchaseFromFile(string inputFileName, MemberList &tempMemList);
 		void AddPurchaseFromConsole(MemberList &tempMemList);
 		void AddPurchase(Purchase* newPurchase);
-		void SearchForPurchase(MemberList &tempMemList, int searchMonth, int searchDay, int searchYear);
-		void GetASearchDate(int &searchMonth, int &searchDay, int &searchYear);
+		void SearchForPurchase(MemberList &tempMemList,
+							   int 		  searchMonth,
+							   int 		  searchDay,
+							   int 		  searchYear);
+
+		void GetASearchDate(int &searchMonth,
+							int &searchDay,
+							int &searchYear);
 
 		/***************
 		 ***ACCESSORS***
 		 ***************/
-		void DisplayPurchaseHeader() const;
-		void DisplayPurchasesList() const; //Displays the purchases list
-		int GetPurchaseCount() const;	//Gets total number of purchases
-		float GetPurchaseTotal() const;		//Gets total purchases amounth
+		void  PrintAllMemberPurchases(MemberList &tempList) const;
+		void  DisplayPurchaseHeader() const;
+		void  DisplayPurchasesList() const; //Displays the purchases list
+		int   GetPurchaseCount() const;		//Gets total number of purchases
+		float GetPurchaseTotal() const;		//Gets total purchases amount
+
+
 
 		//Finds purchases by membership number
 		void FindPurchasesByMember(PurchasesList& purchasesFound,
 							   	   int membershipNum) const;
+
 
 	private:
 		Purchase *head;			//head pointer for the list

@@ -34,6 +34,7 @@ void DisplayMainMenu()
 			"5 - Check for expiring members\n"
 			"6 - Sales Report: of a specific day\n"
 			"7 - Sales Report: of a specific member\n"
+			"8 - Sales Report: of all members\n"
 			"0 - EXIT\n"
 			"Please enter a command: ";
 }

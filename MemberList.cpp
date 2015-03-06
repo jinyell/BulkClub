@@ -662,3 +662,21 @@ void MemberList::PrintExpMembers() const
 		current = current->GetNext();
 	}
 }
+
+void MemberList::PrintAllMemberPurchase(Purchase &purList) const
+{
+	Member *temp;
+
+	temp = headMember;
+
+	while(temp != NULL)
+	{
+		purList.PrintPurchase();
+		temp = temp->GetNext();
+	}
+}
+
+Member* MemberList::GetHeadofList() const
+{
+	return headMember;
+}

@@ -13,6 +13,7 @@
 #define MEMBERLIST_H_
 
 #include "PreferredMember.h"
+#include "Purchase.h"
 
 class MemberList {
 public:
@@ -34,6 +35,7 @@ public:
 	/***************
 	 ***ACCESSORS***
 	 ***************/
+	Member* GetHeadofList() const;
 	bool    IsEmpty() const;						// Check empty list
 	int		MemberListSize() const;
 	Member* SearchForMember(string keyName) const;	// Search by name
@@ -44,6 +46,8 @@ public:
 	void	PrintMemListHeader() const;
 	void    PrintMemberList() const;			// Print members in list
 	void	PrintExpMembers() const;
+	void	PrintAllMemberPurchase(Purchase &purList) const;
+
 private:
 	Member *headMember;	// Head of list
 	Member *tailMember;	// Tail of list

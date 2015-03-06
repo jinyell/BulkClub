@@ -348,12 +348,12 @@ void PurchasesList::SearchForPurchase(MemberList &tempMemList,
 	int			countBasic;
 	int			countPref;
 
-	tempPtr = head;
-	tempMem = NULL;
-	found   = false;
-	countTotMem   = 0;
-	countBasic = 0;
-	countPref = 0;
+	tempPtr 	= head;
+	tempMem 	= NULL;
+	found    	= false;
+	countTotMem = 0;
+	countBasic 	= 0;
+	countPref 	= 0;
 
 	// PROCESSING - Loop through entire purchase list
 	while(tempPtr != NULL)
@@ -544,3 +544,44 @@ void PurchasesList::FindPurchasesByMember(PurchasesList& purchasesFound,
 	}
 }
 
+
+void PurchasesList::PrintAllMemberPurchases(MemberList &tempMemList) const
+{
+	// Variable List
+	Member		*tempMem;
+	Purchase 	*tempPur;
+	int countPur;
+
+	tempMem		= tempMemList.GetHeadofList();
+
+	while(tempMem != NULL)
+	{
+		countPur = 0;
+		tempPur 	= head;
+		cout << "Purchase(s) By Member: "
+			 << setw(NUM_COL) << tempMem->GetMemberNumber() << endl;
+		while(tempPur != NULL)
+		{
+			if(tempMem->GetMemberNumber() == tempPur->GetMembershipNumber())
+			{
+				cout << setw(32) << tempPur->GetPurchaseProduct() << " "
+					 << setw(8) << tempPur->GetPurchasePrice() <<  " "
+					 << setw(8) << tempPur->GetPurchaseQty() << " ";
+					tempPur->GetPurchaseDate();
+					cout << endl;
+					countPur++;
+			}
+			tempPur = tempPur->GetNext();
+
+		}
+
+		cout << endl;
+		if(countPur == 0)
+		{
+			cout << tempMem->GetMemberNumber() << " did not make any purchases\n\n";
+		}
+		tempMem = tempMem->GetNext();
+	}
+
+
+}
