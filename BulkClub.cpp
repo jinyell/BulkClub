@@ -16,60 +16,6 @@ BulkClub::BulkClub() {}
 
 BulkClub::~BulkClub() {}
 
-void BulkClub::CheckExpMembers(MemberList& list) //list to search
-{
-	//VARIABLE DECLARATIONS
-	MemberList expiring;	// List that stores the expiring memberships
-	int		   expMonth;	// IN - membership expiration month to search
-	int		   expYear;		// IN - membership expiration year to search
-
-	//PROCESSING - DO-WHILE LOOP - Used to prompt the user for a month to
-	//			   search and validate. Exits once a valid input is entered
-	do
-	{
-		cout << "Enter expiration month to search: ";
-		expMonth = GetAndCheckInt(EXP_MONTH_MIN, EXP_MONTH_MAX);
-		if(expMonth == -1)
-		{
-			cout << endl;
-		}
-	}while(expMonth == -1);
-
-	//PROCESSING - DO-WHILE LOOP - Used to prompt the user for a year to
-	//			   search and validate. Exits once a valid input is entered
-	do
-	{
-		cout << "Enter expiration year to search: ";
-		expYear = GetAndCheckInt(EXP_YEAR_MIN, EXP_YEAR_MAX);
-		if(expYear == -1)
-		{
-			cout << endl;
-		}
-	}while(expYear == -1);
-
-	cout << endl;
-
-	//SearchByMonth - this will search a list for nodes that contain
-	//				  both expMonth and expYear entered and add them to the
-	//				  expiring list object
-	list.SearchByMonth(expiring, expMonth, expYear);
-
-	//PROCESSING - IF-THEN-ELSE - Used to check if the expiring list is
-	//			   empty, display message if empty, and display the list's
-	//			   nodes if not empty
-	if(expiring.IsEmpty())
-	{
-		cout << "No memberships expiring on " << expMonth << "/" << expYear
-			 << " found" << endl;
-	}
-	else
-	{
-		cout << "The following memberships expiring on " << expMonth << "/"
-			 << expYear << " were found:" << endl;
-		expiring.PrintExpMembers();
-	}
-	cout << endl;
-}
 
 void BulkClub::PurchasesbyMember(MemberList& list,
 								 PurchasesList& purchases)
@@ -173,4 +119,124 @@ void BulkClub::PurchasesbyMember(MemberList& list,
 				}
 				break;
 	}
+}
+
+void BulkClub::CheckExpMembers(MemberList& list) //list to search
+{
+	//VARIABLE DECLARATIONS
+	MemberList expiring;	// List that stores the expiring memberships
+	int		   expMonth;	// IN - membership expiration month to search
+	int		   expYear;		// IN - membership expiration year to search
+
+	//PROCESSING - DO-WHILE LOOP - Used to prompt the user for a month to
+	//			   search and validate. Exits once a valid input is entered
+	do
+	{
+		cout << "Enter expiration month to search: ";
+		expMonth = GetAndCheckInt(EXP_MONTH_MIN, EXP_MONTH_MAX);
+		if(expMonth == -1)
+		{
+			cout << endl;
+		}
+	}while(expMonth == -1);
+
+	//PROCESSING - DO-WHILE LOOP - Used to prompt the user for a year to
+	//			   search and validate. Exits once a valid input is entered
+	do
+	{
+		cout << "Enter expiration year to search: ";
+		expYear = GetAndCheckInt(EXP_YEAR_MIN, EXP_YEAR_MAX);
+		if(expYear == -1)
+		{
+			cout << endl;
+		}
+	}while(expYear == -1);
+
+	cout << endl;
+
+	//SearchByMonth - this will search a list for nodes that contain
+	//				  both expMonth and expYear entered and add them to the
+	//				  expiring list object
+	list.SearchByMonth(expiring, expMonth, expYear);
+
+	//PROCESSING - IF-THEN-ELSE - Used to check if the expiring list is
+	//			   empty, display message if empty, and display the list's
+	//			   nodes if not empty
+	if(expiring.IsEmpty())
+	{
+		cout << "No memberships expiring on " << expMonth << "/" << expYear
+			 << " found" << endl;
+	}
+	else
+	{
+		cout << "The following memberships expiring on " << expMonth << "/"
+			 << expYear << " were found:" << endl;
+		expiring.PrintExpMembers();
+	}
+	cout << endl;
+}
+
+void BulkClub::SearchItemsSold(PurchasesList& purchases)
+{
+	//VARIABLE DECLARATIONS
+	ProductList itemsSold;		//IN & OUT   - List to store the items sold
+	Product	    *result;		//IN & OUT   - Stores search result
+	string 		productKey;		//IN & OUT   - Product to search
+	float		salesTotal;		//CALC & OUT - Product total sales price
+	itemsSold.GetProductFromList(purchases);
+
+
+	//INPUT - Prompts user to enter a product name to search
+	cout << "Enter a product name to search: ";
+	cin.ignore(1000, '\n');
+	getline(cin, productKey);
+
+	//SearchForProduct - Searches the list for a match
+	result = itemsSold.SearchForProduct(productKey);
+
+	//PROCESSING - IF-THEN-ELSE - Used to check if the result returned
+	//			   anything
+	if(result == NULL)
+	{
+		//OUTPUT - Message if no match was found
+		cout << "Product was not found" << endl;
+	}
+	else
+	{
+		//PROCESSING - Calculates the total price for a product
+		salesTotal = result->GetProductPrice() * result->GetProductQtySold();
+
+		//OUTPUT - Displays the item's details
+		cout << left << setw(ITEM_NAME_W) << "PRODUCT"
+			 << setw(ITEM_PRICE_W) << "PRICE"
+			 << setw(ITEM_QTY_W) << "QTY"
+			 << setw(ITEM_TOTAL_W) << "TOTAL"
+			 << endl
+			 << setw(ITEM_NAME_W) << "-----------------------------"
+			 << setw(ITEM_PRICE_W) << "--------"
+			 << setw(ITEM_QTY_W) << "---"
+			 << setw(ITEM_TOTAL_W) << "--------"
+			 << endl;
+
+		result->PrintProductInfo();
+		cout << right << setw(4) << "$"
+			 << setw(ITEM_TOTAL_W-2) << salesTotal << endl << endl;
+	}
+}
+
+void BulkClub::ItemsSold(PurchasesList& purchases)
+{
+	//VARIABLE DECLARATION
+	ProductList itemsSold; //IN & OUT - the list of products
+
+	//GetProductFromList - Searches purchases list and adds products to
+	//					   itemsSold list. Only adds a product once
+	itemsSold.GetProductFromList(purchases);
+
+	//OUTPUT - Displays the list of items sold
+	cout << left << setw(ITEM_NAME_W) << "PRODUCT"
+		 << setw(ITEM_QTY_W) << "QTY SOLD" << endl
+		 << setw(ITEM_NAME_W) << "-----------------------------"
+		 << setw(ITEM_QTY_W) << "--------" << endl;
+	itemsSold.PrintProductAndQtyList();
 }
