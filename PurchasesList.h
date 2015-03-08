@@ -74,5 +74,3 @@ class PurchasesList
 };
 
 #endif /* PURCHASESLIST_H_ */
-
-#endif /* PURCHASESLIST_H_ */
