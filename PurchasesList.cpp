@@ -582,6 +582,9 @@ void PurchasesList::PrintAllMemberPurchases(MemberList &tempMemList) const
 		}
 		tempMem = tempMem->GetNext();
 	}
+}
 
-
+Purchase* PurchasesList::GetHead() const
+{
+	return head;
 }
