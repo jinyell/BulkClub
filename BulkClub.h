@@ -14,6 +14,7 @@
 
 #include "MemberList.h"
 #include "PurchasesList.h"
+#include "ProductList.h"
 
 class BulkClub
 {
@@ -22,11 +23,22 @@ class BulkClub
 		BulkClub();
 		virtual ~BulkClub();
 
-		void CheckExpMembers(MemberList& list); //Checks expiring membership
+		//Requirement #2
 		void PurchasesbyMember(MemberList& list, //Gets purchases by member
 				       	   	   PurchasesList& purchases);
+
+		//Requirement #3
 		void TotalPurchasesByAllMembers(MemberList    &list,
 										PurchasesList &purchases);
+
+		//Requirement #4
+		void SearchItemsSold(PurchasesList& purchases);
+
+		//Requirement #5
+		void ItemsSold(PurchasesList& purchases);
+
+		//Requirement #8
+		void CheckExpMembers(MemberList& list); //Checks expiring membership
 };
 
 #endif /* BULKCLUB_H_ */
