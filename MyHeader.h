@@ -27,7 +27,9 @@ enum Menu
 	EXPIRING,
 	SALES_BY_DATE,
 	SALES_BY_MEMBER,
-	SALES_ALL_MEMBER
+	SALES_ALL_MEMBER,
+	ITEMS_SOLD,
+	SEARCH_ITEM
 };
 
 /**************************************************************************
