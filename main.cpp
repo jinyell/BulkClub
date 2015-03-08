@@ -117,7 +117,13 @@ int main()
 					theClub.PurchasesbyMember(list, purchases);
 					break;
 		case SALES_ALL_MEMBER: purchases.PrintAllMemberPurchases(list);
-			break;
+					break;
+		case 	ITEMS_SOLD: //Displays a list of products sold and their qty.
+							theClub.ItemsSold(purchases);
+							break;
+		case SEARCH_ITEM:	//Searches for a specific product
+							theClub.SearchItemsSold(purchases);
+							break;
 		default:
 			break;
 		}
