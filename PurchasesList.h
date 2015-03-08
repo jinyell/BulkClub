@@ -58,8 +58,7 @@ class PurchasesList
 		void  DisplayPurchasesList() const; //Displays the purchases list
 		int   GetPurchaseCount() const;		//Gets total number of purchases
 		float GetPurchaseTotal() const;		//Gets total purchases amount
-
-
+		Purchase* GetHead() const;			//Gets head
 
 		//Finds purchases by membership number
 		void FindPurchasesByMember(PurchasesList& purchasesFound,
@@ -73,5 +72,7 @@ class PurchasesList
 		float purchaseTotal;	//keeps a total for money spent
 
 };
+
+#endif /* PURCHASESLIST_H_ */
 
 #endif /* PURCHASESLIST_H_ */
