@@ -109,8 +109,8 @@ int main()
 					break;
 
 		case SALES_BY_DATE:	// Prints a sales report of a particular day
-							purchases.GetASearchDate(aMonth, aDay, aYear);
-							purchases.SearchForPurchase(list, aMonth, aDay, aYear);
+							purchases.ConsoleSearchDate(aMonth, aDay, aYear);
+							purchases.SearchForPurchaseByDate(list, aMonth, aDay, aYear);
 					break;
 					
 		case SALES_BY_MEMBER: 	// Prints a report showing purchases by member

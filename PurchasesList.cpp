@@ -12,6 +12,9 @@
 
 #include "PurchasesList.h"
 
+/**************************************************************************
+ * DEFAULT CONSTRUCTOR
+ *************************************************************************/
 PurchasesList::PurchasesList()
 {
 	head 		  = NULL;
@@ -20,27 +23,56 @@ PurchasesList::PurchasesList()
 	purchaseTotal = 0.0;
 }
 
+/**************************************************************************
+ * DESTRUCTOR
+ *************************************************************************/
 PurchasesList::~PurchasesList() {}
 
-void PurchasesList::AddPurchaseFromFile(string inputFileName,
+/**************************************************************************
+ * 								MUTATORS
+ * ------------------------------------------------------------------------
+ *							AddPurchaseFromFile
+ *							AddPurchaseFromConsole
+ *							AddPurchase
+ *							AddSpentToMemberTotalFromFile
+ *							AddSpentToMemberTotalFromConsole
+ *							SearchForPurchaseByDate
+ *							ConsoleSearchDate
+ *							ValidateToBuyMore
+ *************************************************************************/
+
+/**************************************************************************
+ * AddPurchaseFromFile
+ * 		This method adds a purchase to the list. The information
+ * 		about the purchase is received from the input list. All purchases
+ * 		with valid information will be added.Once adding all the purchases,
+ * 		the total spent for each member will be updated. All the items
+ * 		that were purchased by one member on the same date will be
+ * 		considered as one transaction process.
+ *
+ * 		Returns - nothing (Add purchases to list)
+ *************************************************************************/
+void PurchasesList::AddPurchaseFromFile(string     inputFileName,
 										MemberList &theMemList)
+													// IN & CALC - file name
+													// IN & CALC - Mem list
 {
 	//VARIABLE DECLARATION
-	ifstream inFile;
-	Member	 *tempMem;
-	Purchase *newPurchase;
-	Date	 *transDate;
-	int		 transMonth;
-	int		 transDay;
-	int		 transYear;
-	int		 transMemberNum;
-	string	 transItem;
-	float	 transPrice;
-	int		 transQty;
-	bool	 validCost;		// CALC		 - Check valid cost
-	bool	 validQty;		// CALC		 - Check valid quantity
-	bool	 validDate;
-	bool	 validMemNum;
+	ifstream inFile;			// CALC		 - Input file name
+	Member	 *tempMem;			// CALC 	 - Temp member
+	Purchase *newPurchase;		// CALC 	 - New purchase to list
+	Date	 *transDate;		// CALC 	 - Transaction date
+	int		 transMonth;		// IN & CALC - Month
+	int		 transDay;			// IN & CALC - Day
+	int		 transYear;			// IN & CALC - Year
+	int		 transMemberNum;	// IN & CALC - Membership #
+	string	 transItem;			// IN & CALC - Name of item
+	float	 transPrice;		// IN & CALC - Price of item
+	int		 transQty;			// IN & CALC - Quantity of item
+	bool	 validCost;			// CALC		 - Check valid cost
+	bool	 validQty;			// CALC		 - Check valid quantity
+	bool	 validDate;			// CALC		 - Check valid date
+	bool	 validMemNum;		// CALC		 - Check valid member number
 
 	tempMem   = NULL;
 	transDate = NULL;
@@ -92,11 +124,13 @@ void PurchasesList::AddPurchaseFromFile(string inputFileName,
 					inFile.ignore(numeric_limits<streamsize>::max(), '\n');
 				}
 			}
+			// PROCESSING - If input date is valid add Date
 			else
 			{
 				transDate = new Date(transMonth, transDay, transYear);
 			}
 
+			// INPUT - Get & Check valid membership number
 			if(!(inFile >> transMemberNum))
 			{
 				inFile.clear();
@@ -105,6 +139,7 @@ void PurchasesList::AddPurchaseFromFile(string inputFileName,
 			validMemNum = tempMem->ValidateMemberNumFromFile(transMemberNum);
 			inFile.ignore(numeric_limits<streamsize>::max(), '\n');
 
+			// PROCESSING - Check for valid membership number
 			if(validMemNum)
 			{
 				// PROCESSING - Check if member exists in member list
@@ -122,26 +157,27 @@ void PurchasesList::AddPurchaseFromFile(string inputFileName,
 				}
 			}
 
+			// INPUT - Get item name
 			getline(inFile, transItem);
 
+			// INPUT - Get price of item & check if valid
 			if(!(inFile >> transPrice))
 			{
 				inFile.clear();
 				inFile.ignore(numeric_limits<streamsize>::max(), '\n');
 			}
-
 			validCost = newPurchase->ValidateItemPriceFromFile(transPrice);
 
+			// INPUT - Get quantity purchased of item & check if valid
 			if(!(inFile >> transQty))
 			{
 				inFile.clear();
 				inFile.ignore(numeric_limits<streamsize>::max(), '\n');
 			}
-
 			inFile.ignore(numeric_limits<streamsize>::max(), '\n');
-
 			validQty = newPurchase->ValidateItemQuantityFromFile(transQty);
 
+			// PROCESSING - If all info is valid add purchase to list
 			if(validDate && validQty && validCost && validMemNum)
 			{
 				newPurchase = new Purchase(*transDate, transMemberNum,
@@ -153,53 +189,10 @@ void PurchasesList::AddPurchaseFromFile(string inputFileName,
 		} // END WHILE
 	} // END IF-ELSE
 
+	// pROCESSING - Update the total for each member that purchased items
 	AddSpentToMemberTotalFromFile(theMemList, transDate);
 
 	inFile.close();
-}
-
-void PurchasesList::AddSpentToMemberTotalFromFile(MemberList &theMemList,
-												  Date *theDate)
-{
-	Member   *tempMem;
-	Purchase *tempPur;
-	float	 amtNoTax;
-	float	 amtWithTax;
-
-	// PROCESSING - Set values for variables
-	tempMem	   = theMemList.GetHeadofList();
-	amtNoTax   = 0;
-	amtWithTax = 0;
-
-	// PROCESSING - Loop through each member to figure total spent
-	while(tempMem != NULL)
-	{
-		tempPur = head;
-
-		// PROCESSING - Loop through purchases to
-		while(tempPur != NULL)
-		{
-			if(tempMem->GetMemberNumber() == tempPur->GetMembershipNumber()
-			   && tempPur->GetPurchaseDate().GetDay() == theDate->GetDay()
-			   && tempPur->GetPurchaseDate().GetMonth() == theDate->GetMonth()
-			   && tempPur->GetPurchaseDate().GetYear() == theDate->GetYear())
-			{
-				amtNoTax += (tempPur->GetPurchasePrice() * tempPur->GetPurchaseQty());
-			}
-			tempPur = tempPur->GetNext();
-
-		}
-
-		// PROCESSING - Calculate total spent with tax for that day
-		amtWithTax = amtNoTax + (0.0875 * amtNoTax);
-
-		// PROCESSING - Update total spent w/ tax and w/o tax for member
-		tempMem->UpdateTotalSpentNoTax(amtNoTax);
-		tempMem->UpdateTotalSpentPlusTax(amtWithTax);
-
-		tempMem = tempMem->GetNext();
-	}
-
 }
 
 /**************************************************************************
@@ -353,16 +346,115 @@ void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 	} // END WHILE
 
 	// PROCESSING - Updating total spent with and without taxes
-	AddSpentToMemberTotalFromConsole(tempMemList, addTrnDate);
+	AddSpentToMemberTotalFromConsole(tempMemList);
 }
 
-void PurchasesList::AddSpentToMemberTotalFromConsole(MemberList &theMemList,
-												  Date *theDate)
+/**************************************************************************
+ * AddPurchase
+ * 		This method receives a purchase object that is to be added to
+ * 		the purchase list. The purchase count is also incremented.
+ *
+ * 		Returns - nothing (Add purchases to list)
+ *************************************************************************/
+void PurchasesList::AddPurchase(Purchase *newPurchase)
 {
-	Member   *tempMem;
-	Purchase *tempPur;
-	float	 amtNoTax;
-	float	 amtWithTax;
+	//VARIABLE DECLARATION
+	float total;		//CALC - result of item price * item quantity
+
+	newPurchase->SetNext(NULL);
+
+	//PROCESSING - IF-THEN-ELSE - Used to check if the list is empty and
+	//			   insert node in correct place
+	if(head == NULL)
+	{
+		head = newPurchase;
+	}
+	else
+	{
+		tail->SetNext(newPurchase);
+	}
+	tail = newPurchase;
+
+	purchaseCount++; //Increments purchase count
+	total = newPurchase->GetPurchasePrice() * newPurchase->GetPurchaseQty();
+	purchaseTotal = purchaseTotal + total;
+}
+
+/**************************************************************************
+ * AddSpentToMemberTotalFromFile
+ * 		This method adds loops through all the members and the updated
+ * 		purchase list. It will search for the date all of the items
+ * 		that were added to be purchased that day. All those items
+ * 		will then be calculated to find a total sum for that day. This
+ * 		method is updating total spent from the file.
+ *
+ * 		Returns - nothing (Add total spent for members)
+ *************************************************************************/
+void PurchasesList::AddSpentToMemberTotalFromFile(MemberList &theMemList,
+												  Date       *theDate)
+											// IN, CALC & OUT - Mem list
+											// IN & CALC	  - Date
+{
+	// Variable list
+	Member   *tempMem;		// CALC - Temporary member list
+	Purchase *tempPur;		// CALC - Temp purchase list
+	float	 amtNoTax;		// CALC - Total spent without tax
+	float	 amtWithTax;	// CALC - Total spent with tax
+
+	// PROCESSING - Set values for variables
+	tempMem	   = theMemList.GetHeadofList();
+	amtNoTax   = 0;
+	amtWithTax = 0;
+
+	// PROCESSING - Loop through each member to figure total spent
+	while(tempMem != NULL)
+	{
+		tempPur = head;
+
+		// PROCESSING - Loop through purchases to
+		while(tempPur != NULL)
+		{
+			if(tempMem->GetMemberNumber() == tempPur->GetMembershipNumber()
+			   && tempPur->GetPurchaseDate().GetDay() == theDate->GetDay()
+			   && tempPur->GetPurchaseDate().GetMonth() == theDate->GetMonth()
+			   && tempPur->GetPurchaseDate().GetYear() == theDate->GetYear())
+			{
+				amtNoTax += (tempPur->GetPurchasePrice() * tempPur->GetPurchaseQty());
+			}
+			tempPur = tempPur->GetNext();
+
+		}
+
+		// PROCESSING - Calculate total spent with tax for that day
+		amtWithTax = amtNoTax + (0.0875 * amtNoTax);
+
+		// PROCESSING - Update total spent w/ tax and w/o tax for member
+		tempMem->UpdateTotalSpentNoTax(amtNoTax);
+		tempMem->UpdateTotalSpentPlusTax(amtWithTax);
+
+		tempMem = tempMem->GetNext();
+	}
+
+}
+
+/**************************************************************************
+ * AddSpentToMemberTotalFromConsole
+ * 		This method adds loops through all the members and the updated
+ * 		purchase list. All those items will then be calculated to find a
+ * 		total sum for that day. This method is updating total spent from
+ * 		the console. This will not check the date because the user is
+ * 		ordering again after already making a purchase that day.
+ *
+ * 		Returns - nothing (Add total spent for members)
+ *************************************************************************/
+void PurchasesList::AddSpentToMemberTotalFromConsole(MemberList &theMemList)
+												// IN, CALC & OUT - mem list
+{
+	// Variable List
+	Member   *tempMem;		// CALC - Temp member
+	Purchase *tempPur;		// CALC - Temp purchase
+	float	 amtNoTax;		// CALC - Total spent without tax
+	float	 amtWithTax;	// CALC - Total spent with tax
 
 	// PROCESSING - Set values for variables
 	tempMem	   = theMemList.GetHeadofList();
@@ -397,42 +489,30 @@ void PurchasesList::AddSpentToMemberTotalFromConsole(MemberList &theMemList,
 
 }
 
-void PurchasesList::AddPurchase(Purchase *newPurchase)
-{
-	//VARIABLE DECLARATION
-	float total;		//CALC - result of item price * item quantity
-
-	newPurchase->SetNext(NULL);
-
-	//PROCESSING - IF-THEN-ELSE - Used to check if the list is empty and
-	//			   insert node in correct place
-	if(head == NULL)
-	{
-		head = newPurchase;
-	}
-	else
-	{
-		tail->SetNext(newPurchase);
-	}
-	tail = newPurchase;
-
-	purchaseCount++; //Increments purchase count
-	total = newPurchase->GetPurchasePrice() * newPurchase->GetPurchaseQty();
-	purchaseTotal = purchaseTotal + total;
-}
-
-void PurchasesList::SearchForPurchase(MemberList &tempMemList,
-									  int 		 searchMonth,
-									  int 		 searchDay,
-									  int 		 searchYear)
+/**************************************************************************
+ * SearchForPurchaseByDate
+ * 		This method receives the current up to date member list,
+ * 		and the date to search for (month, day & year). This method
+ * 		will then loop through the entire purchases list and print out
+ * 		to the console all the items that were purchased on this date.
+ * 		It will also tell the user how many preferred members and basic
+ * 		customers shopped that day. This will also calculate
+ * 		the total revenue for the day with tax and without tax.
+ *
+ * 		Returns - nothing (Add total spent for members)
+ *************************************************************************/
+void PurchasesList::SearchForPurchaseByDate(MemberList &tempMemList,
+									  	  	int 	   searchMonth,
+											int 	   searchDay,
+											int 	   searchYear)
 {
 	// Variable List
-	Member		*tempMem;
-	Purchase 	*tempPtr;
-	bool     	found;
-	int		 	countTotMem;
-	int			countBasic;
-	int			countPref;
+	Member		*tempMem;		// CALC 	  - Temp member
+	Purchase 	*tempPtr;		// CALC 	  - Temp purchase
+	bool     	found;			// CALC 	  - Found purchase on date
+	int		 	countTotMem;	// CALC 	  - Total members
+	int			countBasic;		// CALC & OUT - Total basic member
+	int			countPref;		// CALC & OUT - Total preferred members
 
 	tempPtr 	= head;
 	tempMem 	= NULL;
@@ -444,13 +524,17 @@ void PurchasesList::SearchForPurchase(MemberList &tempMemList,
 	// PROCESSING - Loop through entire purchase list
 	while(tempPtr != NULL)
 	{
+		// PROCESSING - Check if purchase date in list is same as search
 		if(tempPtr->GetPurchaseDate().GetDay()   == searchDay   &&
 		   tempPtr->GetPurchaseDate().GetMonth() == searchMonth &&
 		   tempPtr->GetPurchaseDate().GetYear()  == searchYear)
 		{
 			countTotMem++;
+
+			// PROCESSING - If member count is 1 then output header
 			if(countTotMem == 1)
 			{
+				// OUTPUT - Print header
 				cout << left
 					 << setfill(' ')
 					 << setw(PRODUCT_COL) << "ITEM PURCHASED" << " "
@@ -464,29 +548,26 @@ void PurchasesList::SearchForPurchase(MemberList &tempMemList,
 					 << setw(TYPE_COL) 	  << "-" << "\n"
 					 << setfill(' ');
 			}
-			cout << setw(PRODUCT_COL) << tempPtr->GetPurchaseProduct() << " "
-				 << setw(QTY_COL) << tempPtr->GetPurchaseQty() << " ";
 
+			// OUTPUT - Display item name & quantity
+			cout << setw(PRODUCT_COL) << tempPtr->GetPurchaseProduct() << " "
+				 << setw(QTY_COL)     << tempPtr->GetPurchaseQty()     << " ";
+
+			// PROCESSING - Search for member
 			tempMem = tempMemList.SearchForMember(tempPtr->GetMembershipNumber());
 
+			// PROCESSING - If member not found tell user no name & mem type
 			if(tempMem == NULL)
 			{
 				cout << setw(NAME_COL) << "Name D.N.E" << " ";
 				cout << setw(TYPE_COL) << "Type D.N.E" << endl;
 			}
+			// PROCESSING - Member is found
 			else
 			{
-				cout << setw(NAME_COL) << tempMem->GetName() << " ";
+				// OUTPUT - Member name & membership type
+				cout << setw(NAME_COL) << tempMem->GetName()       << " ";
 				cout << setw(TYPE_COL) << tempMem->GetMemberType() << endl;
-
-				if(tempMem->GetMemberType() == "Basic")
-				{
-					countBasic++;
-				}
-				else
-				{
-					countPref++;
-				}
 			}
 
 			found = true;
@@ -497,85 +578,27 @@ void PurchasesList::SearchForPurchase(MemberList &tempMemList,
 	cout << "Total Basic Customers: " << countBasic << endl;
 	cout << "Total Preferred Customers: " << countPref << endl;
 
+	// PROCESSING - No purchases of that date
 	if(!found)
 	{
 		cout << "No sales report of that date\n\n";
 	}
 }
 
-void PurchasesList::DisplayPurchaseHeader() const
-{
-	cout << left
-		 << setfill(' ')
-		 << setw(DATE_COL)    << "SALE DATE"	  << " "
-		 << setw(NUM_COL) 	  << "MEMBER#"		  << " "
-		 << setw(PRODUCT_COL) << "ITEM PURCHASED" << " "
-		 << setw(SPENT_COL+1)   << "PRICE"		  << " "
-		 << setw(QTY_COL) 	  << "QTY"			  << "\n"
-		 << setfill('-')
-		 << setw(DATE_COL)    << "-" << " "
-		 << setw(NUM_COL)     << "-" << " "
-		 << setw(PRODUCT_COL) << "-" << " "
-		 << setw(SPENT_COL+1)   << "-" << " "
-		 << setw(QTY_COL)     << "-" << endl
-		 << setfill(' ');
-}
-
-void PurchasesList::DisplayPurchasesList() const
-{
-	Purchase *current;
-
-	current = head;
-
-	DisplayPurchaseHeader();
-
-	while(current != NULL)
-	{
-		current->PrintPurchase();
-		current = current->GetNext();
-	}
-	cout << endl;
-}
-
 /**************************************************************************
- * ValidateToBuyMore
- * 		This method checks a character to see whether or not the member
- * 		entered a valid character. This character should be either 'Y'
- * 		or 'N' to indicate whether or not the member would like to purchase
- * 		more items.
+ * ConsoleSearchDate
+ * 		This method receives user input about a search month,
+ * 		day, and year from the user. It will first validate the date.
  *
- * 		Returns - valid (bool)
+ * 		Returns - nothing (searchMonth, searchDay, searchYear by ref)
  *************************************************************************/
-bool PurchasesList::ValidateToBuyMore(const char CHECK_CHAR)
+void PurchasesList::ConsoleSearchDate(int &searchMonth, // IN, CALC & OUT - month
+									  int &searchDay,	// IN, CALC & OUT - day
+									  int &searchYear)  // IN, CALC & OUT - year
 {
 	// Variable List
-	bool valid;		// CALC & OUT - Check if valid buy more input
-
-	valid = true;
-
-	// PROCESSING - Check if member input was either 'Y' or 'N'
-	if(CHECK_CHAR != YES_BUY && CHECK_CHAR != NO_BUY)
-	{
-		valid = false;
-	}
-
-	return valid;
-}
-
-int PurchasesList::GetPurchaseCount() const
-{
-	return purchaseCount;
-}
-
-float PurchasesList::GetPurchaseTotal() const
-{
-	return purchaseTotal;
-}
-
-void PurchasesList::GetASearchDate(int &searchMonth, int &searchDay, int &searchYear)
-{
-	Date *tempDate;
-	bool validDate;
+	Date *tempDate;		// CALC - Temp date
+	bool validDate;		// CALC - Check valid date
 
 	tempDate = NULL;
 
@@ -605,8 +628,196 @@ void PurchasesList::GetASearchDate(int &searchMonth, int &searchDay, int &search
 	}while(!validDate);
 }
 
+/**************************************************************************
+ * ValidateToBuyMore
+ * 		This method checks a character to see whether or not the member
+ * 		entered a valid character. This character should be either 'Y'
+ * 		or 'N' to indicate whether or not the member would like to purchase
+ * 		more items.
+ *
+ * 		Returns - valid (bool)
+ *************************************************************************/
+bool PurchasesList::ValidateToBuyMore(const char CHECK_CHAR)
+{
+	// Variable List
+	bool valid;		// CALC & OUT - Check if valid buy more input
+
+	valid = true;
+
+	// PROCESSING - Check if member input was either 'Y' or 'N'
+	if(CHECK_CHAR != YES_BUY && CHECK_CHAR != NO_BUY)
+	{
+		valid = false;
+	}
+
+	return valid;
+}
+
+/**************************************************************************
+ * 								ACCESSORS
+ * ------------------------------------------------------------------------
+ *							PrintAllMemberPurchases
+ *							DisplayPurchaseHeader
+ *							DisplayPurchaseList
+ *							GetPurchaseCount
+ *							GetPurchaseTotal
+ *							GetHead
+ *************************************************************************/
+
+/**************************************************************************
+ * PrintAllMemberPurchases
+ * 		This method checks a character to see whether or not the member
+ * 		entered a valid character. This character should be either 'Y'
+ * 		or 'N' to indicate whether or not the member would like to purchase
+ * 		more items.
+ *
+ * 		Returns - nothing (Display member purchase list to console)
+ *************************************************************************/
+void PurchasesList::PrintAllMemberPurchases(MemberList &tempMemList) const
+{
+	// Variable List
+	Member		*tempMem;	// CALC - Temp member
+	Purchase 	*tempPur;	// CALC - Temp pointer
+	int 		countPur;	// CALC - count purchases
+
+	tempMem	= tempMemList.GetHeadofList();
+	cout << left;
+
+	// PROCESSING - Loop through all members in the list
+	while(tempMem != NULL)
+	{
+		countPur = 0;
+		tempPur  = head;
+
+		// OUTPUT - Purchases by member
+		cout << "Purchase(s) By Member: "
+			 << setw(NUM_COL) << tempMem->GetMemberNumber() << endl;
+
+		// PROCESSING - Loop through all the purchases in the list
+		while(tempPur != NULL)
+		{
+			// PROCESSING - Check if the membership id #s are the same
+			if(tempMem->GetMemberNumber() == tempPur->GetMembershipNumber())
+			{
+				// OUTPUT - Product name, price of item, & quantity of item
+				//		  - the date, and add to purchase count
+				cout << setw(PRODUCT_COL) << tempPur->GetPurchaseProduct() << " "
+					 << setw(SPENT_COL) << tempPur->GetPurchasePrice() <<  " "
+					 << setw(QTY_COL) << tempPur->GetPurchaseQty() << " ";
+					tempPur->GetPurchaseDate();
+					cout << endl;
+					countPur++;
+			}
+			tempPur = tempPur->GetNext();
+		}
+
+		cout << endl;
+
+		// PROCESSING - If member did not make any purchases
+		if(countPur == 0)
+		{
+			cout << tempMem->GetMemberNumber() << " did not make any purchases\n\n";
+		}
+		tempMem = tempMem->GetNext();
+	}
+	cout << right;
+}
+
+/**************************************************************************
+ * DisplayPurchaseHeader
+ * 		This method displays to the user a purchase header. These are the
+ * 		all the information that is in a purchase.
+ *
+ * 		Returns - nothing (Display purchase table header)
+ *************************************************************************/
+void PurchasesList::DisplayPurchaseHeader() const
+{
+	// OUTPUT - Sale date, member #, item name, price, & qty
+	cout << left
+		 << setfill(' ')
+		 << setw(DATE_COL)    << "SALE DATE"	  << " "
+		 << setw(NUM_COL) 	  << "MEMBER#"		  << " "
+		 << setw(PRODUCT_COL) << "ITEM PURCHASED" << " "
+		 << setw(SPENT_COL+1) << "PRICE"		  << " "
+		 << setw(QTY_COL) 	  << "QTY"			  << "\n"
+		 << setfill('-')
+		 << setw(DATE_COL)    << "-" << " "
+		 << setw(NUM_COL)     << "-" << " "
+		 << setw(PRODUCT_COL) << "-" << " "
+		 << setw(SPENT_COL+1) << "-" << " "
+		 << setw(QTY_COL)     << "-" << endl
+		 << setfill(' ');
+}
+
+/**************************************************************************
+ * DisplayPurchasesList
+ * 		This method displays to the user all the purchases
+ * 		in the purchases list.
+ *
+ * 		Returns - nothing (Display purchases in list)
+ *************************************************************************/
+void PurchasesList::DisplayPurchasesList() const
+{
+	// Variable List
+	Purchase *current;	// CALC - Temp pointer
+
+	current = head;
+
+	// OUTPUT - Display purchase header table
+	DisplayPurchaseHeader();
+
+	// PROCESSING - Keep looping through purchase list until end
+	while(current != NULL)
+	{
+		current->PrintPurchase();
+		current = current->GetNext();
+	}
+	cout << endl;
+}
+
+/**************************************************************************
+ * GetPurchaseCount
+ * 		This method returns purchases count.
+ *
+ * 		Returns - purchaseCount (int)
+ *************************************************************************/
+int PurchasesList::GetPurchaseCount() const
+{
+	return purchaseCount;
+}
+
+/**************************************************************************
+ * GetPurchaseTotal
+ * 		This method returns purchaseTotal (not including tax)
+ *
+ * 		Returns - purchaseTotal (float)
+ *************************************************************************/
+float PurchasesList::GetPurchaseTotal() const
+{
+	return purchaseTotal;
+}
+
+/**************************************************************************
+ * GetHead
+ * 		This method returns the head of the purchase list. (Peek)
+ *
+ * 		Returns - head (Purchase)
+ *************************************************************************/
+Purchase* PurchasesList::GetHead() const
+{
+	return head;
+}
+
+/**************************************************************************
+ * FindPurchasesByMember
+ * 		This method receives the purchase list and the membership number.
+ * 		It will loop through the purchase list until it finds the
+ * 		purchases made by that member.
+ *
+ * 		Returns - nothing (Display purchases of a member)
+ *************************************************************************/
 void PurchasesList::FindPurchasesByMember(PurchasesList& purchasesFound,
-									  int membershipNum) const
+									  	  int 			 membershipNum) const
 {
 	//VARIABLE DECLARATIONS
 	Purchase *tempPtr;		//temporary pointer to traverse the list
@@ -635,51 +846,4 @@ void PurchasesList::FindPurchasesByMember(PurchasesList& purchasesFound,
 		//Moves to the next node of the list
 		tempPtr = tempPtr->GetNext();
 	}
-}
-
-
-void PurchasesList::PrintAllMemberPurchases(MemberList &tempMemList) const
-{
-	// Variable List
-	Member		*tempMem;
-	Purchase 	*tempPur;
-	int 		countPur;
-
-	tempMem		= tempMemList.GetHeadofList();
-	cout << left;
-
-	while(tempMem != NULL)
-	{
-		countPur = 0;
-		tempPur 	= head;
-		cout << "Purchase(s) By Member: "
-			 << setw(NUM_COL) << tempMem->GetMemberNumber() << endl;
-		while(tempPur != NULL)
-		{
-			if(tempMem->GetMemberNumber() == tempPur->GetMembershipNumber())
-			{
-				cout << setw(PRODUCT_COL) << tempPur->GetPurchaseProduct() << " "
-					 << setw(SPENT_COL) << tempPur->GetPurchasePrice() <<  " "
-					 << setw(QTY_COL) << tempPur->GetPurchaseQty() << " ";
-					tempPur->GetPurchaseDate();
-					cout << endl;
-					countPur++;
-			}
-			tempPur = tempPur->GetNext();
-
-		}
-
-		cout << endl;
-		if(countPur == 0)
-		{
-			cout << tempMem->GetMemberNumber() << " did not make any purchases\n\n";
-		}
-		tempMem = tempMem->GetNext();
-	}
-	cout << right;
-}
-
-Purchase* PurchasesList::GetHead() const
-{
-	return head;
 }
