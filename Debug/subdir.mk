@@ -12,6 +12,8 @@ CPP_SRCS += \
 ../MemberList.cpp \
 ../PreferredMember.cpp \
 ../PrintHeader.cpp \
+../Product.cpp \
+../ProductList.cpp \
 ../Purchase.cpp \
 ../PurchasesList.cpp \
 ../main.cpp 
@@ -25,6 +27,8 @@ OBJS += \
 ./MemberList.o \
 ./PreferredMember.o \
 ./PrintHeader.o \
+./Product.o \
+./ProductList.o \
 ./Purchase.o \
 ./PurchasesList.o \
 ./main.o 
@@ -38,6 +42,8 @@ CPP_DEPS += \
 ./MemberList.d \
 ./PreferredMember.d \
 ./PrintHeader.d \
+./Product.d \
+./ProductList.d \
 ./Purchase.d \
 ./PurchasesList.d \
 ./main.d 

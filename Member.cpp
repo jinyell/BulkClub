@@ -16,12 +16,13 @@
  *************************************************************************/
 Member::Member()
 {
-	nextMember   = NULL;
-	prevMember   = NULL;
+	nextMember   		= NULL;
+	prevMember  		= NULL;
 	name.clear();
-	memberNumber = 0;
-	annualDues   = 55;
-	totalSpent   = 0;
+	memberNumber 		= 0;
+	annualDues   		= 55;
+	totalSpentNoTax   	= 0;
+	totalSpentPlusTax 	= 0;
 }
 
 /**************************************************************************
@@ -31,13 +32,14 @@ Member::Member(string setName,			// IN & CALC - Name
 			   int	  setMemberNumber,	// IN & CALC - Member #
 			   Date	  setDate)
 {
-	nextMember   = NULL;
-	prevMember   = NULL;
-	name 		 = setName;
-	memberNumber = setMemberNumber;
-	expDate		 = setDate;
-	annualDues   = 55;
-	totalSpent   = 0;
+	nextMember   	  = NULL;
+	prevMember   	  = NULL;
+	name 		 	  = setName;
+	memberNumber 	  = setMemberNumber;
+	expDate		 	  = setDate;
+	annualDues   	  = 55;
+	totalSpentNoTax   = 0;
+	totalSpentPlusTax = 0;
 }
 
 /**************************************************************************
@@ -271,11 +273,60 @@ void Member::Print() const
 	cout << setw(TYPE_COL)  << GetMemberType() << setw(COL_SPACE) << " ";
 	cout << setw(NUM_COL)   << memberNumber    << setw(COL_SPACE) << " ";
 	cout << right 			<< fixed 		   << setprecision(2);
-	cout << "$"  			<< setw(SPENT_COL) << totalSpent
+	cout << "$"  			<< setw(SPENT_COL) << totalSpentPlusTax
 		 << setw(COL_SPACE) << " ";
 	cout << left 			<< setprecision(6);
 	cout.unsetf(ios::fixed);
 	cout << setw(DATE_COL)  << expDate.DisplayDate()
 		 << setw(COL_SPACE) << " ";
 	cout << right;
+}
+
+/**************************************************************************
+ * UpdateTotalSpentNoTax
+ * 		This method updates the total amount spent for a user without
+ * 		including tax.
+ *
+ * 		Returns - nothing (Updates total spent without tax)
+ *************************************************************************/
+void Member::UpdateTotalSpentNoTax(float addToTotal)
+{
+	totalSpentNoTax += addToTotal;
+}
+
+
+/**************************************************************************
+ * UpdateTotalSpentPlusTax
+ * 		This method updates the total amount spent for a member
+ * 		including tax.
+ *
+ * 		Returns - nothing (Updates total spent with tax)
+ *************************************************************************/
+void Member::UpdateTotalSpentPlusTax(float addToTotal)
+{
+	totalSpentPlusTax += addToTotal;
+}
+
+/**************************************************************************
+ * GetTotalSpentNoTax
+ * 		This method returns the total amount spent by a member that
+ * 		does not include any of the tax.
+ *
+ * 		Returns - totalSpentNoTax (float)
+ *************************************************************************/
+float Member::GetTotalSpentNoTax() const
+{
+	return totalSpentNoTax;
+}
+
+/**************************************************************************
+ * GetTotalSpentPlusTax
+ * 		This method returns the total amount spent by a member that
+ * 		does include tax.
+ *
+ * 		Returns - totalSpentPlusTax (float)
+ *************************************************************************/
+float Member::GetTotalSpentPlusTax() const
+{
+	return totalSpentPlusTax;
 }

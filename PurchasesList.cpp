@@ -42,7 +42,8 @@ void PurchasesList::AddPurchaseFromFile(string inputFileName,
 	bool	 validDate;
 	bool	 validMemNum;
 
-	tempMem = NULL;
+	tempMem   = NULL;
+	transDate = NULL;
 
 	inFile.open(inputFileName.c_str());
 
@@ -151,7 +152,54 @@ void PurchasesList::AddPurchaseFromFile(string inputFileName,
 			} // END IF
 		} // END WHILE
 	} // END IF-ELSE
+
+	AddSpentToMemberTotalFromFile(theMemList, transDate);
+
 	inFile.close();
+}
+
+void PurchasesList::AddSpentToMemberTotalFromFile(MemberList &theMemList,
+												  Date *theDate)
+{
+	Member   *tempMem;
+	Purchase *tempPur;
+	float	 amtNoTax;
+	float	 amtWithTax;
+
+	// PROCESSING - Set values for variables
+	tempMem	   = theMemList.GetHeadofList();
+	amtNoTax   = 0;
+	amtWithTax = 0;
+
+	// PROCESSING - Loop through each member to figure total spent
+	while(tempMem != NULL)
+	{
+		tempPur = head;
+
+		// PROCESSING - Loop through purchases to
+		while(tempPur != NULL)
+		{
+			if(tempMem->GetMemberNumber() == tempPur->GetMembershipNumber()
+			   && tempPur->GetPurchaseDate().GetDay() == theDate->GetDay()
+			   && tempPur->GetPurchaseDate().GetMonth() == theDate->GetMonth()
+			   && tempPur->GetPurchaseDate().GetYear() == theDate->GetYear())
+			{
+				amtNoTax += (tempPur->GetPurchasePrice() * tempPur->GetPurchaseQty());
+			}
+			tempPur = tempPur->GetNext();
+
+		}
+
+		// PROCESSING - Calculate total spent with tax for that day
+		amtWithTax = amtNoTax + (0.0875 * amtNoTax);
+
+		// PROCESSING - Update total spent w/ tax and w/o tax for member
+		tempMem->UpdateTotalSpentNoTax(amtNoTax);
+		tempMem->UpdateTotalSpentPlusTax(amtWithTax);
+
+		tempMem = tempMem->GetNext();
+	}
+
 }
 
 /**************************************************************************
@@ -190,12 +238,6 @@ void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 
 	tempMem     = NULL;
 	addTrnDate  = NULL;
-
-	/*
-	 * NOTE MEMBER CANNOT EXCEED MORE THAN A 200 ITEM TRANSACTION
-	 * PER DAY. SO FIRST WE NEED TO GET A TOTAL COUNT. AND THEN UPDATE
-	 * AROUND THAT. (: GETTING THERE YEE
-	 */
 
 	cout << "Information to purchase an item\n";
 
@@ -309,6 +351,50 @@ void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 			buyMore = ValidateToBuyMore(answer);
 		}while(!buyMore);
 	} // END WHILE
+
+	// PROCESSING - Updating total spent with and without taxes
+	AddSpentToMemberTotalFromConsole(tempMemList, addTrnDate);
+}
+
+void PurchasesList::AddSpentToMemberTotalFromConsole(MemberList &theMemList,
+												  Date *theDate)
+{
+	Member   *tempMem;
+	Purchase *tempPur;
+	float	 amtNoTax;
+	float	 amtWithTax;
+
+	// PROCESSING - Set values for variables
+	tempMem	   = theMemList.GetHeadofList();
+	amtNoTax   = 0;
+	amtWithTax = 0;
+
+	// PROCESSING - Loop through each member to figure total spent
+	while(tempMem != NULL)
+	{
+		tempPur = head;
+
+		// PROCESSING - Loop through purchases to
+		while(tempPur != NULL)
+		{
+			if(tempMem->GetMemberNumber() == tempPur->GetMembershipNumber())
+			{
+				amtNoTax += (tempPur->GetPurchasePrice() * tempPur->GetPurchaseQty());
+			}
+			tempPur = tempPur->GetNext();
+
+		}
+
+		// PROCESSING - Calculate total spent with tax for that day
+		amtWithTax = amtNoTax + (0.0875 * amtNoTax);
+
+		// PROCESSING - Update total spent w/ tax and w/o tax for member
+		tempMem->UpdateTotalSpentNoTax(amtNoTax);
+		tempMem->UpdateTotalSpentPlusTax(amtWithTax);
+
+		tempMem = tempMem->GetNext();
+	}
+
 }
 
 void PurchasesList::AddPurchase(Purchase *newPurchase)
@@ -550,7 +636,7 @@ void PurchasesList::PrintAllMemberPurchases(MemberList &tempMemList) const
 	// Variable List
 	Member		*tempMem;
 	Purchase 	*tempPur;
-	int countPur;
+	int 		countPur;
 
 	tempMem		= tempMemList.GetHeadofList();
 

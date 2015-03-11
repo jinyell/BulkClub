@@ -63,11 +63,12 @@ public:
 	/**************
 	 ***MUTATORS***
 	 **************/
-	void SetName(string setName);				// Set name of member
-	void SetMemberNumber(int setMemberNum);		// Set member number
-	void SetNext(Member *nextNode);				// Set next node
-	void SetPrev(Member *prevNode);				// Set prev node
-	void UpdateTotalSpent(float addToTotal);	// Update total spent
+	void SetName(string setName);					// Set name of member
+	void SetMemberNumber(int setMemberNum);			// Set member number
+	void SetNext(Member *nextNode);					// Set next node
+	void SetPrev(Member *prevNode);					// Set prev node
+	void UpdateTotalSpentNoTax(float addToTotal);	// Update spent w/o tax
+	void UpdateTotalSpentPlusTax(float addToTotal);	// Update spent w/ tax
 	bool ValidateMemberNumFromFile(const int CHECK_INT);	// Validate Member #
 	bool ValidateMemberTypeFromFile(const char CHECK_CHAR); // Validate Member type
 	bool ValidateMemberNumFromConsole(const int CHECK_INT); // Validate Member #
@@ -79,7 +80,8 @@ public:
 	 ***************/
 	string  GetName() const;					// Get name of member
 	int     GetMemberNumber() const;			// Get member number
-	float	GetTotalSpent() const;				// Get total amount spent
+	float	GetTotalSpentNoTax() const;			// Get tot amt spent w/o tax
+	float	GetTotalSpentPlusTax() const;		// Get tot amt spent w/ tax
 	Date	GetExpDate() const;					// Get expiration date
 	virtual float GetAnnualDues() const;		// Get annual dues
 	Member* GetNext() const;					// Get next node
@@ -90,8 +92,9 @@ public:
 
 private:
 	string	name;			// Name of member
-	int	memberNumber;	// Member number
-	float   totalSpent;		// Total amount spent
+	int		memberNumber;	// Member number
+	float   totalSpentNoTax;	// Total amount spent
+	float	totalSpentPlusTax;	//
 	Date	expDate;		// Membership expiration date
 	float	annualDues;		// Member's annual dues
 	Member *nextMember;		// Next member

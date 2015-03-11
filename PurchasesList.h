@@ -41,6 +41,8 @@ class PurchasesList
 		void AddPurchaseFromFile(string inputFileName, MemberList &tempMemList);
 		void AddPurchaseFromConsole(MemberList &tempMemList);
 		void AddPurchase(Purchase* newPurchase);
+		void AddSpentToMemberTotalFromFile(MemberList &theMemList, Date *theDate);
+		void AddSpentToMemberTotalFromConsole(MemberList &theMemList, Date *theDate);
 		void SearchForPurchase(MemberList &tempMemList,
 							   int 		  searchMonth,
 							   int 		  searchDay,

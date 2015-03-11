@@ -29,7 +29,7 @@ int main()
 	MemberList 	  list;			// list of members
 	PurchasesList purchases;	// list of purchases
 	BulkClub	  theClub;		// BulkClub object for operations/reports
-	int		  selection;	// user's selection for main menu
+	int		 	 selection;	// user's selection for main menu
 	bool		  run;			// T/F for program run
 	Date		  aDate;
 	int aMonth;
