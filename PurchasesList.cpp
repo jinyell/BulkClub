@@ -508,26 +508,28 @@ void PurchasesList::SearchForPurchaseByDate(MemberList &tempMemList,
 {
 	// Variable List
 	Member		*tempMem;		// CALC 	  - Temp member
-	Purchase 	*tempPtr;		// CALC 	  - Temp purchase
+	Purchase 	*tempPur;		// CALC 	  - Temp purchase
 	bool     	found;			// CALC 	  - Found purchase on date
 	int		 	countTotMem;	// CALC 	  - Total members
 	int			countBasic;		// CALC & OUT - Total basic member
 	int			countPref;		// CALC & OUT - Total preferred members
+	float		memTotal;		// CALC		  - Members total
+	float		totalRevNoTax;	// CALC & OUT - Total revenue w/o tax
+	float		totalRevWithTax;// CALC & OUT - Total revenue w/ tax
+	bool		valid;			// CALC		  - Valid member of the day
 
-	tempPtr 	= head;
+	tempPur 	= head;
 	tempMem 	= NULL;
 	found    	= false;
 	countTotMem = 0;
-	countBasic 	= 0;
-	countPref 	= 0;
 
 	// PROCESSING - Loop through entire purchase list
-	while(tempPtr != NULL)
+	while(tempPur != NULL)
 	{
 		// PROCESSING - Check if purchase date in list is same as search
-		if(tempPtr->GetPurchaseDate().GetDay()   == searchDay   &&
-		   tempPtr->GetPurchaseDate().GetMonth() == searchMonth &&
-		   tempPtr->GetPurchaseDate().GetYear()  == searchYear)
+		if(tempPur->GetPurchaseDate().GetDay()   == searchDay   &&
+		   tempPur->GetPurchaseDate().GetMonth() == searchMonth &&
+		   tempPur->GetPurchaseDate().GetYear()  == searchYear)
 		{
 			countTotMem++;
 
@@ -550,11 +552,11 @@ void PurchasesList::SearchForPurchaseByDate(MemberList &tempMemList,
 			}
 
 			// OUTPUT - Display item name & quantity
-			cout << setw(PRODUCT_COL) << tempPtr->GetPurchaseProduct() << " "
-				 << setw(QTY_COL)     << tempPtr->GetPurchaseQty()     << " ";
+			cout << setw(PRODUCT_COL) << tempPur->GetPurchaseProduct() << " "
+				 << setw(QTY_COL)     << tempPur->GetPurchaseQty()     << " ";
 
 			// PROCESSING - Search for member
-			tempMem = tempMemList.SearchForMember(tempPtr->GetMembershipNumber());
+			tempMem = tempMemList.SearchForMember(tempPur->GetMembershipNumber());
 
 			// PROCESSING - If member not found tell user no name & mem type
 			if(tempMem == NULL)
@@ -572,17 +574,77 @@ void PurchasesList::SearchForPurchaseByDate(MemberList &tempMemList,
 
 			found = true;
 		}
-		tempPtr = tempPtr->GetNext();
+		tempPur = tempPur->GetNext();
 	}
-
-	cout << "Total Basic Customers: " << countBasic << endl;
-	cout << "Total Preferred Customers: " << countPref << endl;
 
 	// PROCESSING - No purchases of that date
 	if(!found)
 	{
 		cout << "No sales report of that date\n\n";
 	}
+
+	tempMem 		= tempMemList.GetHeadofList();
+	totalRevNoTax   = 0.0;
+	totalRevWithTax = 0.0;
+	countBasic 		= 0;
+	countPref 		= 0;
+
+	// PROCESSING - Loop through all the members
+	while(tempMem != NULL)
+	{
+		tempPur   = head;
+		memTotal  = 0.0;
+		valid 	  = false;
+
+		// PROCESSING - Loop through the purchases list
+		while(tempPur != NULL)
+		{
+			// PROCESSING - If the purchase membership # & member membership
+			//			  - number are the same & the date are the same
+			//			  - then add the total to that member
+			if(tempPur->GetMembershipNumber() == tempMem->GetMemberNumber() &&
+			   tempPur->GetPurchaseDate().GetDay()   == searchDay   &&
+			   tempPur->GetPurchaseDate().GetMonth() == searchMonth &&
+			   tempPur->GetPurchaseDate().GetYear()  == searchYear)
+			{
+				valid = true;
+
+				// PROCESSING - Update total for member for that day
+				memTotal += (tempPur->GetPurchasePrice() * tempPur->GetPurchaseQty());
+			}
+
+			tempPur = tempPur->GetNext();
+		}
+
+		// PROCESSING - If valid customer of the day
+		if(valid == true)
+		{
+			// PROCESSING - Check to add basic or pref customer of the day
+			if(tempMem->GetMemberType() == "Basic")
+			{
+				countBasic++;
+			}
+			else
+			{
+				countPref++;
+			}
+		}
+
+		// PROCESSING - Calculate members' total spent for the day w/o tax
+		totalRevNoTax += memTotal;
+
+		tempMem = tempMem->GetNext();
+	}
+
+	// PROCESSING - Calculate members' total spent for the day w/ tax
+	totalRevWithTax = (totalRevNoTax * .0875) + totalRevNoTax;
+
+	// OUTPUT - Display to user # of basic cust, # of pref, & revenue
+	//		  - with and without tax
+	cout << "\nTotal Basic Customers: "   << countBasic 	 << endl;
+	cout << "Total Preferred Customers: " << countPref  	 << endl;
+	cout << "Total Revenue without tax: " << totalRevNoTax   << endl;
+	cout << "Total Revenue with tax: "    << totalRevWithTax << endl << endl;
 }
 
 /**************************************************************************
