@@ -38,6 +38,12 @@ PreferredMember::~PreferredMember() {
 }
 
 /**************************************************************************
+ * 								MUTATORS
+ * ------------------------------------------------------------------------
+ * 							SetRebate
+ *************************************************************************/
+
+/**************************************************************************
  * SetRebate
  * 		This method sets the rebate amount.
  *
@@ -49,6 +55,12 @@ void PreferredMember::SetRebate(float setRebate) // IN & CALC - Rebate amt
 }
 
 /**************************************************************************
+ * 								ACCESSORS
+ * ------------------------------------------------------------------------
+ * 							GetRebate
+ *************************************************************************/
+
+/**************************************************************************
  * GetRebate
  * 		This method gets the rebate amount.
  *
@@ -57,6 +69,17 @@ void PreferredMember::SetRebate(float setRebate) // IN & CALC - Rebate amt
 float PreferredMember::GetRebate() const
 {
 	return rebate;
+}
+
+/**************************************************************************
+ * GetAnnualDues
+ * 		This method gets the annual dues.
+ *
+ * 		Returns - annualDues (float)
+ *************************************************************************/
+float PreferredMember::GetAnnualDues() const
+{
+	return annualDues;
 }
 
 /**************************************************************************
@@ -78,12 +101,6 @@ string PreferredMember::GetMemberType() const
  *
  * 		Returns - nothing (Prints Preferred member info to console)
  *************************************************************************/
-
-float PreferredMember::GetAnnualDues() const
-{
-	return annualDues;
-}
-
 void PreferredMember::Print() const
 {
 	// OUTPUT - Display Preferred member info to console

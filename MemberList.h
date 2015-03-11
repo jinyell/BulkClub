@@ -35,18 +35,19 @@ public:
 	/***************
 	 ***ACCESSORS***
 	 ***************/
-	Member* GetHeadofList() const;
+	Member* GetHeadofList() const;					// Peek
 	bool    IsEmpty() const;						// Check empty list
-	int		MemberListSize() const;
+	int		MemberListSize() const;					// Size of list
 	Member* SearchForMember(string keyName) const;	// Search by name
 	Member* SearchForMember(int keyNum) const;		// Search by member #
 	void	SearchByMonth(MemberList& expMembers, 	// Search month & year
 						  int 		  monthKey,
 						  int 		  yearKey) const;
-	void	PrintMemListHeader() const;
+	void	PrintMemListHeader() const;			// Print Header for table
 	void    PrintMemberList() const;			// Print members in list
-	void	PrintExpMembers() const;
-	void	PrintAllMemberPurchase(Purchase &purList) const;
+	void	PrintExpMembers() const;			// Prints Expired Members
+	void	PrintAllMemberPurchase(Purchase &purList) const; // Print all
+															 // mem. purchases
 
 private:
 	Member *headMember;	// Head of list

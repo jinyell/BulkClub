@@ -12,6 +12,9 @@
 
 #include "Purchase.h"
 
+/**************************************************************************
+ * DEFAULT CONSTRUCTOR
+ *************************************************************************/
 Purchase::Purchase()
 {
 	membershipNumber = 0;
@@ -21,11 +24,14 @@ Purchase::Purchase()
 	next 			 = NULL;
 }
 
-Purchase::Purchase(Date	  saleDate,
-		 	 	   int	  saleMembNum,
-				   string saleProduct,
-				   float  salePrice,
-				   int	  saleQty)
+/**************************************************************************
+ * OVERLOADED CONSTRUCTOR
+ *************************************************************************/
+Purchase::Purchase(Date	  saleDate,		// IN & CALC - Sale date
+		 	 	   int	  saleMembNum,	// IN & CALC - Membership #
+				   string saleProduct,	// IN & CALC - Sale product name
+				   float  salePrice,	// IN & CALC - Sale price
+				   int	  saleQty)		// IN & CALC - Sale quantity
 {
 	purchaseDate 	 = saleDate;
 	membershipNumber = saleMembNum;
@@ -35,53 +41,53 @@ Purchase::Purchase(Date	  saleDate,
 	next			 = NULL;
 }
 
+/**************************************************************************
+ * DESTRUCTOR
+ *************************************************************************/
 Purchase::~Purchase() {}
 
+/**************************************************************************
+ * 								MUTATORS
+ * ------------------------------------------------------------------------
+ *							SetNext
+ *							ValidateItemQuantityFromConsole
+ *							ValidateItemPriceFromConsole
+ *							ValidateItemQuantityFromFile
+ *							ValidateItemPriceFromFile
+ *************************************************************************/
+
+/**************************************************************************
+ * SetNext
+ * 		This method sets the next node (purchase) in the list.
+ *
+ * 		Returns - nothing (Set next node)
+ *************************************************************************/
 void Purchase::SetNext(Purchase *nextNode)
 {
 	next = nextNode;
 }
 
-Date Purchase::GetPurchaseDate() const
-{
-	return purchaseDate;
-}
-
-int Purchase::GetMembershipNumber() const
-{
-	return membershipNumber;
-}
-
-string Purchase::GetPurchaseProduct() const
-{
-	return purchaseProduct;
-}
-
-float Purchase::GetPurchasePrice() const
-{
-	return purchasePrice;
-}
-
-int Purchase::GetPurchaseQty() const
-{
-	return purchaseQty;
-}
-
-Purchase* Purchase::GetNext() const
-{
-	return next;
-}
-
+/**************************************************************************
+ * ValidateItemQuantityFromConsole
+ * 		This method validates the item quantity from console. Checks
+ * 		that the quantity does not exceed 200 max limit.
+ *
+ * 		Returns - valid (bool)
+ *************************************************************************/
 bool Purchase::ValidateItemQuantityFromConsole(const int CHECK_INT)
+												// IN & CALC - Quantity
 {
-	bool 		  valid;
-	ostringstream oss;
+	// Variable List
+	bool 		  valid;	// CALC & OUT - Valid quantity
+	ostringstream oss;		// CALC		  - Format error message
 
 	cout << left;
 	valid = true;
 
+	// PROCESSING - Check if input is an integer
 	if(!CHECK_INT)
 	{
+		// OUTPUT - Error message to input an integer
 		oss  << "***** Invalid Item Quantity ";
 		cout << endl << setw(ERROR_COL) << oss.str()   << " *****\n";
 		oss.str("");
@@ -95,8 +101,10 @@ bool Purchase::ValidateItemQuantityFromConsole(const int CHECK_INT)
 
 		valid = false;
 	}
+	// PROCESSING - Check that input is between quantity min & max
 	else if(CHECK_INT < QTY_MIN || CHECK_INT > QTY_MAX)
 	{
+		// OUTPUT - Error message to input a valid integer
 		oss  << "***** The number " << CHECK_INT << " is not a valid entry";
 		cout << endl << setw(ERROR_COL) << oss.str() << " *****\n";
 		oss.str("");
@@ -115,35 +123,26 @@ bool Purchase::ValidateItemQuantityFromConsole(const int CHECK_INT)
 	return valid;
 }
 
-bool Purchase::ValidateItemQuantityFromFile(const int CHECK_INT)
-{
-	bool 		  valid;
-	ostringstream oss;
-
-	valid = true;
-
-	if(!CHECK_INT)
-	{
-		valid = false;
-	}
-	else if(CHECK_INT < QTY_MIN || CHECK_INT > QTY_MAX)
-	{
-		valid = false;
-	}
-
-	return valid;
-}
-
+/**************************************************************************
+ * ValidateItemPriceFromConsole
+ * 		This method validates the item price from console.
+ *
+ * 		Returns - valid (bool)
+ *************************************************************************/
 bool Purchase::ValidateItemPriceFromConsole(const int CHECK_FLOAT)
+												// IN & CALC - Price
 {
-	bool 		  valid;
-	ostringstream oss;
+	// Variable List
+	bool 		  valid;	// CALC & OUT - Valid price
+	ostringstream oss;		// CALC		  - Format error message
 
 	cout << left;
 	valid = true;
 
+	// PROCESSING - Check if valid float
 	if(!CHECK_FLOAT)
 	{
+		// OUTPUT - Tell user to enter a valid cost (float)
 		oss  << "***** Invalid Item Cost ";
 		cout << endl << setw(ERROR_COL) << oss.str()   << " *****\n";
 		oss.str("");
@@ -157,8 +156,10 @@ bool Purchase::ValidateItemPriceFromConsole(const int CHECK_FLOAT)
 
 		valid = false;
 	}
+	// PROCESSING - Check if price is between price min & max
 	else if(CHECK_FLOAT < COST_MIN || CHECK_FLOAT > COST_MAX)
 	{
+		// OUTPUT - Tell user to enter price within min & max
 		oss  << "***** The number " << CHECK_FLOAT << " is not a valid entry";
 		cout << endl << setw(ERROR_COL) << oss.str() << " *****\n";
 		oss.str("");
@@ -177,18 +178,54 @@ bool Purchase::ValidateItemPriceFromConsole(const int CHECK_FLOAT)
 	return valid;
 }
 
-bool Purchase::ValidateItemPriceFromFile(const int CHECK_FLOAT)
+/**************************************************************************
+ * ValidateItemQuantityFromFile
+ * 		This method validates the item quantity from input file.
+ *
+ * 		Returns - valid (bool)
+ *************************************************************************/
+bool Purchase::ValidateItemQuantityFromFile(const int CHECK_INT)
+												// IN & CALC - Quantity
 {
-	bool 		  valid;
-	ostringstream oss;
+	// Variable List
+	bool valid;	// CALC & OUT - Check if valid quantity
 
-	cout << left;
 	valid = true;
 
+	// PROCESSING - Check if file input is an integer
+	if(!CHECK_INT)
+	{
+		valid = false;
+	}
+	// PROCESSING - Check file input is between qty min & max
+	else if(CHECK_INT < QTY_MIN || CHECK_INT > QTY_MAX)
+	{
+		valid = false;
+	}
+
+	return valid;
+}
+
+/**************************************************************************
+ * ValidateItemPriceFromFile
+ * 		This method validates the item price from input file.
+ *
+ * 		Returns - valid (bool)
+ *************************************************************************/
+bool Purchase::ValidateItemPriceFromFile(const int CHECK_FLOAT)
+											// IN & CALC - Price
+{
+	// Variable List
+	bool 		  valid;	// CALC & OUT - Check valid price
+
+	valid = true;
+
+	// PROCESSING - Check if file input is a float
 	if(!CHECK_FLOAT)
 	{
 		valid = false;
 	}
+	// PROCESSING - Check if file input is within min & max price
 	else if(CHECK_FLOAT < COST_MIN || CHECK_FLOAT > COST_MAX)
 	{
 		valid = false;
@@ -197,13 +234,103 @@ bool Purchase::ValidateItemPriceFromFile(const int CHECK_FLOAT)
 	return valid;
 }
 
+/**************************************************************************
+ * 								ACCESSORS
+ * ------------------------------------------------------------------------
+ * 							GetPurchaseDate
+ * 							GetMembershipNumber
+ * 							GetPurchaseProduct
+ * 							GetPurchasePrice
+ * 							GetPurchaseQty
+ * 							GetNext
+ * 							PrintPurchase
+ *************************************************************************/
+
+/**************************************************************************
+ * GetPurchaseDate
+ * 		This method returns the purchase date of item.
+ *
+ * 		Returns - purchaseDate (Date)
+ *************************************************************************/
+Date Purchase::GetPurchaseDate() const
+{
+	return purchaseDate;
+}
+
+/**************************************************************************
+ * GetMembershipNumber
+ * 		This method returns the membership number.
+ *
+ * 		Returns - membershipNumber (int)
+ *************************************************************************/
+int Purchase::GetMembershipNumber() const
+{
+	return membershipNumber;
+}
+
+/**************************************************************************
+ * GetPurchaseProduct
+ * 		This method returns the product name.
+ *
+ * 		Returns - purchaseProduct (string)
+ *************************************************************************/
+string Purchase::GetPurchaseProduct() const
+{
+	return purchaseProduct;
+}
+
+/**************************************************************************
+ * GetPurchasePrice
+ * 		This method returns the price of item.
+ *
+ * 		Returns - purchasePrice (float)
+ *************************************************************************/
+float Purchase::GetPurchasePrice() const
+{
+	return purchasePrice;
+}
+
+/**************************************************************************
+ * GetPurchaseQty
+ * 		This method returns the quantity for an item.
+ *
+ * 		Returns - purchaseQty (int)
+ *************************************************************************/
+int Purchase::GetPurchaseQty() const
+{
+	return purchaseQty;
+}
+
+/**************************************************************************
+ * GetNext
+ * 		This method returns the next node in list (next purchase).
+ *
+ * 		Returns - next (Purchase)
+ *************************************************************************/
+Purchase* Purchase::GetNext() const
+{
+	return next;
+}
+
+/**************************************************************************
+ * PrintPurchase
+ * 		This method prints to console information about a purchase.
+ * 		This includes the purchase date, the membership number, the
+ * 		name of the product, the quantity of the product bought, and
+ * 		the price of the product
+ *
+ * 		Returns - nothing (Display to console)
+ *************************************************************************/
 void Purchase::PrintPurchase() const
 {
-	cout << left << setw(13) << purchaseDate.DisplayDate()
-		 << setw(10) << membershipNumber
-		 << setw(32) << purchaseProduct << "$" << right
-		 << setw(7) << fixed << setprecision(2)
-		 << purchasePrice
-		 << setw(6) << purchaseQty << endl;
+	// OUTPUT - Information about a purchase
+	cout << left
+		 << setw(DATE_COL)    << purchaseDate.DisplayDate() << " "
+		 << setw(NUM_COL)     << membershipNumber			<< " "
+		 << setw(PRODUCT_COL) << purchaseProduct 			<< " "
+		 << "$" << right
+		 << setw(SPENT_COL)   << fixed << setprecision(2)
+		 << purchasePrice	  << " "
+		 << setw(QTY_COL)     << purchaseQty << endl;
 
 }

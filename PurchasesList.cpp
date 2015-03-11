@@ -453,19 +453,19 @@ void PurchasesList::SearchForPurchase(MemberList &tempMemList,
 			{
 				cout << left
 					 << setfill(' ')
-					 << setw(32) 	   	<< "ITEM PURCHASED" << " "
-					 << setw(12) 	   	<< "QUANTITY" 		 << " "
-					 << setw(NAME_COL) 	<< "MEMBER NAME" << " "
-					 << setw(TYPE_COL)  << "MEMBER TYPE" << "\n"
+					 << setw(PRODUCT_COL) << "ITEM PURCHASED" << " "
+					 << setw(QTY_COL) 	  << "QUANTITY"  	  << " "
+					 << setw(NAME_COL) 	  << "MEMBER NAME"    << " "
+					 << setw(TYPE_COL)    << "MEMBER TYPE"    << "\n"
 					 << setfill('-')
-					 << setw(32) << "-" << " "
-					 << setw(12) << "-" << " "
-					 << setw(NAME_COL) << "-" << " "
-					 << setw(TYPE_COL) 	<< "-" << "\n"
+					 << setw(PRODUCT_COL) << "-" << " "
+					 << setw(QTY_COL)     << "-" << " "
+					 << setw(NAME_COL)    << "-" << " "
+					 << setw(TYPE_COL) 	  << "-" << "\n"
 					 << setfill(' ');
 			}
-			cout << setw(32) << tempPtr->GetPurchaseProduct() << " "
-				 << setw(12) << tempPtr->GetPurchaseQty() << " ";
+			cout << setw(PRODUCT_COL) << tempPtr->GetPurchaseProduct() << " "
+				 << setw(QTY_COL) << tempPtr->GetPurchaseQty() << " ";
 
 			tempMem = tempMemList.SearchForMember(tempPtr->GetMembershipNumber());
 
@@ -506,12 +506,19 @@ void PurchasesList::SearchForPurchase(MemberList &tempMemList,
 void PurchasesList::DisplayPurchaseHeader() const
 {
 	cout << left
-		 << setw(13) << "SALE DATE" << setw(10) << "MEMBER#"
-		 << setw(32) << "ITEM PURCHASED" << setw(11) << "PRICE"
-		 << setw(8) << "QTY" << endl
-		 << setw(13) << "----------" << setw(10) << "-------"
-		 << setw(32) << "-----------------------------" << setw(11)
-		 << "--------" << setw(11) << "---" << endl;
+		 << setfill(' ')
+		 << setw(DATE_COL)    << "SALE DATE"	  << " "
+		 << setw(NUM_COL) 	  << "MEMBER#"		  << " "
+		 << setw(PRODUCT_COL) << "ITEM PURCHASED" << " "
+		 << setw(SPENT_COL+1)   << "PRICE"		  << " "
+		 << setw(QTY_COL) 	  << "QTY"			  << "\n"
+		 << setfill('-')
+		 << setw(DATE_COL)    << "-" << " "
+		 << setw(NUM_COL)     << "-" << " "
+		 << setw(PRODUCT_COL) << "-" << " "
+		 << setw(SPENT_COL+1)   << "-" << " "
+		 << setw(QTY_COL)     << "-" << endl
+		 << setfill(' ');
 }
 
 void PurchasesList::DisplayPurchasesList() const
@@ -639,6 +646,7 @@ void PurchasesList::PrintAllMemberPurchases(MemberList &tempMemList) const
 	int 		countPur;
 
 	tempMem		= tempMemList.GetHeadofList();
+	cout << left;
 
 	while(tempMem != NULL)
 	{
@@ -650,9 +658,9 @@ void PurchasesList::PrintAllMemberPurchases(MemberList &tempMemList) const
 		{
 			if(tempMem->GetMemberNumber() == tempPur->GetMembershipNumber())
 			{
-				cout << setw(32) << tempPur->GetPurchaseProduct() << " "
-					 << setw(8) << tempPur->GetPurchasePrice() <<  " "
-					 << setw(8) << tempPur->GetPurchaseQty() << " ";
+				cout << setw(PRODUCT_COL) << tempPur->GetPurchaseProduct() << " "
+					 << setw(SPENT_COL) << tempPur->GetPurchasePrice() <<  " "
+					 << setw(QTY_COL) << tempPur->GetPurchaseQty() << " ";
 					tempPur->GetPurchaseDate();
 					cout << endl;
 					countPur++;
@@ -668,6 +676,7 @@ void PurchasesList::PrintAllMemberPurchases(MemberList &tempMemList) const
 		}
 		tempMem = tempMem->GetNext();
 	}
+	cout << right;
 }
 
 Purchase* PurchasesList::GetHead() const

@@ -32,6 +32,16 @@ MemberList::~MemberList() {
 }
 
 /**************************************************************************
+ * 								MUTATORS
+ * ------------------------------------------------------------------------
+ * 							AddMemberFromFile
+ * 							AddMemberFromConsole
+ * 							InsertInOrder
+ * 							RemoveMember
+ * 							ClearList
+ *************************************************************************/
+
+/**************************************************************************
  * CreateMemberListFromFile
  * 		This method gets a file name that contains information about
  * 		the members that are to be added to Bulk Club. The information
@@ -167,6 +177,7 @@ void MemberList::AddMemberFromConsole()
 	// OUTPUT - Notify user filling out application to be added as a member
 	cout << "Application to become a Bulk Club Member\n";
 	cin.ignore(1000, '\n');
+
 	// INPUT - Get a valid Membership Type (keep looping until valid
 	do
 	{
@@ -226,6 +237,7 @@ void MemberList::AddMemberFromConsole()
 		}
 	}while(!validDate);
 
+	// PROCESSING - If all information from file is valid add member
 	if(validType && validMemNum && validDate)
 	{
 		addDate = new Date(addExpMonth, addExpDay, addExpYear);
@@ -307,53 +319,6 @@ void MemberList::InsertInOrder(Member *addNode) // IN & CALC - A member
 }
 
 /**************************************************************************
- * ClearList
- * 		This method clears the entire list of members. This returns
- * 		a bool to indicate that the list of members has been cleared.
- *
- * 		Returns - cleared (bool)
- *************************************************************************/
-bool MemberList::ClearList()
-{
-	// Variable List
-	Member *tempPtr;	// CALC 	  - Temp ptr to clear list
-	bool	cleared;	// CALC & OUT - Cleared list or not
-
-	tempPtr = headMember;
-	cleared = false;
-
-	// PROCESSING - If list of members is already cleared
-	if(headMember == NULL)
-	{
-		cleared = true;
-	}
-	// PROCESSING - Clear list
-	else
-	{
-		// PROCESSING - Keep looping until each member is removed
-		//			  - Also decrement list of member size
-		while(tempPtr != NULL)
-		{
-			tempPtr = tempPtr->GetNext();
-			delete headMember;
-			headMember = tempPtr;
-			memberSize--;
-		}
-
-		// PROCESSING - Ensure list of members is thoroughly cleared
-		headMember = NULL;
-		tailMember = NULL;
-		memberSize = 0;
-		cleared	   = true;
-	}
-
-	// PROCESSING - Delete temp ptr
-	delete tempPtr;
-
-	return cleared;
-}
-
-/**************************************************************************
  * RemoveMember
  * 		This function receives a name that is to be removed from the
  * 		list of members. This method calls the SearchForMember method
@@ -424,14 +389,76 @@ bool MemberList::RemoveMember(string fullName)	// IN & CALC - Remove name
 }
 
 /**************************************************************************
- * MemberListSize
- * 		This method returns the size of the member list.
+ * ClearList
+ * 		This method clears the entire list of members. This returns
+ * 		a bool to indicate that the list of members has been cleared.
  *
- * 		Returns - memberSize (int)
+ * 		Returns - cleared (bool)
  *************************************************************************/
-int MemberList::MemberListSize() const
+bool MemberList::ClearList()
 {
-	return memberSize;
+	// Variable List
+	Member *tempPtr;	// CALC 	  - Temp ptr to clear list
+	bool	cleared;	// CALC & OUT - Cleared list or not
+
+	tempPtr = headMember;
+	cleared = false;
+
+	// PROCESSING - If list of members is already cleared
+	if(headMember == NULL)
+	{
+		cleared = true;
+	}
+	// PROCESSING - Clear list
+	else
+	{
+		// PROCESSING - Keep looping until each member is removed
+		//			  - Also decrement list of member size
+		while(tempPtr != NULL)
+		{
+			tempPtr = tempPtr->GetNext();
+			delete headMember;
+			headMember = tempPtr;
+			memberSize--;
+		}
+
+		// PROCESSING - Ensure list of members is thoroughly cleared
+		headMember = NULL;
+		tailMember = NULL;
+		memberSize = 0;
+		cleared	   = true;
+	}
+
+	// PROCESSING - Delete temp ptr
+	delete tempPtr;
+
+	return cleared;
+}
+
+/**************************************************************************
+ * 								ACCESSORS
+ * ------------------------------------------------------------------------
+ * 							GetHeadofList
+ * 							IsEmpty
+ * 							MemberListSize
+ * 							SearchForMember
+ * 							SearchForMember
+ * 							SearchByMonth
+ * 							PrintMemListHeader
+ * 							PrintMemberList
+ * 							PrintExpMembers
+ * 							PrintAllMemberPurchase
+ *************************************************************************/
+
+/**************************************************************************
+ * GetHeadofList
+ * 		This method returns the head member of the list. Peeking.
+ *
+ * 		Returns - headMember (Member)
+ *************************************************************************/
+Member* MemberList::GetHeadofList() const
+{
+	return headMember;
 }
 
 /**************************************************************************
@@ -455,6 +482,17 @@ bool MemberList::IsEmpty() const
 	}
 
 	return empty;
+}
+
+/**************************************************************************
+ * MemberListSize
+ * 		This method returns the size of the member list.
+ *
+ * 		Returns - memberSize (int)
+ *************************************************************************/
+int MemberList::MemberListSize() const
+{
+	return memberSize;
 }
 
 /**************************************************************************
@@ -577,8 +615,17 @@ void MemberList::SearchByMonth(MemberList& expMembers,    //List to fill
 	}
 }
 
+/**************************************************************************
+ *	PrintMemListHeader
+ *		This method prints the membership list header for the table.
+ *		This includes the member name, member type, member number,
+ *		total spent, expiration date, and rebate.
+ *
+ *		Returns - nothing (Prints header to console)
+ *************************************************************************/
 void MemberList::PrintMemListHeader() const
 {
+	// OUTPUT - Display header for table
 	cout << left;
 	cout << setfill(' ');
 	cout << setw(NAME_COL)  << "MEMBER NAME"   << setw(COL_SPACE) << " ";
@@ -608,7 +655,7 @@ void MemberList::PrintMemListHeader() const
 }
 
 /**************************************************************************
- * Print
+ * PrintMemberList
  * 		This method prints information about all the members in the list.
  * 		It will index through until all members have been printed.
  *
@@ -634,14 +681,23 @@ void MemberList::PrintMemberList() const
 	cout << endl;
 }
 
+/**************************************************************************
+ * PrintExpMembers
+ * 		This method prints information about all the members that are
+ * 		about to have their membership expired.
+ *
+ * 		Returns - nothing (Prints list of expiring members to console)
+ *************************************************************************/
 void MemberList::PrintExpMembers() const
 {
-	Member *current;
+	// Variable List
+	Member *current; // CALC - Temp ptr for member
 
 	current = headMember;
 
+	// OUTPUT - Header for expired members
 	cout << left << endl
-		 << setw(NAME_COL) << "MEMBER NAME" << setw(NUM_COL) << "MEMBER#"
+		 << setw(NAME_COL) << "MEMBER NAME" << setw(NUM_COL)  << "MEMBER#"
 		 << setw(TYPE_COL) << "MEMBER TYPE" << setw(DATE_COL) << "EXP DATE"
 		 << setw(DUES_COL) << "DUES" << endl
 		 << setw(NAME_COL) << "-------------------"
@@ -650,33 +706,41 @@ void MemberList::PrintExpMembers() const
 		 << setw(DATE_COL) << "-----------"
 		 << setw(DUES_COL) << "------"
 		 << endl;
+
+	// PROCESSING - Keep looping through exp member list
 	while(current != NULL)
 	{
 
-		cout << left << setw(NAME_COL) << current->GetName()
-			 << setw(NUM_COL) << current->GetMemberNumber()
-			 << setw(TYPE_COL) << current->GetMemberType()
-			 << setw(DATE_COL) << current->GetExpDate().DisplayDate()
-			 << "$" << fixed << setprecision(2)
-			 << setw(DUES_COL) << current->GetAnnualDues() << endl;
+		cout << left << setw(NAME_COL) 	<< current->GetName()
+			 << setw(NUM_COL) 		   	<< current->GetMemberNumber()
+			 << setw(TYPE_COL) 			<< current->GetMemberType()
+			 << setw(DATE_COL) 			<< current->GetExpDate().DisplayDate()
+			 << "$" << fixed 			<< setprecision(2)
+			 << setw(DUES_COL) 			<< current->GetAnnualDues() << endl;
 		current = current->GetNext();
 	}
+	cout << right;
 }
 
+/**************************************************************************
+ * PrintAllMemberPurchase
+ * 		This method prints information about all the members and the
+ * 		purchases he/she has or has not made
+ *
+ * 		Returns - nothing (Prints list of all members & purchases to console)
+ *************************************************************************/
 void MemberList::PrintAllMemberPurchase(Purchase &purList) const
+												// IN & CALC - Purchase list
 {
-	Member *temp;
+	// Variable List
+	Member *temp;	// CALC - Temp ptr for member
 
 	temp = headMember;
 
+	// PROCESSING - Loop through all members in list until end
 	while(temp != NULL)
 	{
 		purList.PrintPurchase();
 		temp = temp->GetNext();
 	}
-}
-
-Member* MemberList::GetHeadofList() const
-{
-	return headMember;
 }

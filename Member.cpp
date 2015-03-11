@@ -30,7 +30,7 @@ Member::Member()
  *************************************************************************/
 Member::Member(string setName,			// IN & CALC - Name
 			   int	  setMemberNumber,	// IN & CALC - Member #
-			   Date	  setDate)
+			   Date	  setDate)			// IN & CALC - Member Exp Date
 {
 	nextMember   	  = NULL;
 	prevMember   	  = NULL;
@@ -45,7 +45,44 @@ Member::Member(string setName,			// IN & CALC - Name
 /**************************************************************************
  * DESTRUCTOR
  *************************************************************************/
-Member::~Member() {
+Member::~Member() { }
+
+/**************************************************************************
+ * 								MUTATORS
+ * ------------------------------------------------------------------------
+ *							SetName
+ *							SetMemberNumber
+ *							SetNext
+ *							SetPrev
+ *							UpdateTotalSpentNoTax
+ *							UpdateTotalSpentPlusTax
+ *							ValidateMemberNumFromFile
+ *							ValidateMemberTypeFromFile
+ *							ValidateMemberNumFromConsole
+ *							ValidateMemberTypeFromConsole
+ *							ValidateTotalSpent
+ *************************************************************************/
+
+/**************************************************************************
+ * SetName
+ * 		This method sets the name of the member.
+ *
+ * 		Returns - nothing
+ *************************************************************************/
+void Member::SetName(string setName) // IN & CALC - Name of member
+{
+	name = setName;
+}
+
+/**************************************************************************
+ * SetMemberNumber
+ * 		This method sets the member number for a member.
+ *
+ * 		Returns - nothing
+ *************************************************************************/
+void Member::SetMemberNumber(int setMemberNum) // IN & CALC - Member number
+{
+	memberNumber = setMemberNum;
 }
 
 /**************************************************************************
@@ -71,37 +108,50 @@ void Member::SetPrev(Member *prevNode)	// IN & CALC - Previous member
 }
 
 /**************************************************************************
- * SetName
- * 		This method sets the name of the member.
+ * UpdateTotalSpentNoTax
+ * 		This method updates the total amount spent for a user without
+ * 		including tax.
  *
- * 		Returns - nothing
+ * 		Returns - nothing (Updates total spent without tax)
  *************************************************************************/
-void Member::SetName(string setName) // IN & CALC - Name of member
+void Member::UpdateTotalSpentNoTax(float addToTotal)
 {
-	name = setName;
+	totalSpentNoTax += addToTotal;
 }
 
 /**************************************************************************
- * SetMemberNumber
- * 		This method sets the member number for a member.
+ * UpdateTotalSpentPlusTax
+ * 		This method updates the total amount spent for a member
+ * 		including tax.
  *
- * 		Returns - nothing
+ * 		Returns - nothing (Updates total spent with tax)
  *************************************************************************/
-void Member::SetMemberNumber(int setMemberNum) // IN & CALC - Member number
+void Member::UpdateTotalSpentPlusTax(float addToTotal) // IN & CALC - Spent
 {
-	memberNumber = setMemberNum;
+	totalSpentPlusTax += addToTotal;
 }
 
-bool Member::ValidateMemberNumFromFile(const int CHECK_INT)
+/**************************************************************************
+ * ValidateMemberNumFromFile
+ * 		This method receives a member number (5 digit - integer) to check.
+ * 		The valid member numbers are from 00000-99999
+ *
+ * 		Returns - valid (bool)
+ *************************************************************************/
+bool Member::ValidateMemberNumFromFile(const int CHECK_INT) // IN & CALC -
+														    // Mem num
 {
-	bool	 valid;
+	// Variable List
+	bool valid;		// CALC & OUT - If valid member number
 
 	valid = true;
 
+	// PROCESSING - Check if input is a number or not
 	if(!CHECK_INT)
 	{
 		valid = false;
 	}
+	// PROCESSING - Check if the number is between 00000 & 99999
 	else if(CHECK_INT < MIN_MEM_NUM || CHECK_INT > MAX_MEM_NUM)
 	{
 		valid = false;
@@ -110,29 +160,65 @@ bool Member::ValidateMemberNumFromFile(const int CHECK_INT)
 	return valid;
 }
 
-bool Member::ValidateMemberNumFromConsole(const int CHECK_INT)
+/**************************************************************************
+ * ValidateMemberTypeFromFile
+ * 		This method receives a membership type from the input file to
+ * 		validate. Choices are basic and preferred customers.
+ *
+ * 		Returns - valid (bool)
+ *************************************************************************/
+bool Member::ValidateMemberTypeFromFile(const char CHECK_CHAR) // IN & CALC
+															   // - Type
 {
-	bool 		  valid;
-	ostringstream oss;
+	// Variable List
+	bool 	 valid; // CALC & OUT - Check if membership type is valid
+
+	valid = true;
+
+	// PROCESSING - Membership type is not basic and not preferred
+	if(CHECK_CHAR != TYPE_BASIC && CHECK_CHAR != TYPE_PREF)
+	{
+		valid = false;
+	}
+
+	return valid;
+}
+
+/**************************************************************************
+ * ValidateMemberNumFromConsole
+ * 		This method receives a member number from the console to check.
+ * 		The membership number can range from 00000 - 99999. It will
+ * 		also notify the user that this membership number is not valid.
+ *
+ * 		Returns - valid (bool)
+ *************************************************************************/
+bool Member::ValidateMemberNumFromConsole(const int CHECK_INT) // IN & CALC
+															   // - Mem num
+{
+	// Variable List
+	bool 		  valid;	// CALC & OUT - If member number is valid
+	ostringstream oss;		// CALC		  - Formatting error column
 
 	cout << left;
 	valid = true;
 
+	// PROCESSING - Check if input is an integer
 	if(!CHECK_INT)
 	{
 		oss  << "***** Invalid Member Number ";
-		cout << endl << setw(ERROR_COL) << oss.str()   << " *****\n";
+		cout << endl << setw(ERROR_COL) << oss.str() << " *****\n";
 		oss.str("");
 
 		oss  << "***** Member Number's are between " << MIN_MEM_NUM
 			 << " and " << MAX_MEM_NUM;
-		cout << setw(ERROR_COL) << oss.str()   << " *****\n\n";
+		cout << setw(ERROR_COL) << oss.str() << " *****\n\n";
 		oss.str("");
 		cin.clear();
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 		valid = false;
 	}
+	// PROCESSING - Check input is between membership range 00000 - 99999
 	else if(CHECK_INT < MIN_MEM_NUM || CHECK_INT > MAX_MEM_NUM)
 	{
 		oss  << "***** The number " << CHECK_INT << " is not a valid entry";
@@ -153,28 +239,24 @@ bool Member::ValidateMemberNumFromConsole(const int CHECK_INT)
 	return valid;
 }
 
-bool Member::ValidateMemberTypeFromFile(const char CHECK_CHAR)
-{
-	bool 	 valid;
-
-	valid = true;
-
-	if(CHECK_CHAR != TYPE_BASIC && CHECK_CHAR != TYPE_PREF)
-	{
-		valid = false;
-	}
-
-	return valid;
-}
-
+/**************************************************************************
+ * ValidateMemberTypeFromConsole
+ * 		This method receives a member type from the console to check.
+ * 		The membership type can be either basic or preferred. It will
+ * 		also notify the user that this membership type is not valid.
+ *
+ * 		Returns - valid (bool)
+ *************************************************************************/
 bool Member::ValidateMemberTypeFromConsole(const char CHECK_CHAR)
 {
-	bool 		  valid;
-	ostringstream oss;
+	// Variable List
+	bool 		  valid; // CALC & OUT - Check if membership type is valid
+	ostringstream oss;	 // CALC	   - Formatting column
 
 	valid = true;
 	cout << left;
 
+	// PROCESSING - Check member type is neither basic nor preferred
 	if(CHECK_CHAR != TYPE_BASIC && CHECK_CHAR != TYPE_PREF)
 	{
 		oss  << "***** The membership type " << CHECK_CHAR << " is invalid";
@@ -188,6 +270,78 @@ bool Member::ValidateMemberTypeFromConsole(const char CHECK_CHAR)
 	cout << right;
 
 	return valid;
+}
+
+/**************************************************************************
+ * 							ACCESSORS
+ * ------------------------------------------------------------------------
+ * 						GetName
+ * 						GetMembershipNumber
+ * 						GetTotalSpentNoTax
+ * 						GetTotalSpentWithTax
+ * 						GetExpDate
+ * 						GetNext
+ * 						GetPrev
+ * 						GetAnnualDues
+ * 						GetMemberType
+ * 						Print
+ *************************************************************************/
+
+/**************************************************************************
+ * GetName
+ * 		This method gets the name of the member.
+ *
+ * 		Returns - name (string)
+ *************************************************************************/
+string Member::GetName() const
+{
+	return name;
+}
+
+/**************************************************************************
+ * GetMemberNumber
+ * 		This method gets the member number of a member.
+ *
+ * 		Returns - memberNumber (int)
+ *************************************************************************/
+int Member::GetMemberNumber() const
+{
+	return memberNumber;
+}
+
+/**************************************************************************
+ * GetTotalSpentNoTax
+ * 		This method returns the total amount spent by a member that
+ * 		does not include any of the tax.
+ *
+ * 		Returns - totalSpentNoTax (float)
+ *************************************************************************/
+float Member::GetTotalSpentNoTax() const
+{
+	return totalSpentNoTax;
+}
+
+/**************************************************************************
+ * GetTotalSpentPlusTax
+ * 		This method returns the total amount spent by a member that
+ * 		does include tax.
+ *
+ * 		Returns - totalSpentPlusTax (float)
+ *************************************************************************/
+float Member::GetTotalSpentPlusTax() const
+{
+	return totalSpentPlusTax;
+}
+
+/**************************************************************************
+ * GetExpDate
+ * 		This method returns the expiration date of the membership card.
+ *
+ * 		Returns - expDate (Date)
+ *************************************************************************/
+Date Member::GetExpDate() const
+{
+	return expDate;
 }
 
 /**************************************************************************
@@ -213,25 +367,14 @@ Member* Member::GetPrev() const
 }
 
 /**************************************************************************
- * GetName
- * 		This method gets the name of the member.
+ * GetAnnualDues
+ * 		This method returns the annual fee to be a basic member. ($55.00)
  *
- * 		Returns - name (string)
+ * 		Returns - annualDues (float)
  *************************************************************************/
-string Member::GetName() const
+float Member::GetAnnualDues() const
 {
-	return name;
-}
-
-/**************************************************************************
- * GetMemberNumber
- * 		This method gets the member number of a member.
- *
- * 		Returns - memberNumber (int)
- *************************************************************************/
-int Member::GetMemberNumber() const
-{
-	return memberNumber;
+	return annualDues;
 }
 
 /**************************************************************************
@@ -243,16 +386,6 @@ int Member::GetMemberNumber() const
 string Member::GetMemberType() const
 {
 	return "Basic";
-}
-
-Date Member::GetExpDate() const
-{
-	return expDate;
-}
-
-float Member::GetAnnualDues() const
-{
-	return annualDues;
 }
 
 /**************************************************************************
@@ -280,53 +413,4 @@ void Member::Print() const
 	cout << setw(DATE_COL)  << expDate.DisplayDate()
 		 << setw(COL_SPACE) << " ";
 	cout << right;
-}
-
-/**************************************************************************
- * UpdateTotalSpentNoTax
- * 		This method updates the total amount spent for a user without
- * 		including tax.
- *
- * 		Returns - nothing (Updates total spent without tax)
- *************************************************************************/
-void Member::UpdateTotalSpentNoTax(float addToTotal)
-{
-	totalSpentNoTax += addToTotal;
-}
-
-
-/**************************************************************************
- * UpdateTotalSpentPlusTax
- * 		This method updates the total amount spent for a member
- * 		including tax.
- *
- * 		Returns - nothing (Updates total spent with tax)
- *************************************************************************/
-void Member::UpdateTotalSpentPlusTax(float addToTotal)
-{
-	totalSpentPlusTax += addToTotal;
-}
-
-/**************************************************************************
- * GetTotalSpentNoTax
- * 		This method returns the total amount spent by a member that
- * 		does not include any of the tax.
- *
- * 		Returns - totalSpentNoTax (float)
- *************************************************************************/
-float Member::GetTotalSpentNoTax() const
-{
-	return totalSpentNoTax;
-}
-
-/**************************************************************************
- * GetTotalSpentPlusTax
- * 		This method returns the total amount spent by a member that
- * 		does include tax.
- *
- * 		Returns - totalSpentPlusTax (float)
- *************************************************************************/
-float Member::GetTotalSpentPlusTax() const
-{
-	return totalSpentPlusTax;
 }

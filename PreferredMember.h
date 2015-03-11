@@ -23,9 +23,9 @@ const int REBATE_COL = 5;
 
 class PreferredMember: public Member {
 public:
-	/***************************
-	 ***CONSTRUCTOR & DESTRUCTOR
-	 ***************************/
+	/******************************
+	 ***CONSTRUCTOR & DESTRUCTOR***
+	 ******************************/
 	PreferredMember();						// Default Constructor
 	PreferredMember(string setName,			// Overloaded Constructor
 					int    setMemberNum,
