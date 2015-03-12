@@ -114,16 +114,21 @@ int main()
 					break;
 					
 		case SALES_BY_MEMBER: 	// Prints a report showing purchases by member
-					theClub.PurchasesbyMember(list, purchases);
-					break;
-		case SALES_ALL_MEMBER: purchases.PrintAllMemberPurchases(list);
-					break;
-		case 	ITEMS_SOLD: //Displays a list of products sold and their qty.
-							theClub.ItemsSold(purchases);
-							break;
+								theClub.PurchasesbyMember(list, purchases);
+								break;
+		case SALES_ALL_MEMBER: 	purchases.PrintAllMemberPurchases(list);
+								break;
+		case ITEMS_SOLD: //Displays a list of products sold and their qty.
+						 theClub.ItemsSold(purchases);
+						 break;
 		case SEARCH_ITEM:	//Searches for a specific product
 							theClub.SearchItemsSold(purchases);
 							break;
+		case BASIC_CONVERSION:
+							break;
+		case PREF_CONVERSION: 	//Checks if preferred members need to convert to basic
+								theClub.PreferredToBasicConversion(list);
+								break;
 		default:
 			break;
 		}
