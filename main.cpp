@@ -126,7 +126,8 @@ int main()
 							break;
 		case BASIC_CONVERSION: theClub.CheckConvertToPreferred(list);
 			break;
-		case PREF_CONVERSION:
+		case PREF_CONVERSION: //Checks if preferred members need to convert to basic
+							theClub.PreferredToBasicConversion(list);
 			break;
 		case REBATE: theClub.Rebate(list);
 		break;

@@ -45,7 +45,9 @@ class BulkClub
 
 		// Requirement #10
 		void CheckConvertToPreferred(MemberList &memList);
-
+		
+		//Requirement #11
+		void PreferredToBasicConversion(MemberList& list);
 };
 
 #endif /* BULKCLUB_H_ */
