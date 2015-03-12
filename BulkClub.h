@@ -39,6 +39,9 @@ class BulkClub
 
 		//Requirement #8
 		void CheckExpMembers(MemberList& list); //Checks expiring membership
+		
+		//Requirement #11
+		void PreferredToBasicConversion(MemberList& list);
 };
 
 #endif /* BULKCLUB_H_ */
