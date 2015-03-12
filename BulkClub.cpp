@@ -240,3 +240,96 @@ void BulkClub::ItemsSold(PurchasesList& purchases)
 		 << setw(ITEM_QTY_W) << "--------" << endl;
 	itemsSold.PrintProductAndQtyList();
 }
+
+void BulkClub::PreferredToBasicConversion(MemberList& list)
+{
+	//VARIABLE DECLARATIONS
+	int 	selection;	//IN & CALC  - The user selection from menu
+	string 	nameKey;	//IN & OUT	 - The member name to search
+	float 	rebate;		//CALC & OUT - The member's annual rebate
+	Member 	*result;	//IN & OUT   - Stores member search result
+	Member 	*tempPtr;	//CALC & OUT - To traverse member list
+
+	//VARIABLE INITIALIZATION
+	tempPtr = list.GetHeadofList();
+
+	//PROCESSING - DO-WHILE - Used to print menu and get user selection.
+	//			   exits once a valid input is entered
+	do
+	{
+		cout << "Check preferred to basic membership conversion\n"
+			 << "1 - Single Preferred member\n"
+			 << "2 - All Preferred members\n"
+			 << "Make a selection: ";
+
+		selection = GetAndCheckInt(1, 2);
+		cout << endl;
+	}while(selection == -1);
+
+	//PROCESSING - IF-THEN-ELSE - Used to branch out into the single or all
+	//			   members
+	if(selection == 1)
+	{
+		cout << "Enter a member name: ";
+		cin.ignore(1000, '\n');
+		getline(cin, nameKey);
+		result = list.SearchForMember(nameKey);
+
+		if(result == NULL)
+		{
+			cout << endl <<nameKey << " is not a member of Bulk Club"
+				 << endl << endl;
+		}
+		else
+		{
+			if(result->GetMemberType() == "Preferred")
+			{
+				rebate = result->GetTotalSpentNoTax() * .06;
+
+				if(rebate <= result->GetAnnualDues())
+				{
+					cout << endl << nameKey << " is not saving money and "
+					     << "should convert to basic." << endl;
+				}
+				else
+				{
+					cout << endl << nameKey << " is saving money and "
+						 <<	"should not convert to basic." << endl;
+				}
+				cout << nameKey << " has spent $"
+					 << result->GetTotalSpentNoTax() << " and accumulated "
+					 << "a rebate of $" << rebate << ". " << endl << endl;
+				}
+			else
+			{
+				cout << endl << nameKey << " is not a preferred member"
+					 << endl << endl;
+			}
+		}
+	}
+	else
+	{
+		while(tempPtr != NULL)
+		{
+			if(tempPtr->GetMemberType() == "Preferred")
+			{
+				rebate = tempPtr->GetTotalSpentNoTax() * .06;
+
+				if(rebate <= tempPtr->GetAnnualDues())
+				{
+					cout << endl << tempPtr->GetName() << " is not saving "
+						 << "money and should convert to basic." << endl;
+				}
+				else
+				{
+					cout << endl << tempPtr->GetName() << " is saving "
+						 << "money and should not convert to basic." << endl;
+				}
+				cout << tempPtr->GetName() << " has spent $"
+					 << tempPtr->GetTotalSpentNoTax() << " and accumulated a "
+					 << "rebate of $" << rebate << ". " << endl << endl;
+			}
+			tempPtr = tempPtr->GetNext();
+		}
+	}
+}
