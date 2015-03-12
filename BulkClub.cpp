@@ -46,7 +46,7 @@ void BulkClub::PurchasesbyMember(MemberList& list,
 	{
 		case 1:	//Searches purchases by membership number
 				//PROCESSING - DO-WHILE - Used to prompt user for a 
-				//			   memberhsip number.
+				//			   membership number.
 				do
 				{
 					//INPUT - prompts user for membership number
@@ -239,4 +239,138 @@ void BulkClub::ItemsSold(PurchasesList& purchases)
 		 << setw(ITEM_NAME_W) << "-----------------------------"
 		 << setw(ITEM_QTY_W) << "--------" << endl;
 	itemsSold.PrintProductAndQtyList();
+}
+
+void BulkClub::CheckConvertToPreferred(MemberList &memList)
+{
+	// Variable List
+	int				choice;
+	bool  			convert;
+	float 			total;
+	string			name;
+	Member 			*tempBasic;
+	PreferredMember tempPref;
+
+	do
+	{
+		cout << "Change Basic to Preferred membership\n"
+				"1 - Single Basic Member\n"
+				"2 - All Basic members\n"
+				"Enter selection: ";
+
+		choice = GetAndCheckInt(1, 2);
+	}while(choice == -1);
+
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+	if(choice == 1)
+	{
+		cout << "Please Enter a Name: ";
+		getline(cin, name);
+
+		// PROCESSING - Search for member in list
+		tempBasic = memList.SearchForMember(name);
+
+		// PROCESSING - If member is in list
+		if(tempBasic != NULL)
+		{
+			if(tempBasic->GetMemberType() == "Basic")
+			{
+				// PROCESSING - Calculate if amount that would be saved if pref
+				total = (tempBasic->GetTotalSpentNoTax() * tempPref.GetRebate());
+
+				// PROCESSING - If basic member should convert to pref
+				if(total > tempPref.GetAnnualDues())
+				{
+					cout << "Recommended to switch to a preferred customer\n\n";
+					convert = true;
+				}
+				// PROCESSING - If basic member should remain as basic
+				else
+				{
+					cout << "Not recommended to switch to a preferred customer\n\n";
+					convert = false;
+				}
+			}
+			else
+			{
+				cout << "Already a Preferred Member\n\n";
+				convert = false;
+			}
+		}
+		else
+		{
+			cout << "Sorry! " << name << "'s is not a Bulk Club Member!\n\n";
+			convert = false;
+		}
+	}
+	else
+	{
+		tempBasic = memList.GetHeadofList();
+
+		while(tempBasic != NULL)
+		{
+			if(tempBasic->GetMemberType() == "Basic")
+			{
+				// PROCESSING - Calculate if amount that would be saved if pref
+				total = (tempBasic->GetTotalSpentNoTax() * tempPref.GetRebate());
+
+				// PROCESSING - If basic member should convert to pref
+				if(total > tempPref.GetAnnualDues())
+				{
+					cout << tempBasic->GetName() << " is recommended to "
+							"switch to a preferred customer\n\n";
+					convert = true;
+				}
+				// PROCESSING - If basic member should remain as basic
+				else
+				{
+					cout << tempBasic->GetName() << " is not recommended "
+							"to switch to a preferred customer\n\n";
+					convert = false;
+				}
+			}
+			tempBasic = tempBasic->GetNext();
+		}
+
+	}
+}
+
+void BulkClub::Rebate(MemberList &memList) const
+{
+	Member *tempMem;
+	PreferredMember tempPref;
+	float total;
+	int count;
+
+	tempMem = memList.GetHeadofList();
+	count = 0;
+
+	while(tempMem != NULL)
+	{
+		if(tempMem->GetMemberType() == "Preferred")
+		{
+			count++;
+			if(count == 1)
+			{
+				cout << left 			  << setfill(' ')
+					 << setw(NUM_COL)     << "MEMBER ID" << " "
+					 << setw(SPENT_COL+1) << "REBATE"    << "\n"
+					 << setfill('-')
+					 << setw(NUM_COL)  	  << "-" 		 << " "
+					 << setw(SPENT_COL+1) << "-" 		 << "\n"
+					 << setfill(' ');
+			}
+			total = (tempMem->GetTotalSpentNoTax() * tempPref.GetRebate());
+			cout << left
+				 << setw(NUM_COL) 	<< tempMem->GetMemberNumber() << " "
+				 << fixed << setprecision(2) << "$" << right
+				 << setw(SPENT_COL) << total << endl;
+		}
+
+		tempMem = tempMem->GetNext();
+	}
+
+	cout << setprecision(6) << endl;
+	cout.unsetf(ios::fixed);
 }

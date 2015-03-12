@@ -37,6 +37,9 @@ void DisplayMainMenu()
 			"8  - Sales Report: of all members\n"
 			"9  - Sales Report: quantities of all products sold\n"
 			"10 - Sales Report: of a specific product\n"
+			"11 - Check if a Basic member should convert to Preferred\n"
+			"12 - Check if a Preferred member should convert to Basic\n"
+			"13 - Get Rebate of All Preferred Members\n"
 			"0 - EXIT\n"
 			"Please enter a command: ";
 }

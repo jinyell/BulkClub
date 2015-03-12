@@ -37,8 +37,15 @@ class BulkClub
 		//Requirement #5
 		void ItemsSold(PurchasesList& purchases);
 
+		// Requirement #6
+		void Rebate(MemberList& list) const;
+
 		//Requirement #8
 		void CheckExpMembers(MemberList& list); //Checks expiring membership
+
+		// Requirement #10
+		void CheckConvertToPreferred(MemberList &memList);
+
 };
 
 #endif /* BULKCLUB_H_ */

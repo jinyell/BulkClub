@@ -118,12 +118,18 @@ int main()
 					break;
 		case SALES_ALL_MEMBER: purchases.PrintAllMemberPurchases(list);
 					break;
-		case 	ITEMS_SOLD: //Displays a list of products sold and their qty.
+		case ITEMS_SOLD: //Displays a list of products sold and their qty.
 							theClub.ItemsSold(purchases);
 							break;
 		case SEARCH_ITEM:	//Searches for a specific product
 							theClub.SearchItemsSold(purchases);
 							break;
+		case BASIC_CONVERSION: theClub.CheckConvertToPreferred(list);
+			break;
+		case PREF_CONVERSION:
+			break;
+		case REBATE: theClub.Rebate(list);
+		break;
 		default:
 			break;
 		}
