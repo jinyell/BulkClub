@@ -29,7 +29,9 @@ enum Menu
 	SALES_BY_MEMBER,
 	SALES_ALL_MEMBER,
 	ITEMS_SOLD,
-	SEARCH_ITEM
+	SEARCH_ITEM,
+	BASIC_CONVERSION,
+	PREF_CONVERSION
 };
 
 /**************************************************************************
@@ -43,7 +45,7 @@ enum Menu
 * EXP_YEAR_MAX  : The maximum allowable value for year
 **************************************************************************/
 const int MAIN_MENU_MIN = 0;
-const int MAIN_MENU_MAX = 10;
+const int MAIN_MENU_MAX = 12;
 const int EXP_MONTH_MIN = 1;
 const int EXP_MONTH_MAX = 12;
 const int EXP_YEAR_MIN = 2000;
