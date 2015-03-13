@@ -73,6 +73,8 @@ void PurchasesList::AddPurchaseFromFile(string     inputFileName,
 	bool	 validQty;			// CALC		 - Check valid quantity
 	bool	 validDate;			// CALC		 - Check valid date
 	bool	 validMemNum;		// CALC		 - Check valid member number
+	Purchase *tempPur;
+	int		 totalBuy;
 
 	tempMem   = NULL;
 	transDate = NULL;
@@ -180,16 +182,44 @@ void PurchasesList::AddPurchaseFromFile(string     inputFileName,
 			// PROCESSING - If all info is valid add purchase to list
 			if(validDate && validQty && validCost && validMemNum)
 			{
-				newPurchase = new Purchase(*transDate, transMemberNum,
-											transItem, transPrice,
-											transQty);
+				tempPur  = head;
+				totalBuy = 0;
 
-				AddPurchase(newPurchase);
+				while(tempPur != NULL)
+				{
+					if(tempPur->GetMembershipNumber() == transMemberNum &&
+					   tempPur->GetPurchaseDate().GetDay() == transMonth &&
+					   tempPur->GetPurchaseDate().GetMonth() == transDay &&
+					   tempPur->GetPurchaseDate().GetYear() == transYear)
+					{
+						totalBuy += (transQty + tempPur->GetPurchaseQty());
+
+						if(totalBuy > 200)
+						{
+							validQty = false;
+						}
+					}
+					tempPur = tempPur->GetNext();
+				}
+
+				if(validQty)
+				{
+					newPurchase = new Purchase(*transDate, transMemberNum,
+												transItem, transPrice,
+												transQty);
+					AddPurchase(newPurchase);
+				}
+				else
+				{
+					cout << "Sorry, " << transMemberNum << " the maximum "
+							"purchase on any given trip is 200 items. "
+							"Bulk Club cannot allow the last purchase\n";
+				}
 			} // END IF
 		} // END WHILE
 	} // END IF-ELSE
 
-	// pROCESSING - Update the total for each member that purchased items
+	// PROCESSING - Update the total for each member that purchased items
 	AddSpentToMemberTotalFromFile(theMemList, transDate);
 
 	inFile.close();
@@ -403,13 +433,13 @@ void PurchasesList::AddSpentToMemberTotalFromFile(MemberList &theMemList,
 
 	// PROCESSING - Set values for variables
 	tempMem	   = theMemList.GetHeadofList();
-	amtNoTax   = 0;
-	amtWithTax = 0;
 
 	// PROCESSING - Loop through each member to figure total spent
 	while(tempMem != NULL)
 	{
 		tempPur = head;
+		amtNoTax = 0;
+		amtWithTax = 0;
 
 		// PROCESSING - Loop through purchases to
 		while(tempPur != NULL)
