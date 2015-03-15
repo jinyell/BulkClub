@@ -467,3 +467,49 @@ void BulkClub::PreferredToBasicConversion(MemberList& list)
 		}
 	}
 }
+
+void BulkClub::MembershipsDues(MemberList& list) //IN - the member's list
+{
+	//VARIABLE DECLARATIONS
+	Member 	   *newMember;	//CALC - pointer to add new members
+	Member 	   *tempPtr;	//CALC - to traverse the list
+	MemberList duesList;	//OUT  - a list of members sorted by type/name
+
+	//VARIABLE INITIALIZATION
+	tempPtr = list.GetHeadofList(); //Initializes tempPtr to head
+
+	//PROCESSING - WHILE - Used to traverse the existing list of members
+	//			   and create a new list sorted by member type and name
+	while(tempPtr != NULL)
+	{
+		//PROCESSING - IF-THEN-ESLE - Used to check membership type
+		if(tempPtr->GetMemberType() == "Basic")
+		{
+			//Creates new Member
+			newMember = new Member(tempPtr->GetName(),
+							   	   tempPtr->GetMemberNumber(),
+								   tempPtr->GetExpDate());
+		}
+		else if(tempPtr->GetMemberType() == "Preferred")
+		{
+			//Creates new PreferredMember
+			newMember = new PreferredMember(tempPtr->GetName(),
+										   tempPtr->GetMemberNumber(),
+										   tempPtr->GetExpDate());
+		}
+
+		//Adds newMember to the new list (in memberType, name order
+		duesList.InsertByMembTypeAndName(newMember);
+
+		//Moves to next node
+		tempPtr = tempPtr->GetNext();
+	}
+
+	//OUTPUT - outputs list header
+	cout << left << setw(12) << "MEMBER TYPE"
+	     << setw(25) << "MEMEBER NAME"
+		 << setw(6) << "DUES" << endl;
+
+	//OUTPUT - prints the list's contents
+	duesList.PrintSortedMembersDue();
+}
