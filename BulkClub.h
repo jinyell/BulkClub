@@ -40,6 +40,9 @@ class BulkClub
 		// Requirement #6
 		void Rebate(MemberList& list) const;
 
+		//Requirement #7
+		void MembershipsDues(MemberList& list);
+
 		//Requirement #8
 		void CheckExpMembers(MemberList& list); //Checks expiring membership
 
