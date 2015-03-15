@@ -13,6 +13,7 @@
 #define PURCHASE_H_
 
 #include "Member.h"
+#include "Product.h"
 
 /*************************************************************************
  * GLOBAL CONSTANTS
@@ -38,11 +39,9 @@ class Purchase
 		 ***CONSTRUCTOR & DESTRUCTOR***
 		 ******************************/
 		Purchase();						// Constructor
-		Purchase(Date	saleDate,		// Overloaded Constructor
-				 int	salemembNum,
-				 string saleProduct,
-				 float	salePrice,
-				 int	saleQty);
+		Purchase(Date	 saleDate,		// Overloaded Constructor
+				 int	 salemembNum,
+				 Product newProduct);
 		virtual ~Purchase();
 
 		/**************
@@ -60,21 +59,17 @@ class Purchase
 		/***************
 		 ***ACCESSORS***
 		 ***************/
-		Date 	  GetPurchaseDate() const;		// Get Purchase Date
-		int	   	  GetMembershipNumber() const;	// Get Membership #
-		string 	  GetPurchaseProduct() const;	// Get Product name
-		float  	  GetPurchasePrice() const;		// Get product price
-		int	   	  GetPurchaseQty() const;		// Get product quantity
-		Purchase* GetNext() const;				// Get Next in purchase list
-		void	  PrintPurchase() const;		// Print purchase list
+		Date 	  GetDate() const;			// Get Purchase Date
+		int	   	  GetMemberID() const;		// Get Membership #
+		Product	  GetProduct() const;		// Get product
+		Purchase* GetNext() const;			// Get Next in purchase list
+		void	  PrintPurchase() const;	// Print purchase list
 
 	private:
-		Date   	 purchaseDate;		// Date of purchase
-		int	   	 membershipNumber;	// Member number
-		string 	 purchaseProduct;	// Product purchased
-		float 	 purchasePrice;		// Price of product
-		int	   	 purchaseQty;		// Product quantity
-		Purchase *next;				// Pointer to next purchase
+		Date   	 purchaseDate;	// Date of purchase
+		int	   	 memberID;		// Member number(name, price, qty)
+		Product  product;		// Product purchases
+		Purchase *next;			// Pointer to next purchase
 };
 
 #endif /* PURCHASE_H_ */
