@@ -414,3 +414,4 @@ void Member::Print() const
 		 << setw(COL_SPACE) << " ";
 	cout << right;
 }
+
