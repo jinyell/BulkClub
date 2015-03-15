@@ -129,8 +129,12 @@ int main()
 		case PREF_CONVERSION: //Checks if preferred members need to convert to basic
 							theClub.PreferredToBasicConversion(list);
 			break;
-		case REBATE: theClub.Rebate(list);
-		break;
+		case REBATE: 	theClub.Rebate(list);
+				break;
+		case DUES: 	//Prints a list of membership dues sorted by type and 
+				//name
+				theClub.MembershipsDues(list);
+				break;
 		default:
 			break;
 		}
