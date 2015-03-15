@@ -744,3 +744,157 @@ void MemberList::PrintAllMemberPurchase(Purchase &purList) const
 		temp = temp->GetNext();
 	}
 }
+
+void MemberList::InsertByMembTypeAndName(Member* node)
+{
+	//VARIABLE DECLARATION
+	Member *tempPtr;	//CALC - Pointer to traverse the list
+
+	//PROCESSING - IF-THEN - Used to add first node to head if list is empty
+	if(headMember == NULL)
+	{
+		headMember = node;
+		tailMember = node;
+	}
+
+	// PROCESSING - ELSE-IF - Checks if headMember's member type is = or >
+	//				node's type and if the list has more than 1 member
+	else if(headMember->GetMemberType() >= node->GetMemberType() &&
+			tailMember->GetMemberType() != node->GetMemberType())
+	{
+		//PROCESSING - IF-THEN-ELSE - Checks if headMember's member type is
+		//			   equal to node's member type
+		if(headMember->GetMemberType() == node->GetMemberType())
+		{
+			//PROCESSING - IF-THEN-ELSE - Used to perform second sorting
+			//			   criteria, check if head's name is > node's
+			//			   name. If true node is added to front
+			if(headMember->GetName() > node->GetName())
+			{
+				//Adds node to front
+				node->SetNext(headMember);
+				headMember->SetPrev(node);
+				headMember = node;
+			}
+			else	//If head's name is <= node's name
+			{
+				tempPtr = headMember;
+
+				//PROCESSING - WHILE - Traverses list checking for right
+				//			   alphabetical place while member type does
+				//			   not change.
+				while(tempPtr->GetMemberType() <=
+					  tempPtr->GetNext()->GetMemberType() &&
+					  tempPtr->GetMemberType() <= node->GetMemberType() &&
+					  tempPtr->GetName() <= node->GetName())
+				{
+					tempPtr = tempPtr->GetNext();
+				}
+
+				//Adds the node to the place found by the while loop
+				node->SetPrev(tempPtr->GetPrev());
+				node->SetNext(tempPtr);
+
+				tempPtr->GetPrev()->SetNext(node);
+				tempPtr->SetPrev(node);
+			}
+		}
+		else  //adds to front of list
+		{
+			node->SetNext(headMember);
+			headMember->SetPrev(node);
+			headMember = node;
+		}
+	}
+
+	// PROCESSING - ELSE-IF - Checks if headMember's member type is = or <
+	//				node's type and if the list has more than 1 member
+	else if(tailMember->GetMemberType() <= node->GetMemberType() &&
+			headMember->GetMemberType() != node->GetMemberType())
+	{
+		//PROCESSING - IF-THEN-ELSE - Checks if tailMember member type is
+		//			   equal to node's member type
+		if(tailMember->GetMemberType() == node->GetMemberType())
+		{
+			//PROCESSING - IF-THEN-ELSE - Used to perform second sorting
+			//			   criteria, check if tail's name is < node's
+			//			   name. If true node is added to the end
+			if(tailMember->GetName() < node->GetName())
+			{
+				tailMember->SetNext(node);
+				node->SetPrev(tailMember);
+				tailMember = node;
+			}
+			else	//If tail's name is >= node's name
+			{
+				tempPtr = tailMember;
+
+				//PROCESSING - WHILE - Traverses list checking for right
+				//			   alphabetical place while member type does
+				//			   not change.
+				while(tempPtr->GetMemberType() ==
+					  tempPtr->GetPrev()->GetMemberType() &&
+					  node->GetName() <= tempPtr->GetName() &&
+					  node->GetName() <= tempPtr->GetPrev()->GetName())
+				{
+					tempPtr = tempPtr->GetPrev();
+				}
+
+				//Adds the node to the place found by the while loop
+				node->SetPrev(tempPtr->GetPrev());
+				node->SetNext(tempPtr);
+
+				tempPtr->GetPrev()->SetNext(node);
+				tempPtr->SetPrev(node);
+			}
+		}
+		else	//adds to end of list
+		{
+			tailMember->SetNext(node);
+			node->SetPrev(tailMember);
+			tailMember = node;
+		}
+	}
+
+	else	//If second node inserted is of the same member type as head
+	{
+		//PROCESSING - IF-THEN-ELSE - If head's name is > node's name
+		if(headMember->GetName() > node->GetName())
+		{
+			//Adds to head
+			node->SetNext(headMember);
+			headMember->SetPrev(node);
+			headMember = node;
+		}
+		else
+		{
+			//Adds to tail
+			tailMember->SetNext(node);
+			node->SetPrev(tailMember);
+			tailMember = node;
+		}
+	}
+}
+
+void MemberList::PrintSortedMembersDue() const
+{
+	//VARIABLE DECLARATION
+	Member *tempPtr;	//CALC - Pointer to traverse list
+
+	//VARIABLE INITIALIZATION
+	tempPtr = headMember; //Initializes tempPtr to head of list
+
+	//PROCESSING - WHILE LOOP - Used to traverse the list. Exits upon
+	//			   reaching end of list
+	while(tempPtr != NULL)
+	{
+		//OUTPUT - Displays member's type, name, and dues
+		cout << left << setw(12) << tempPtr->GetMemberType()
+			 << setw(25) << tempPtr->GetName()
+			 << "$" << right << fixed << setprecision(2)
+			 << setw(6) << tempPtr->GetAnnualDues() << endl;
+
+		tempPtr = tempPtr->GetNext();
+	}
+	cout << endl;
+}
