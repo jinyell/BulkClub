@@ -170,7 +170,7 @@ void MemberList::AddMemberFromConsole()
 	bool	validMemNum;	// CALC		 - Valid membership number
 	bool	validDate;		// CALC		 - Valid date
 	bool	validType;		// CALC		 - Valid membership type
-
+	bool	validID;		// CALC		 - if membership already exists
 	addMem  = NULL;
 	addDate = NULL;
 
@@ -203,14 +203,31 @@ void MemberList::AddMemberFromConsole()
 	// INPUT - Get a valid membership id #
 	do
 	{
-		validMemNum = true;
+		//PROCESSING - DO-WHILE - Used to check if membership ID
+		//	       is valid
+		do
+		{
+			validMemNum = true;
 
-		cout << "Enter Membership ID: ";
-		cin  >> addMemNum;
-		validMemNum = addMem->ValidateMemberNumFromConsole(addMemNum);
+			cout << "Enter Membership ID: ";
+			cin  >> addMemNum;
+			validMemNum = addMem->ValidateMemberNumFromConsole(addMemNum);
+		}
+		while(!validMemNum);
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+		//PROCESSING - IF-THEN-ELSE - Checks if membership already exitsts 
+		if(SearchForMember(addMemNum) != NULL)
+		{
+			cout << endl << "Membership ID already exists" << endl << endl;
+			validID = false;
+		}
+		else
+		{
+			validID = true;
+		}
 	}
-	while(!validMemNum);
-	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	while(!validID);
 
 	// INPUT - Get a valid expiration date
 	do
