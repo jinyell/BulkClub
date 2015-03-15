@@ -31,6 +31,15 @@ Product::Product(string itemName,
 	previous 		= NULL;
 }
 
+Product::Product(Product const &someProduct)
+{
+	productName    = someProduct.GetName();
+	productPrice   = someProduct.GetPrice();
+	productQtySold = someProduct.GetQtySold();
+	next		   = NULL;
+	previous	   = NULL;
+}
+
 Product::~Product() {}
 
 void Product::SetNext(Product* nextNode)
@@ -38,27 +47,27 @@ void Product::SetNext(Product* nextNode)
 	next = nextNode;
 }
 
-void Product::SetPrevious(Product* previousNode)
+void Product::SetPrev(Product* previousNode)
 {
 	previous = previousNode;
 }
 
-void Product::SetProductQtySold(int saleQty)
+void Product::SetQtySold(int saleQty)
 {
 	productQtySold = saleQty;
 }
 
-string Product::GetProductName() const
+string Product::GetName() const
 {
 	return productName;
 }
 
-float Product::GetProductPrice() const
+float Product::GetPrice() const
 {
 	return productPrice;
 }
 
-int Product::GetProductQtySold() const
+int Product::GetQtySold() const
 {
 	return productQtySold;
 }
@@ -68,7 +77,7 @@ Product* Product::GetNext() const
 	return next;
 }
 
-Product* Product::GetPrevious() const
+Product* Product::GetPrev() const
 {
 	return previous;
 }
