@@ -31,6 +31,8 @@ public:
 	void InsertInOrder(Member *addNode);		// Insert a member
 	bool RemoveMember(string fullName);			// Remove a member
 	bool ClearList();							// Clear all members
+	void InsertByMembTypeAndName(Member *node);	//Insers by type then by name
+
 
 	/***************
 	 ***ACCESSORS***
@@ -48,6 +50,8 @@ public:
 	void	PrintExpMembers() const;			// Prints Expired Members
 	void	PrintAllMemberPurchase(Purchase &purList) const; // Print all
 															 // mem. purchases
+
+	void 	PrintSortedMembersDue() const;		//Prints memb dues
 
 private:
 	Member *headMember;	// Head of list
