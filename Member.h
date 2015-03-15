@@ -91,6 +91,7 @@ public:
 	virtual void   Print() const;				// Print member info
 
 
+
 private:
 	string	name;				// Name of member
 	int		memberNumber;		// Member number
