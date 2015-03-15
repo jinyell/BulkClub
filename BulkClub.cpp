@@ -204,7 +204,7 @@ void BulkClub::SearchItemsSold(PurchasesList& purchases)
 	else
 	{
 		//PROCESSING - Calculates the total price for a product
-		salesTotal = result->GetProductPrice() * result->GetProductQtySold();
+		salesTotal = result->GetPrice() * result->GetQtySold();
 
 		//OUTPUT - Displays the item's details
 		cout << left << setw(ITEM_NAME_W) << "PRODUCT"
