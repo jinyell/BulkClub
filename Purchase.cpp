@@ -17,28 +17,21 @@
  *************************************************************************/
 Purchase::Purchase()
 {
-	membershipNumber = 0;
-	purchaseProduct  = "";
-	purchasePrice  	 = 0.0;
-	purchaseQty 	 = 0;
+	memberID = 0;
 	next 			 = NULL;
 }
 
 /**************************************************************************
  * OVERLOADED CONSTRUCTOR
  *************************************************************************/
-Purchase::Purchase(Date	  saleDate,		// IN & CALC - Sale date
-		 	 	   int	  saleMembNum,	// IN & CALC - Membership #
-				   string saleProduct,	// IN & CALC - Sale product name
-				   float  salePrice,	// IN & CALC - Sale price
-				   int	  saleQty)		// IN & CALC - Sale quantity
+Purchase::Purchase(Date	   saleDate,		// IN & CALC - Sale date
+		 	 	   int	   saleMembNum,	// IN & CALC - Membership #
+				   Product newProduct)	// IN & CALC - Sale quantity
 {
-	purchaseDate 	 = saleDate;
-	membershipNumber = saleMembNum;
-	purchaseProduct  = saleProduct;
-	purchasePrice    = salePrice;
-	purchaseQty	     = saleQty;
-	next			 = NULL;
+	purchaseDate = saleDate;
+	memberID 	 = saleMembNum;
+	product		 = newProduct;
+	next		 = NULL;
 }
 
 /**************************************************************************
@@ -252,7 +245,7 @@ bool Purchase::ValidateItemPriceFromFile(const int CHECK_FLOAT)
  *
  * 		Returns - purchaseDate (Date)
  *************************************************************************/
-Date Purchase::GetPurchaseDate() const
+Date Purchase::GetDate() const
 {
 	return purchaseDate;
 }
@@ -263,42 +256,20 @@ Date Purchase::GetPurchaseDate() const
  *
  * 		Returns - membershipNumber (int)
  *************************************************************************/
-int Purchase::GetMembershipNumber() const
+int Purchase::GetMemberID() const
 {
-	return membershipNumber;
+	return memberID;
 }
 
 /**************************************************************************
- * GetPurchaseProduct
- * 		This method returns the product name.
+ * GetProduct
+ * 		This method returns the purchase product.
  *
- * 		Returns - purchaseProduct (string)
+ * 		Returns - product (Product)
  *************************************************************************/
-string Purchase::GetPurchaseProduct() const
+Product Purchase::GetProduct() const
 {
-	return purchaseProduct;
-}
-
-/**************************************************************************
- * GetPurchasePrice
- * 		This method returns the price of item.
- *
- * 		Returns - purchasePrice (float)
- *************************************************************************/
-float Purchase::GetPurchasePrice() const
-{
-	return purchasePrice;
-}
-
-/**************************************************************************
- * GetPurchaseQty
- * 		This method returns the quantity for an item.
- *
- * 		Returns - purchaseQty (int)
- *************************************************************************/
-int Purchase::GetPurchaseQty() const
-{
-	return purchaseQty;
+	return product;
 }
 
 /**************************************************************************
@@ -326,11 +297,11 @@ void Purchase::PrintPurchase() const
 	// OUTPUT - Information about a purchase
 	cout << left
 		 << setw(DATE_COL)    << purchaseDate.DisplayDate() << " "
-		 << setw(NUM_COL)     << membershipNumber			<< " "
-		 << setw(PRODUCT_COL) << purchaseProduct 			<< " "
+		 << setw(NUM_COL)     << memberID			<< " "
+		 << setw(PRODUCT_COL) << product.GetName() 	<< " "
 		 << "$" << right
 		 << setw(SPENT_COL)   << fixed << setprecision(2)
-		 << purchasePrice	  << " "
-		 << setw(QTY_COL)     << purchaseQty << endl;
+		 << product.GetPrice()  << " "
+		 << setw(QTY_COL)     << product.GetQtySold() << endl;
 
 }
