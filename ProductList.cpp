@@ -1,3 +1,4 @@
+
 /**************************************************************************
 *        __          PROGRAMMED BY       : Jinyoung Ko, Nicole Montecillo
 *        \_}                             : Augusto Cabrejos, Andrew Gadbois
@@ -23,107 +24,134 @@ ProductList::~ProductList() {}
 
 void ProductList::GetProductFromList(PurchasesList& purchases)
 {
-	Purchase *purchasesPtr;	//pointer to purchases list. to traverse it
-	Product *tempPtr3;
-	Product *newProduct;
+	//VARIABLE DECLARATIONS
+	Purchase *purchasesPtr;	//CALC - pointer to traverse purchases list.
+	Product  *tempPtr;		//CALC - pointer to traverse current list
+	Product  *newProduct;	//CALC - pointer to new product
 
-	purchasesPtr  = purchases.GetHead();	//initializes to head of purchases list
-	tempPtr3 = head;
+	//VARIABLE INITIALIZATIONS
+	purchasesPtr = purchases.GetHead(); //initializes to head of purchases
 
-	//adds to head of list if empty
-	newProduct = new Product(purchasesPtr->GetPurchaseProduct(),
-						   	 purchasesPtr->GetPurchasePrice(),
-							 purchasesPtr->GetPurchaseQty());
+	//Adds first product to head of list as it is empty
+	newProduct = new Product(purchasesPtr->GetProduct());
 	AddProductByName(newProduct);
 	purchasesPtr = purchasesPtr->GetNext();
 
+	tempPtr = head; //Initializes tempPtr to head
 
-	tempPtr3 = head;
-
+	//PROCESSING - WHILE - Used to traverse the purchases list. Exits once
+	//			   end of list is reached
 	while(purchasesPtr != NULL)
 	{
-		if(purchasesPtr->GetPurchaseProduct() != tempPtr3->GetProductName() && tempPtr3->GetNext() == NULL)
+		//PROCESSING - IF-THEN-ELSE - Used to check if the new list is not
+		//			   at its end and if the current product from purchases
+		//			   list is not already in the new list
+		if(purchasesPtr->GetProduct().GetName() != tempPtr->GetName() &&
+		   tempPtr->GetNext() == NULL)
 		{
-			newProduct = new Product(purchasesPtr->GetPurchaseProduct(),
-									 purchasesPtr->GetPurchasePrice(),
-									 purchasesPtr->GetPurchaseQty());
+			//Adds product to new list
+			newProduct = new Product(purchasesPtr->GetProduct());
 			AddProductByName(newProduct);
+
+			//PROCESSING - moves to the next node
 			purchasesPtr = purchasesPtr->GetNext();
-			tempPtr3 = head;
+
+			tempPtr = head; //reinitializes to head to start over
 		}
-		else
+		else //when product from purchases list is already in new list
 		{
-			if(purchasesPtr->GetPurchaseProduct() == tempPtr3->GetProductName())
+			//PROCESSING - IF-THEN - Checks if the products from both lists
+			//			   match. If they do their quantities are added
+			if(purchasesPtr->GetProduct().GetName() == tempPtr->GetName())
 			{
-				tempPtr3->SetProductQtySold(tempPtr3->GetProductQtySold() + purchasesPtr->GetPurchaseQty());
+				//CALCULATIN - adds items quantities
+				tempPtr->SetQtySold(tempPtr->GetQtySold() +
+									purchasesPtr->GetProduct().GetQtySold());
+
+				//PROCESSING - moves to the next node
 				purchasesPtr = purchasesPtr->GetNext();
 			}
-			tempPtr3 = tempPtr3->GetNext();
+			tempPtr = tempPtr->GetNext();
 		}
-
 	}
-
 }
 
 
 void ProductList::AddProductByName(Product *newProduct)
 {
-	Product *tempPtr;
+	//VARIABLE DECLARATIONS
+	Product *tempPtr;	//CALC - Pointer to traverse the list
 
+	//PROCESSING - IF-THEN - Used to check if the list empty.
 	if(head == NULL)
 	{
+		//Adds node to head of list
 		head = newProduct;
 		tail = newProduct;
 	}
-	else if(head->GetProductName() > newProduct->GetProductName())
+	//PROCESSING - ELSE IF-THEN - To add to the the front of the list
+	else if(head->GetName() > newProduct->GetName())
 	{
+		//Adds to head
 		newProduct->SetNext(head);
-		head->SetPrevious(newProduct);
+		head->SetPrev(newProduct);
 		head = newProduct;
 	}
-	else if(tail->GetProductName() < newProduct->GetProductName())
+	//PROCESSING - ELSE IF-THEN - To add node to the end of list
+	else if(tail->GetName() < newProduct->GetName())
 	{
+		//Add to tail
 		tail->SetNext(newProduct);
-		newProduct->SetPrevious(tail);
+		newProduct->SetPrev(tail);
 		tail = newProduct;
 	}
-
+	//PROCESSING - ELSE - To add node to the middle of the list
 	else
 	{
 		tempPtr = head;
 
-		while(tempPtr != NULL && tempPtr->GetProductName() < newProduct->GetProductName())
+		//PROCESSING - WHILE - Used to traverse the list and check for the
+		//					   right place to add the node (alphabetically)
+		while(tempPtr != NULL && tempPtr->GetName() < newProduct->GetName())
 		{
+			//Moves to the next node
 			tempPtr = tempPtr->GetNext();
 		}
 
-		newProduct->SetPrevious(tempPtr->GetPrevious());
+		//Sets the pointers correctly
+		newProduct->SetPrev(tempPtr->GetPrev());
 		newProduct->SetNext(tempPtr);
-
-		tempPtr->GetPrevious()->SetNext(newProduct);
-		tempPtr->SetPrevious(newProduct);
+		tempPtr->GetPrev()->SetNext(newProduct);
+		tempPtr->SetPrev(newProduct);
 	}
 
+	//PROCESSING - Increments product count
 	productCount++;
 }
 
 Product* ProductList::SearchForProduct(string productKey)
 {
-	Product *tempPtr;
-	bool	found;
+	//VARIABLE DECLARATIONS
+	Product *tempPtr;	//CALC - pointer to traverse the list
+	bool	found;		//CALC - T/F for finding a product
 
-	tempPtr = head;
-	found = false;
+	//VARIABLE DECLARATIONS
+	tempPtr = head;		//Initializes tempPtr to head of list
+	found 	= false;	//found initialized to false
 
+	//PROCESSING - WHILE - Used to traverse the list. Exits once the end of
+	//			   the list is reached or the item is found
 	while(tempPtr != NULL && !found)
 	{
-		if(tempPtr->GetProductName() == productKey)
+		//PROCESSING - IF-THEN-ELSE - Checks if the name matches the name
+		//			   to search
+		if(tempPtr->GetName() == productKey)
 		{
-			found = true;
+			found = true;	//found is changed true
 		}
 		else
 		{
-			tempPtr = tempPtr->GetNext();
+			tempPtr = tempPtr->GetNext();	//moves to next node
 		}
 	}
 
@@ -143,15 +171,22 @@ Product* ProductList::GetTail() const
 
 void ProductList::PrintProductAndQtyList() const
 {
-	Product *displayPtr;
+	//VARIABLE DECLARATION
+	Product *displayPtr;	//Pointer to traverse the list
 
-	displayPtr = head;
+	//VARIABLE INITIALIZATION
+	displayPtr = head;		//displayPtr is initialized to head
 
+	//PROCESSING - WHILE - Used to traverse the list. Exits once the end of
+	//			   list is reached
 	while(displayPtr != NULL)
 	{
-		cout << setw(ITEM_NAME_W) << displayPtr->GetProductName()
-			 << setw(ITEM_QTY_W) << displayPtr->GetProductQtySold()
+		//OUTPUT - Prints the product and quantity contents of the list
+		cout << setw(ITEM_NAME_W) << displayPtr->GetName()
+			 << setw(ITEM_QTY_W) << displayPtr->GetQtySold()
 			 << endl;
+
+		//Moves to next node
 		displayPtr = displayPtr->GetNext();
 	}
 	cout << endl;
