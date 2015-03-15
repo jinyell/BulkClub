@@ -62,6 +62,7 @@ void PurchasesList::AddPurchaseFromFile(string     inputFileName,
 	Member	 *tempMem;			// CALC 	 - Temp member
 	Purchase *newPurchase;		// CALC 	 - New purchase to list
 	Date	 *transDate;		// CALC 	 - Transaction date
+	Product	 *newProduct;		// CALC 	 - Product
 	int		 transMonth;		// IN & CALC - Month
 	int		 transDay;			// IN & CALC - Day
 	int		 transYear;			// IN & CALC - Year
@@ -187,12 +188,12 @@ void PurchasesList::AddPurchaseFromFile(string     inputFileName,
 
 				while(tempPur != NULL)
 				{
-					if(tempPur->GetMembershipNumber() == transMemberNum &&
-					   tempPur->GetPurchaseDate().GetDay() == transMonth &&
-					   tempPur->GetPurchaseDate().GetMonth() == transDay &&
-					   tempPur->GetPurchaseDate().GetYear() == transYear)
+					if(tempPur->GetMemberID() == transMemberNum &&
+					   tempPur->GetDate().GetDay() == transMonth &&
+					   tempPur->GetDate().GetMonth() == transDay &&
+					   tempPur->GetDate().GetYear() == transYear)
 					{
-						totalBuy += (transQty + tempPur->GetPurchaseQty());
+						totalBuy += (transQty + tempPur->GetProduct().GetQtySold());
 
 						if(totalBuy > 200)
 						{
@@ -204,9 +205,11 @@ void PurchasesList::AddPurchaseFromFile(string     inputFileName,
 
 				if(validQty)
 				{
+					newProduct = new Product(transItem, transPrice,
+											 transQty);
+
 					newPurchase = new Purchase(*transDate, transMemberNum,
-												transItem, transPrice,
-												transQty);
+												*newProduct);
 					AddPurchase(newPurchase);
 				}
 				else
@@ -242,22 +245,23 @@ void PurchasesList::AddPurchaseFromFile(string     inputFileName,
 void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 {
 	// Variable List
-	Member		*tempMem;		// CALC 	 - Temp member to check inputs
-	Purchase 	*newPurchase;	// CALC 	 - Add new purchase
-	int  	 	memNum;			// IN & CALC - Membership #
-	int  	 	addTrnMonth;	// IN & CALC - Transaction month
-	int  	 	addTrnDay;		// IN & CALC - Transaction day
-	int  	 	addTrnYear;		// IN & CALC - Transaction year
-	string	 	itemName;		// IN & CALC - Item name to purchase
-	int		 	itemQty;		// IN & CALC - Quantity of item to buy
-	float	 	itemCost;		// IN & CALC - Cost of item
-	Date 	 	*addTrnDate;	// CALC		 - Full transaction date
-	char		answer;			// CALC		 - Member response to buy more
-	bool	 	buyMore;		// CALC		 - Check to buy more
-	bool	 	validCost;		// CALC		 - Check valid cost
-	bool	 	validQty;		// CALC		 - Check valid quantity
-	bool 	 	validDate;		// CALC		 - Check valid date
-	bool 	 	validMemNum;	// CALC		 - Check member number
+	Member	 *tempMem;		// CALC 	 - Temp member to check inputs
+	Purchase *newPurchase;	// CALC 	 - Add new purchase
+	Product	 *newProduct;
+	int  	 memNum;			// IN & CALC - Membership #
+	int  	 addTrnMonth;	// IN & CALC - Transaction month
+	int  	 addTrnDay;		// IN & CALC - Transaction day
+	int  	 addTrnYear;		// IN & CALC - Transaction year
+	string	 itemName;		// IN & CALC - Item name to purchase
+	int		 itemQty;		// IN & CALC - Quantity of item to buy
+	float	 itemCost;		// IN & CALC - Cost of item
+	Date 	 *addTrnDate;	// CALC		 - Full transaction date
+	char	 answer;			// CALC		 - Member response to buy more
+	bool	 buyMore;		// CALC		 - Check to buy more
+	bool	 validCost;		// CALC		 - Check valid cost
+	bool	 validQty;		// CALC		 - Check valid quantity
+	bool 	 validDate;		// CALC		 - Check valid date
+	bool 	 validMemNum;	// CALC		 - Check member number
 
 	tempMem     = NULL;
 	addTrnDate  = NULL;
@@ -358,8 +362,9 @@ void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 		// PROCESSING - Only add purchase if information is valid
 		if(validMemNum && validDate && validQty && validCost )
 		{
-			newPurchase = new Purchase(*addTrnDate, memNum, itemName,
-										itemCost, itemQty);
+			newProduct = new Product(itemName, itemCost, itemQty);
+
+			newPurchase = new Purchase(*addTrnDate, memNum, *newProduct);
 
 			AddPurchase(newPurchase);
 		}
@@ -406,7 +411,7 @@ void PurchasesList::AddPurchase(Purchase *newPurchase)
 	tail = newPurchase;
 
 	purchaseCount++; //Increments purchase count
-	total = newPurchase->GetPurchasePrice() * newPurchase->GetPurchaseQty();
+	total = newPurchase->GetProduct().GetPrice() * newPurchase->GetProduct().GetQtySold();
 	purchaseTotal = purchaseTotal + total;
 }
 
@@ -444,12 +449,12 @@ void PurchasesList::AddSpentToMemberTotalFromFile(MemberList &theMemList,
 		// PROCESSING - Loop through purchases to
 		while(tempPur != NULL)
 		{
-			if(tempMem->GetMemberNumber() == tempPur->GetMembershipNumber()
-			   && tempPur->GetPurchaseDate().GetDay() == theDate->GetDay()
-			   && tempPur->GetPurchaseDate().GetMonth() == theDate->GetMonth()
-			   && tempPur->GetPurchaseDate().GetYear() == theDate->GetYear())
+			if(tempMem->GetMemberNumber() == tempPur->GetMemberID()
+			   && tempPur->GetDate().GetDay() == theDate->GetDay()
+			   && tempPur->GetDate().GetMonth() == theDate->GetMonth()
+			   && tempPur->GetDate().GetYear() == theDate->GetYear())
 			{
-				amtNoTax += (tempPur->GetPurchasePrice() * tempPur->GetPurchaseQty());
+				amtNoTax += (tempPur->GetProduct().GetPrice() * tempPur->GetProduct().GetQtySold());
 			}
 			tempPur = tempPur->GetNext();
 
@@ -499,9 +504,9 @@ void PurchasesList::AddSpentToMemberTotalFromConsole(MemberList &theMemList)
 		// PROCESSING - Loop through purchases to
 		while(tempPur != NULL)
 		{
-			if(tempMem->GetMemberNumber() == tempPur->GetMembershipNumber())
+			if(tempMem->GetMemberNumber() == tempPur->GetMemberID())
 			{
-				amtNoTax += (tempPur->GetPurchasePrice() * tempPur->GetPurchaseQty());
+				amtNoTax += (tempPur->GetProduct().GetPrice() * tempPur->GetProduct().GetQtySold());
 			}
 			tempPur = tempPur->GetNext();
 
@@ -557,9 +562,9 @@ void PurchasesList::SearchForPurchaseByDate(MemberList &tempMemList,
 	while(tempPur != NULL)
 	{
 		// PROCESSING - Check if purchase date in list is same as search
-		if(tempPur->GetPurchaseDate().GetDay()   == searchDay   &&
-		   tempPur->GetPurchaseDate().GetMonth() == searchMonth &&
-		   tempPur->GetPurchaseDate().GetYear()  == searchYear)
+		if(tempPur->GetDate().GetDay()   == searchDay   &&
+		   tempPur->GetDate().GetMonth() == searchMonth &&
+		   tempPur->GetDate().GetYear()  == searchYear)
 		{
 			countTotMem++;
 
@@ -582,11 +587,11 @@ void PurchasesList::SearchForPurchaseByDate(MemberList &tempMemList,
 			}
 
 			// OUTPUT - Display item name & quantity
-			cout << setw(PRODUCT_COL) << tempPur->GetPurchaseProduct() << " "
-				 << setw(QTY_COL)     << tempPur->GetPurchaseQty()     << " ";
+			cout << setw(PRODUCT_COL) << tempPur->GetProduct().GetName() << " "
+				 << setw(QTY_COL)     << tempPur->GetProduct().GetQtySold()     << " ";
 
 			// PROCESSING - Search for member
-			tempMem = tempMemList.SearchForMember(tempPur->GetMembershipNumber());
+			tempMem = tempMemList.SearchForMember(tempPur->GetMemberID());
 
 			// PROCESSING - If member not found tell user no name & mem type
 			if(tempMem == NULL)
@@ -632,15 +637,15 @@ void PurchasesList::SearchForPurchaseByDate(MemberList &tempMemList,
 			// PROCESSING - If the purchase membership # & member membership
 			//			  - number are the same & the date are the same
 			//			  - then add the total to that member
-			if(tempPur->GetMembershipNumber() == tempMem->GetMemberNumber() &&
-			   tempPur->GetPurchaseDate().GetDay()   == searchDay   &&
-			   tempPur->GetPurchaseDate().GetMonth() == searchMonth &&
-			   tempPur->GetPurchaseDate().GetYear()  == searchYear)
+			if(tempPur->GetMemberID() == tempMem->GetMemberNumber() &&
+			   tempPur->GetDate().GetDay()   == searchDay   &&
+			   tempPur->GetDate().GetMonth() == searchMonth &&
+			   tempPur->GetDate().GetYear()  == searchYear)
 			{
 				valid = true;
 
 				// PROCESSING - Update total for member for that day
-				memTotal += (tempPur->GetPurchasePrice() * tempPur->GetPurchaseQty());
+				memTotal += (tempPur->GetProduct().GetPrice() * tempPur->GetProduct().GetQtySold());
 			}
 
 			tempPur = tempPur->GetNext();
@@ -789,14 +794,14 @@ void PurchasesList::PrintAllMemberPurchases(MemberList &tempMemList) const
 		while(tempPur != NULL)
 		{
 			// PROCESSING - Check if the membership id #s are the same
-			if(tempMem->GetMemberNumber() == tempPur->GetMembershipNumber())
+			if(tempMem->GetMemberNumber() == tempPur->GetMemberID())
 			{
 				// OUTPUT - Product name, price of item, & quantity of item
 				//		  - the date, and add to purchase count
-				cout << setw(PRODUCT_COL) << tempPur->GetPurchaseProduct() << " "
-					 << setw(SPENT_COL) << tempPur->GetPurchasePrice() <<  " "
-					 << setw(QTY_COL) << tempPur->GetPurchaseQty() << " ";
-					tempPur->GetPurchaseDate();
+				cout << setw(PRODUCT_COL) << tempPur->GetProduct().GetName() << " "
+					 << setw(SPENT_COL) << tempPur->GetProduct().GetPrice() <<  " "
+					 << setw(QTY_COL) << tempPur->GetProduct().GetQtySold() << " ";
+					tempPur->GetDate();
 					cout << endl;
 					countPur++;
 			}
@@ -924,14 +929,12 @@ void PurchasesList::FindPurchasesByMember(PurchasesList& purchasesFound,
 	{
 		//PROCESSING - IF-THEN - Used to check if the current's node
 		//			   membership number matches the search key
-		if(tempPtr->GetMembershipNumber() == membershipNum)
+		if(tempPtr->GetMemberID() == membershipNum)
 		{
 			//Creates a new purchase node
-			newPurchase = new Purchase(tempPtr->GetPurchaseDate(),
-									   tempPtr->GetMembershipNumber(),
-									   tempPtr->GetPurchaseProduct(),
-									   tempPtr->GetPurchasePrice(),
-									   tempPtr->GetPurchaseQty());
+			newPurchase = new Purchase(tempPtr->GetDate(),
+									   tempPtr->GetMemberID(),
+									   tempPtr->GetProduct());
 			//AddPurchase - adds node to the list
 			purchasesFound.AddPurchase(newPurchase);
 		}
