@@ -16,9 +16,12 @@ BulkClub::BulkClub() {}
 
 BulkClub::~BulkClub() {}
 
+/**************************************************************************
+ * AddMemberFromFile
+ *************************************************************************/
 void BulkClub::AddMemberFromFile(MemberList& list)
 {
-	string fileName;
+	string fileName;	// INPUT & CALC - file name
 
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	cout << "Please enter member file txt name: ";
@@ -28,20 +31,27 @@ void BulkClub::AddMemberFromFile(MemberList& list)
 	cout << endl;
 }
 
+/**************************************************************************
+ * AddMember (from console)
+ *************************************************************************/
 void BulkClub::AddMember(MemberList &tempMemList)
 {
 	tempMemList.AddMemberFromConsole();
 }
 
+/**************************************************************************
+ * RemoveMember (from console)
+ *************************************************************************/
 void BulkClub::RemoveMember(MemberList &tempMemList)
 {
-	string  name;
-	bool	removed;
-	int		selection;
-	int		num;
+	string  name;			// IN & CALC - name to delete
+	bool	removed;		// CALC		 - Found member to remove
+	int		selection;		// IN & CALC - Menu choice
+	int		num;			// IN &C ALC - membership number
 
 	if(!(tempMemList.IsEmpty()))
 	{
+		// INPUT - Get input menu choice
 		do
 		{
 			cout << "Remove Member by:\n"
@@ -56,6 +66,7 @@ void BulkClub::RemoveMember(MemberList &tempMemList)
 
 		if(selection == 1)
 		{
+			// INPUT - Get input name
 			cout << "Enter Name: ";
 			getline(cin, name);
 
@@ -63,9 +74,10 @@ void BulkClub::RemoveMember(MemberList &tempMemList)
 		}
 		else
 		{
+			// INPUT - Get input membership number
 			do
 			{
-				cout << "Enter SID#: ";
+				cout << "Enter mem#: ";
 				num = GetAndCheckInt(0, 99999);
 				cout << endl;
 			}while(num == -1);
@@ -73,6 +85,7 @@ void BulkClub::RemoveMember(MemberList &tempMemList)
 			removed = tempMemList.RemoveMember(num);
 		}
 
+		// OUTPUT - Removed successful/not
 		if(!removed)
 		{
 			cout << "Cannot remove! Not a Bulk Club member\n\n";
@@ -89,10 +102,14 @@ void BulkClub::RemoveMember(MemberList &tempMemList)
 	}
 }
 
+/**************************************************************************
+ * RemoveAllMember
+ *************************************************************************/
 void BulkClub::RemoveAllMember(MemberList& memList)
 {
 	if(!(memList.IsEmpty()))
 	{
+		// PROCESSING - Clear list
 		memList.ClearList();
 		cout << "Removed all Bulk Club members\n\n";
 	}
@@ -103,9 +120,12 @@ void BulkClub::RemoveAllMember(MemberList& memList)
 
 }
 
+/**************************************************************************
+ * AddPurchasesFromFile
+ *************************************************************************/
 void BulkClub::AddPurchasesFromFile(PurchasesList& purList, MemberList& tempMemList)
 {
-	string fileName;
+	string fileName;	// IN & CALC - file name
 
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	cout << "Please enter a purchases file txt name: ";
@@ -115,11 +135,17 @@ void BulkClub::AddPurchasesFromFile(PurchasesList& purList, MemberList& tempMemL
 	cout << endl;
 }
 
+/**************************************************************************
+ * AddPurchase (from console)
+ *************************************************************************/
 void BulkClub::AddPurchase(PurchasesList& purList, MemberList& memList)
 {
 	purList.AddPurchaseFromConsole(memList);
 }
 
+/**************************************************************************
+ * PrintMembersList
+ *************************************************************************/
 void BulkClub::PrintMembersList(MemberList& memList) const
 {
 	if(!(memList.IsEmpty()))
@@ -133,6 +159,9 @@ void BulkClub::PrintMembersList(MemberList& memList) const
 	}
 }
 
+/**************************************************************************
+ * PrintPurchasesList
+ *************************************************************************/
 void BulkClub::PrintPurchasesList(PurchasesList& purList) const
 {
 	if(purList.GetHead() != NULL)
@@ -146,14 +175,18 @@ void BulkClub::PrintPurchasesList(PurchasesList& purList) const
 	}
 }
 
+/**************************************************************************
+ * ReportAnyDay
+ *************************************************************************/
 void BulkClub::ReportAnyDay(PurchasesList& purList, MemberList& memList)
 {
-	int aMonth;
-	int aDay;
-	int aYear;
+	int aMonth;		// CALC - month
+	int aDay;		// CALC - day
+	int aYear;		// CALC - year
 
 	if(purList.GetHead() != NULL)
 	{
+		// PROCESSING - Get date to search for, then search
 		purList.ConsoleSearchDate(aMonth, aDay, aYear);
 		purList.SearchForPurchaseByDate(memList, aMonth, aDay, aYear);
 	}
@@ -162,6 +195,10 @@ void BulkClub::ReportAnyDay(PurchasesList& purList, MemberList& memList)
 		cout << "Sorry there are no Bulk Club purchases\n\n";
 	}
 }
+
+/**************************************************************************
+ * PurchasesbyMember
+ *************************************************************************/
 void BulkClub::PurchasesbyMember(MemberList& list,
 								 PurchasesList& purchases)
 {
@@ -273,6 +310,9 @@ void BulkClub::PurchasesbyMember(MemberList& list,
 	} // END IF-ELSE
 }
 
+/**************************************************************************
+ * TotalPurchasesByAllMembers
+ *************************************************************************/
 void BulkClub::TotalPurchasesByAllMembers(MemberList    &memList,
 										  PurchasesList &purList)
 {
@@ -286,6 +326,9 @@ void BulkClub::TotalPurchasesByAllMembers(MemberList    &memList,
 	}
 }
 
+/**************************************************************************
+ * CheckExpMembers
+ *************************************************************************/
 void BulkClub::CheckExpMembers(MemberList& list) //list to search
 {
 	//VARIABLE DECLARATIONS
@@ -350,6 +393,9 @@ void BulkClub::CheckExpMembers(MemberList& list) //list to search
 	}// END IF-ELSE
 }
 
+/**************************************************************************
+ * SearchItemsSold
+ *************************************************************************/
 void BulkClub::SearchItemsSold(PurchasesList& purchases)
 {
 	//VARIABLE DECLARATIONS
@@ -405,6 +451,9 @@ void BulkClub::SearchItemsSold(PurchasesList& purchases)
 	}
 }
 
+/**************************************************************************
+ * ItemsSold
+ *************************************************************************/
 void BulkClub::ItemsSold(PurchasesList& purchases)
 {
 	//VARIABLE DECLARATION
@@ -429,15 +478,18 @@ void BulkClub::ItemsSold(PurchasesList& purchases)
 	}
 }
 
+/**************************************************************************
+ * CheckConvertToPreferred
+ *************************************************************************/
 void BulkClub::CheckConvertToPreferred(MemberList &memList)
 {
 	// Variable List
-	int				choice;
-	bool  			convert;
-	float 			total;
-	string			name;
-	Member 			*tempBasic;
-	PreferredMember tempPref;
+	int				choice;		// IN & CALC - Menu choice
+	bool  			convert;	// CALC		 - Convert
+	float 			total;		// CALC		 - Total spent
+	string			name;		// IN		 - name
+	Member 			*tempBasic; // CALC		 - Basic member
+	PreferredMember tempPref;	// CALC		 - Pref member
 
 	if(memList.IsEmpty())
 	{
@@ -445,6 +497,7 @@ void BulkClub::CheckConvertToPreferred(MemberList &memList)
 	}
 	else
 	{
+		// INPUT - Get menu choice
 		do
 		{
 			cout << "Change Basic to Preferred membership\n"
@@ -457,8 +510,10 @@ void BulkClub::CheckConvertToPreferred(MemberList &memList)
 
 		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
+		// PROCESSING - Figure convert for Single basic member
 		if(choice == 1)
 		{
+			// INPUT - Get name
 			cout << "Please Enter a Name: ";
 			getline(cin, name);
 
@@ -485,6 +540,12 @@ void BulkClub::CheckConvertToPreferred(MemberList &memList)
 						cout << "Not recommended to switch to a preferred customer\n\n";
 						convert = false;
 					}
+
+					cout << tempBasic->GetName() << " has spent $"
+						 << tempBasic->GetTotalSpentNoTax() << " and could "
+							"accumulated a rebate of $" << fixed
+						 << setprecision(2) << total << ".\n\n" << setprecision(6);
+					cout.unsetf(ios::fixed);
 				}
 				else
 				{
@@ -502,6 +563,7 @@ void BulkClub::CheckConvertToPreferred(MemberList &memList)
 		{
 			tempBasic = memList.GetHeadofList();
 
+			// PROCESSING - Loop through member lsit
 			while(tempBasic != NULL)
 			{
 				if(tempBasic->GetMemberType() == "Basic")
@@ -513,16 +575,22 @@ void BulkClub::CheckConvertToPreferred(MemberList &memList)
 					if(total > tempPref.GetAnnualDues())
 					{
 						cout << tempBasic->GetName() << " is recommended to "
-								"switch to a preferred customer\n\n";
+								"switch to a preferred customer\n";
 						convert = true;
 					}
 					// PROCESSING - If basic member should remain as basic
 					else
 					{
 						cout << tempBasic->GetName() << " is not recommended "
-								"to switch to a preferred customer\n\n";
+								"to switch to a preferred customer\n";
 						convert = false;
 					}
+
+					cout << tempBasic->GetName() << " has spent $"
+						 << tempBasic->GetTotalSpentNoTax() << " and could "
+							"accumulated a rebate of $" << fixed
+						 << setprecision(2) << total << ".\n\n" << setprecision(6);
+					cout.unsetf(ios::fixed);
 				}
 				tempBasic = tempBasic->GetNext();
 			} // END WHILE
@@ -530,12 +598,15 @@ void BulkClub::CheckConvertToPreferred(MemberList &memList)
 	} // END IF - ELSE
 }
 
+/**************************************************************************
+ * Rebate
+ *************************************************************************/
 void BulkClub::Rebate(MemberList &memList) const
 {
-	Member *tempMem;
+	Member 			*tempMem;
 	PreferredMember tempPref;
-	float total;
-	int count;
+	float 			total;
+	int 			count;
 
 	if(memList.IsEmpty())
 	{
@@ -576,6 +647,9 @@ void BulkClub::Rebate(MemberList &memList) const
 	} // END IF-ELSE
 }
 
+/**************************************************************************
+ * PreferredToBasicConversion
+ *************************************************************************/
 void BulkClub::PreferredToBasicConversion(MemberList& list)
 {
 	//VARIABLE DECLARATIONS
@@ -611,11 +685,13 @@ void BulkClub::PreferredToBasicConversion(MemberList& list)
 		//			   members
 		if(selection == 1)
 		{
+			// INPUT - Get member name
 			cout << "Enter a member name: ";
 			cin.ignore(1000, '\n');
 			getline(cin, nameKey);
 			result = list.SearchForMember(nameKey);
 
+			// PROCESSING - Not a member
 			if(result == NULL)
 			{
 				cout << endl <<nameKey << " is not a member of Bulk Club"
@@ -676,6 +752,9 @@ void BulkClub::PreferredToBasicConversion(MemberList& list)
 	} // END IF-ELSE
 }
 
+/**************************************************************************
+ * MembershipsDues
+ *************************************************************************/
 void BulkClub::MembershipsDues(MemberList& list) //IN - the member's list
 {
 	//VARIABLE DECLARATIONS
