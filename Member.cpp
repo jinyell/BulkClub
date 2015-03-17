@@ -421,7 +421,9 @@ void Member::Print() const
 	cout << setfill(' ');
 	cout << setw(NAME_COL)  << name 		   << setw(COL_SPACE) << " ";
 	cout << setw(TYPE_COL)  << GetMemberType() << setw(COL_SPACE) << " ";
-	cout << setw(NUM_COL)   << memberNumber    << setw(COL_SPACE) << " ";
+	cout << setw(NUM_COL-5) << " "
+		 << setw(NUM_COL-5) << right << setfill('0')
+		 << memberNumber    << left << setfill(' ')<< setw(COL_SPACE) << " ";
 	cout << right 			<< fixed 		   << setprecision(2);
 	cout << "$"  			<< setw(SPENT_COL) << totalSpentPlusTax
 		 << setw(COL_SPACE) << " ";
