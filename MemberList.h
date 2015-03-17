@@ -30,6 +30,7 @@ public:
 	void AddMemberFromConsole();				// Add member from console
 	void InsertInOrder(Member *addNode);		// Insert a member
 	bool RemoveMember(string fullName);			// Remove a member
+	bool RemoveMember(int removeSID);
 	bool ClearList();							// Clear all members
 	void InsertByMembTypeAndName(Member *node);	//Insers by type then by name
 

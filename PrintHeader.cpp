@@ -27,13 +27,9 @@
  *************************************************************************/
 
 void PrintHeader(const string programmer1, // IN & OUT 		 - Programmer 1
-				 const string programmer2, // IN & OUT 		 - Programmer 2
-				 const string programmer3, // IN & OUT 		 - Programmer 3
-				 const string programmer4, // IN & OUT 		 - Programmer 4
+				 const string programmer2, // IN & OUT 		 - Programmer 4
 				 const int    sidNum1,	   // IN & OUT 		 - SID # 1
-				 const int    sidNum2,	   // IN & OUT 		 - SID # 2
-				 const int    sidNum3,	   // IN & OUT 		 - SID # 3
-				 const int    sidNum4,	   // IN & OUT 		 - SID # 4
+				 const int    sidNum2,	   // IN & OUT 		 - SID # 4
 				 const string assgName,	   // IN & OUT       - Assg Name
 				 const char   assgType,    // IN, CALC & OUT - Assg Type
 				 const int    assgNum)	   // IN & OUT		 - Assg #
@@ -77,14 +73,13 @@ void PrintHeader(const string programmer1, // IN & OUT 		 - Programmer 1
 	cout << "*************************************************************"
 			"**************";
 	cout << "\n*        __          " << setw(COL_WIDTH) << "PROGRAMMED BY"
-		 << ": "   					  << programmer1 	 << ", "
-		 << programmer2;
+		 << ": "   					  << programmer1;
 	cout << "\n*        \\_}        " << setw(COL_WIDTH) << " "  << " : "
-		 << programmer3				  << ", " 			 << programmer4;
+		 << programmer2;
 	cout << "\n*       .-./--.      " << setw(COL_WIDTH) << "STUDENT ID"
-		 << ": " 					  << sidNum1 		 << ", " << sidNum2;
+		 << ": " 					  << sidNum1;
 	cout << "\n*     /# ^^     \\   " << setw(COL_WIDTH) << " "  << " : "
-		 << sidNum3 				  << ", " 			 << sidNum4;
+		 << sidNum2;
 	cout << "\n*    |           |   " << setw(COL_WIDTH) << "CLASS"  << ": "
 		 << CLASS;
 	cout << "\n*     \\         /    "<< setw(COL_WIDTH) << "SECTION" << ": "

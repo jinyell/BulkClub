@@ -152,7 +152,7 @@ void PurchasesList::AddPurchaseFromFile(string     inputFileName,
 				if(tempMem == NULL)
 				{
 					validMemNum = false;
-					inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+					cout << "Sorry this Bulk Club member does not exist\n\n";
 				}
 				else
 				{
@@ -218,12 +218,13 @@ void PurchasesList::AddPurchaseFromFile(string     inputFileName,
 							"purchase on any given trip is 200 items. "
 							"Bulk Club cannot allow the last purchase\n";
 				}
-			} // END IF
+			}// END IF
 		} // END WHILE
 	} // END IF-ELSE
 
 	// PROCESSING - Update the total for each member that purchased items
 	AddSpentToMemberTotalFromFile(theMemList, transDate);
+	cout << endl;
 
 	inFile.close();
 }
@@ -796,14 +797,32 @@ void PurchasesList::PrintAllMemberPurchases(MemberList &tempMemList) const
 			// PROCESSING - Check if the membership id #s are the same
 			if(tempMem->GetMemberNumber() == tempPur->GetMemberID())
 			{
+				countPur++;
+
+				if(countPur == 1)
+				{
+					cout << setfill(' ') << left
+						 << setw(PRODUCT_COL) << "PRODUCT" << " "
+						 << setw(SPENT_COL+1) << "PRICE" << " "
+						 << setw(QTY_COL) << "QTY" << " "
+						 << setw(DATE_COL) << "DATE" << "\n"
+						 << setfill('-')
+						 << setw(PRODUCT_COL) << "-" << " "
+						 << setw(SPENT_COL+1) << "-" << " "
+						 << setw(QTY_COL) << "-" << " "
+						 << setw(DATE_COL) << "-" << "\n" << setfill(' ');
+				}
 				// OUTPUT - Product name, price of item, & quantity of item
 				//		  - the date, and add to purchase count
-				cout << setw(PRODUCT_COL) << tempPur->GetProduct().GetName() << " "
-					 << setw(SPENT_COL) << tempPur->GetProduct().GetPrice() <<  " "
-					 << setw(QTY_COL) << tempPur->GetProduct().GetQtySold() << " ";
-					tempPur->GetDate();
-					cout << endl;
-					countPur++;
+				cout << left;
+				cout << setw(PRODUCT_COL) << tempPur->GetProduct().GetName()
+					 << " " << "$" << right << fixed << setprecision(2)
+					 << setw(SPENT_COL) << tempPur->GetProduct().GetPrice()
+					 <<  " " << left << setprecision(6) << "  ";
+				cout.unsetf(ios::fixed);
+				cout << setw(QTY_COL-2) << tempPur->GetProduct().GetQtySold();
+				cout << " " << tempPur->GetDate().DisplayDate();
+				cout << endl;
 			}
 			tempPur = tempPur->GetNext();
 		}

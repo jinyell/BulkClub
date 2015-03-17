@@ -23,6 +23,16 @@ class BulkClub
 		BulkClub();
 		virtual ~BulkClub();
 
+		void AddPurchasesFromFile(PurchasesList& purList, MemberList& memList);
+		void AddPurchase(PurchasesList& purList, MemberList& memList);
+
+		void PrintMembersList(MemberList& memList) const;
+
+		void PrintPurchasesList(PurchasesList& purList) const;
+
+		// Requirement #1
+		void ReportAnyDay(PurchasesList& purList, MemberList& memList);
+
 		//Requirement #2
 		void PurchasesbyMember(MemberList& list, //Gets purchases by member
 				       	   	   PurchasesList& purchases);
@@ -45,6 +55,12 @@ class BulkClub
 
 		//Requirement #8
 		void CheckExpMembers(MemberList& list); //Checks expiring membership
+
+		// Requirement #9
+		void AddMemberFromFile(MemberList& list);
+		void AddMember(MemberList &list);
+		void RemoveMember(MemberList &list);
+		void RemoveAllMember(MemberList &list);
 
 		// Requirement #10
 		void CheckConvertToPreferred(MemberList &memList);

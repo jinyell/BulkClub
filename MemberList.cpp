@@ -140,10 +140,16 @@ void MemberList::AddMemberFromFile(string fileName)
 												  *newDate);
 					InsertInOrder(newNode);
 				} // END IF-ELSE (MEMBERSHIP TYPE)
-			} // END IF (validations)
+			}
+			else
+			{
+				cout << getName << " contains invalid information & cannot"
+						" be a Bulk Club Member\n";
+			} // END IF-ELSE (validations)
 		} // END WHILE (inFile)
 	} // End IF-ELSE (inFile)
 
+	cout << endl;
 	inFile.close();
 }
 
@@ -176,7 +182,6 @@ void MemberList::AddMemberFromConsole()
 
 	// OUTPUT - Notify user filling out application to be added as a member
 	cout << "Application to become a Bulk Club Member\n";
-	cin.ignore(1000, '\n');
 
 	// INPUT - Get a valid Membership Type (keep looping until valid
 	do
@@ -273,6 +278,8 @@ void MemberList::AddMemberFromConsole()
 				InsertInOrder(addMem);
 			} // END IF-ELSE
 	} // END IF
+
+	cout << endl;
 }
 
 /**************************************************************************
@@ -384,21 +391,95 @@ bool MemberList::RemoveMember(string fullName)	// IN & CALC - Remove name
 		{
 			headMember = headMember->GetNext();
 			headMember->SetPrev(NULL);
+			delete tempPtr;
 		}
 		// PROCESSING - If member to remove is at the end of the list
 		else if(tempPtr == tailMember)
 		{
 			tailMember = tailMember->GetPrev();
 			tailMember->SetNext(NULL);
+			delete tempPtr;
+		}
+		// PROCESSING - If member to remove is in middle of list
+		else
+		{
+			tempPtr->GetPrev()->SetNext(tempPtr->GetNext());
+			tempPtr->GetNext()->SetPrev(tempPtr->GetPrev());
+			delete tempPtr;
+		}
+
+		memberSize--;
+	}
+
+	return found;
+}
+
+/**************************************************************************
+ * RemoveMember
+ * 		This function receives a name that is to be removed from the
+ * 		list of members. This method calls the SearchForMember method
+ * 		to find the location of the member to be deleted. Then the member
+ * 		is removed while simultaneously updated the list of members
+ * 		and updating the list of members size.
+ *
+ * 		Returns - found (bool)
+ *************************************************************************/
+bool MemberList::RemoveMember(int removeSID)	// IN & CALC - Remove name
+{
+	// Variable List
+	bool    found;		// CALC & OUT - If removed or not
+	Member *tempPtr;	// CALC		  - Temp ptr to remove from list
+	Member *toRemove;	// CALC		  - Ptr of member to remove
+
+	// PROCESSING - Remove member not found & search for member to remove
+	found = false;
+	toRemove = SearchForMember(removeSID);
+
+	// PROCESSING - Check that list is not empty
+	if(toRemove != NULL)
+	{
+		tempPtr = headMember;
+
+		// PROCESSING - Keep looping until end of list or remove item found
+		while(tempPtr != NULL && !found)
+		{
+			// PROCESSING - If remove member is found or go to next in list
+			if(tempPtr == toRemove)
+			{
+				found = true;
+			}
+			else
+			{
+				tempPtr = tempPtr->GetNext();
+			}
+		} // END - While loop
+	} // END - If (toRemove != NULL)
+
+	// PROCESSING - If member to remove is found
+	if(found)
+	{
+		// PROCESSING - If member to remove is at the front of the list
+		if(tempPtr == headMember)
+		{
+			headMember = headMember->GetNext();
+			headMember->SetPrev(NULL);
+			delete tempPtr;
+		}
+		// PROCESSING - If member to remove is at the end of the list
+		else if(tempPtr == tailMember)
+		{
+			tailMember = tailMember->GetPrev();
+			tailMember->SetNext(NULL);
+			delete tempPtr;
 		}
 		// PROCESSING - If member to remove is in middle of list
 		else
 		{
 			tempPtr->GetPrev()->SetNext(tempPtr->GetNext());
 			tempPtr->GetNext()->SetNext(tempPtr->GetPrev());
+			delete tempPtr;
 		}
 
-		delete tempPtr;
 		memberSize--;
 	}
 

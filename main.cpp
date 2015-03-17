@@ -31,38 +31,13 @@ int main()
 	BulkClub	  theClub;		// BulkClub object for operations/reports
 	int		 	 selection;	// user's selection for main menu
 	bool		  run;			// T/F for program run
-	Date		  aDate;
-	int aMonth;
-	int aDay;
-	int aYear;
+
+	// OUTPUT - Print header to console
+	PrintHeader("Jinyoung Ko", "Augusto Cabrejos", 589855, 02,
+				"Bulk Club", 'G', 1);
 
 	//VARIABLE INITIALIZATIONS
 	run = true;
-
-	// OUTPUT - Print header to console
-	PrintHeader("Jinyoung Ko", "Nicole Montecillo", "Augusto Cabrejos",
-				"Andrew Gadbois", 589855, 02, 03, 04, "Bulk Club", 'G', 1);
-
-	// PROCESSING - Create members list & print members list
-	list.AddMemberFromFile("InvalidMembers.txt");
-	list.PrintMemberList();
-	if(list.IsEmpty())
-	{
-		cout << "LIST IS EMPTY\n";
-	}
-
-	list.AddMemberFromFile("warehouse shoppers.txt");
-	list.PrintMemberList();
-
-	cout << endl;
-
-	//Adds contents of purchase files to the list. Hard coded for now
-	//All contents are added into a single list called purchases
-	purchases.AddPurchaseFromFile("day1.txt", list);
-	purchases.AddPurchaseFromFile("day2.txt", list);
-	purchases.AddPurchaseFromFile("day3.txt", list);
-	purchases.AddPurchaseFromFile("day4.txt", list);
-	purchases.AddPurchaseFromFile("day5.txt", list);
 
 	//PROCESSING - DO-WHILE LOOP - Used to output the main menu, prompt for
 	//			   user input, and go into the different operations.
@@ -73,70 +48,85 @@ int main()
 
 		//GetAndCheckInt - this will prompt for user input and validate it
 		selection = GetAndCheckInt(MAIN_MENU_MIN, MAIN_MENU_MAX);
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		cout << endl;
 
 		//PROCESSING - SWITCH - Used to route the program into different
 		//	       operations based on user's selection from menu
 		switch(selection)
 		{
-		case EXIT: 		//Program ends
-					cout << "PROGRAM ENDED" << endl;
-					run = false;
-					break;
+		case EXIT: 			//Program ends
+							cout << "PROGRAM ENDED" << endl;
+							run = false;
+							break;
 
-		case MEMBERS: 		//Prints a list of members
-					cout << "LIST OF MEMBERS:" << endl;
-					list.PrintMemberList();
-					break;
-
-		case PURCHASES: 	//Prints a list of purchases
-					cout << "LIST OF PURCHASES:" << endl;
-					purchases.DisplayPurchasesList();
-					break;
+		case MEM_FILE: 		theClub.AddMemberFromFile(list);
+							break;
 
 		case ADD_MEMBER: 	//Adds member
-					list.AddMemberFromConsole();
-					break;
+							theClub.AddMember(list);
+							break;
+
+		case REMOVE_MEMBER: theClub.RemoveMember(list);
+							break;
+
+		case REMOVE_ALL_MEM:theClub.RemoveAllMember(list);
+			break;
+
+		case PURCHASE_FILE: theClub.AddPurchasesFromFile(purchases, list);
+			break;
 
 		case ADD_PURCHASE:	// Purchase from console
-					purchases.AddPurchaseFromConsole(list);
-					break;
+							theClub.AddPurchase(purchases, list);
+							break;
+
+		case MEMBERS: 		//Prints a list of members
+							theClub.PrintMembersList(list);
+							break;
+
+		case PURCHASES: 	//Prints a list of purchases
+							theClub.PrintPurchasesList(purchases);
+							break;
 
 		case EXPIRING:  	//Prints a report of memberships expiring on
-					//a give date (prompts the user)
-					cout << "CHECK FOR EXPIRING MEMBERSHIPS" << endl;
-					theClub.CheckExpMembers(list);
-					break;
+							//a give date (prompts the user)
+							theClub.CheckExpMembers(list);
+							break;
 
 		case SALES_BY_DATE:	// Prints a sales report of a particular day
-							purchases.ConsoleSearchDate(aMonth, aDay, aYear);
-							purchases.SearchForPurchaseByDate(list, aMonth, aDay, aYear);
-					break;
+							theClub.ReportAnyDay(purchases, list);
+							break;
 					
-		case SALES_BY_MEMBER: 	// Prints a report showing purchases by member
-					theClub.PurchasesbyMember(list, purchases);
-					break;
-		case SALES_ALL_MEMBER: purchases.PrintAllMemberPurchases(list);
-					break;
-		case ITEMS_SOLD: //Displays a list of products sold and their qty.
+		case SALES_BY_MEMBER: // Prints a report showing purchases by member
+							theClub.PurchasesbyMember(list, purchases);
+							break;
+
+		case SALES_ALL_MEM: theClub.TotalPurchasesByAllMembers(list, purchases);
+							break;
+
+		case ITEMS_SOLD: 	//Displays a list of products sold and their qty.
 							theClub.ItemsSold(purchases);
 							break;
+
 		case SEARCH_ITEM:	//Searches for a specific product
 							theClub.SearchItemsSold(purchases);
 							break;
-		case BASIC_CONVERSION: theClub.CheckConvertToPreferred(list);
-			break;
-		case PREF_CONVERSION: //Checks if preferred members need to convert to basic
+
+		case BASIC_CONVERT: theClub.CheckConvertToPreferred(list);
+							break;
+
+		case PREF_CONVERT: 	//Checks if preferred members need to convert to basic
 							theClub.PreferredToBasicConversion(list);
-			break;
-		case REBATE: 	theClub.Rebate(list);
-				break;
-		case DUES: 	//Prints a list of membership dues sorted by type and 
-				//name
-				theClub.MembershipsDues(list);
-				break;
-		default:
-			break;
+							break;
+
+		case REBATE: 		theClub.Rebate(list);
+							break;
+
+		case DUES: 			//Prints a list of membership dues sorted by
+							// type and name
+							theClub.MembershipsDues(list);
+							break;
+		default:			break;
 		}
 	}while(run);
 
