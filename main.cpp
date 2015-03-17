@@ -1,8 +1,8 @@
 /**************************************************************************
-*        __          PROGRAMMED BY       : Jinyoung Ko, Nicole Montecillo
-*        \_}                             : Augusto Cabrejos, Andrew Gadbois
-*       .-./--.      STUDENT ID          : 589855, 2
-*     /# ^^     \                        : 3, 4
+*        __          PROGRAMMED BY       : Jinyoung Ko
+*        \_}                             : Augusto Cabrejos
+*       .-./--.      STUDENT ID          : 589855
+*     /# ^^     \                        : 2
 *    |           |   CLASS               : CS1C
 *     \         /    SECTION             : TTH 12:30-4:20PM
 *      \       /     CLASS PROJECT #1    : Bulk Club
@@ -29,7 +29,7 @@ int main()
 	MemberList 	  list;			// list of members
 	PurchasesList purchases;	// list of purchases
 	BulkClub	  theClub;		// BulkClub object for operations/reports
-	int		 	 selection;	// user's selection for main menu
+	int		 	  selection;	// user's selection for main menu
 	bool		  run;			// T/F for program run
 
 	// OUTPUT - Print header to console
@@ -48,7 +48,6 @@ int main()
 
 		//GetAndCheckInt - this will prompt for user input and validate it
 		selection = GetAndCheckInt(MAIN_MENU_MIN, MAIN_MENU_MAX);
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		cout << endl;
 
 		//PROCESSING - SWITCH - Used to route the program into different

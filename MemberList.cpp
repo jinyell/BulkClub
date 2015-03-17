@@ -193,7 +193,7 @@ void MemberList::AddMemberFromConsole()
 				"B - Basic Member\n"
 				"P - Preferred Member\n"
 				"\nEnter Member Type: ";
-
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		cin.get(addMemType);
 		addMemType = toupper(addMemType);
 		validType = addMem->ValidateMemberTypeFromConsole(addMemType);
@@ -360,7 +360,7 @@ bool MemberList::RemoveMember(string fullName)	// IN & CALC - Remove name
 	Member *toRemove;	// CALC		  - Ptr of member to remove
 
 	// PROCESSING - Remove member not found & search for member to remove
-	found = false;
+	found    = false;
 	toRemove = SearchForMember(fullName);
 
 	// PROCESSING - Check that list is not empty

@@ -1,8 +1,8 @@
 /**************************************************************************
-*        __          PROGRAMMED BY       : Jinyoung Ko, Nicole Montecillo
-*        \_}                             : Augusto Cabrejos, Andrew Gadbois
-*       .-./--.      STUDENT ID          : 589855, 2
-*     /# ^^     \                        : 3, 4
+*        __          PROGRAMMED BY       : Jinyoung Ko
+*        \_}                             : Augusto Cabrejos
+*       .-./--.      STUDENT ID          : 589855
+*     /# ^^     \                        : 2
 *    |           |   CLASS               : CS1C
 *     \         /    SECTION             : TTH 12:30-4:20PM
 *      \       /     CLASS PROJECT #1    : Bulk Club
@@ -43,7 +43,7 @@ int GetAndCheckInt(int min, //IN -  minimum allowable parameter
 		cout << endl << "**** Please input a NUMBER between " << min
 			 << " and " << max << "       ****" << endl;
 		cin.clear();
-		cin.ignore(1000, '\n');
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		pick = -1;				// wrong input will return an -1
 	}
 	else
@@ -61,6 +61,7 @@ int GetAndCheckInt(int min, //IN -  minimum allowable parameter
 			cout   << "**** Please input a NUMBER between " << min
 				   << " and " << setw(6) << left << max << "  ****" << endl;
 			buffer.str("");
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			pick = -1;			// wrong input will return an -1
 		}
 	}

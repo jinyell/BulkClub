@@ -42,6 +42,15 @@ Product::Product(Product const &someProduct)
 
 Product::~Product() {}
 
+void Product::SetValues(string name, float cost, int qty)
+{
+	productName    = name;
+	productPrice   = cost;
+	productQtySold = qty;
+	next		   = NULL;
+	previous	   = NULL;
+}
+
 void Product::SetNext(Product* nextNode)
 {
 	next = nextNode;

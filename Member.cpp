@@ -1,8 +1,8 @@
 /**************************************************************************
-*        __          PROGRAMMED BY       : Jinyoung Ko, Nicole Montecillo
-*        \_}                             : Augusto Cabrejos, Andrew Gadbois
-*       .-./--.      STUDENT ID          : 589855, 2
-*     /# ^^     \                        : 3, 4
+*        __          PROGRAMMED BY       : Jinyoung Ko
+*        \_}                             : Augusto Cabrejos
+*       .-./--.      STUDENT ID          : 589855
+*     /# ^^     \                        : 2
 *    |           |   CLASS               : CS1C
 *     \         /    SECTION             : TTH 12:30-4:20PM
 *      \       /     CLASS PROJECT #1    : Bulk Club
@@ -40,6 +40,23 @@ Member::Member(string setName,			// IN & CALC - Name
 	annualDues   	  = 55;
 	totalSpentNoTax   = 0;
 	totalSpentPlusTax = 0;
+}
+
+/**************************************************************************
+ * COPY CONSTRUCTOR
+ *************************************************************************/
+Member::Member(const Member& aMember)
+{
+	nextMember 		  = NULL;
+	prevMember 		  = NULL;
+	name 			  = aMember.GetName();
+	memberNumber 	  = aMember.GetMemberNumber();
+	expDate 		  = aMember.GetExpDate();
+	annualDues 		  = aMember.GetAnnualDues();
+	totalSpentNoTax   = aMember.GetTotalSpentNoTax();
+	totalSpentPlusTax = aMember.GetTotalSpentPlusTax();
+
+	cout << "CALLING COPY CONSTRUCTOR\n\n";
 }
 
 /**************************************************************************

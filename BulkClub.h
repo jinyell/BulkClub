@@ -1,8 +1,8 @@
 /**************************************************************************
-*        __          PROGRAMMED BY       : Jinyoung Ko, Nicole Montecillo
-*        \_}                             : Augusto Cabrejos, Andrew Gadbois
-*       .-./--.      STUDENT ID          : 589855, 2
-*     /# ^^     \                        : 3, 4
+*        __          PROGRAMMED BY       : Jinyoung Ko
+*        \_}                             : Augusto Cabrejos
+*       .-./--.      STUDENT ID          : 589855
+*     /# ^^     \                        : 2
 *    |           |   CLASS               : CS1C
 *     \         /    SECTION             : TTH 12:30-4:20PM
 *      \       /     CLASS PROJECT #1    : Bulk Club
@@ -22,13 +22,6 @@ class BulkClub
 		//CONSTRUCTOR/DESTRUCTOR
 		BulkClub();
 		virtual ~BulkClub();
-
-		void AddPurchasesFromFile(PurchasesList& purList, MemberList& memList);
-		void AddPurchase(PurchasesList& purList, MemberList& memList);
-
-		void PrintMembersList(MemberList& memList) const;
-
-		void PrintPurchasesList(PurchasesList& purList) const;
 
 		// Requirement #1
 		void ReportAnyDay(PurchasesList& purList, MemberList& memList);
@@ -61,6 +54,10 @@ class BulkClub
 		void AddMember(MemberList &list);
 		void RemoveMember(MemberList &list);
 		void RemoveAllMember(MemberList &list);
+		void AddPurchasesFromFile(PurchasesList& purList, MemberList& memList);
+		void AddPurchase(PurchasesList& purList, MemberList& memList);
+		void PrintMembersList(MemberList& memList) const;
+		void PrintPurchasesList(PurchasesList& purList) const;
 
 		// Requirement #10
 		void CheckConvertToPreferred(MemberList &memList);
@@ -70,5 +67,3 @@ class BulkClub
 };
 
 #endif /* BULKCLUB_H_ */
-
-

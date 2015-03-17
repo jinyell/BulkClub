@@ -39,6 +39,7 @@ class Product
 		virtual ~Product();
 
 		//MUTATORS
+		void SetValues(string name, float cost, int qty);
 		void SetNext(Product* nextNode);	//Sets next pointer
 		void SetPrev(Product* prevNode);	//Sets previous pointer
 		void SetQtySold(int saleQty);		//Sets product qty

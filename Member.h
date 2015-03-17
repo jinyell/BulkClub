@@ -60,6 +60,7 @@ public:
 	Member(string setName, 		// Overloaded Constructor
 		   int    setMemberNum,
 		   Date   setDate);
+	Member(const Member& aMember); // Copy Constructor
 	virtual ~Member();			// Destructor
 
 	/**************

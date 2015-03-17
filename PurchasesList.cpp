@@ -193,7 +193,8 @@ void PurchasesList::AddPurchaseFromFile(string     inputFileName,
 					   tempPur->GetDate().GetMonth() == transDay &&
 					   tempPur->GetDate().GetYear() == transYear)
 					{
-						totalBuy += (transQty + tempPur->GetProduct().GetQtySold());
+						totalBuy += (transQty +
+									tempPur->GetProduct().GetQtySold());
 
 						if(totalBuy > 200)
 						{
@@ -220,11 +221,11 @@ void PurchasesList::AddPurchaseFromFile(string     inputFileName,
 				}
 			}// END IF
 		} // END WHILE
-	} // END IF-ELSE
 
-	// PROCESSING - Update the total for each member that purchased items
-	AddSpentToMemberTotalFromFile(theMemList, transDate);
-	cout << endl;
+		// PROCESSING - Update the total for each member that purchased items
+		AddSpentToMemberTotalFromFile(theMemList, transDate);
+		cout << endl;
+	} // END IF-ELSE
 
 	inFile.close();
 }
@@ -249,21 +250,25 @@ void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 	Member	 *tempMem;		// CALC 	 - Temp member to check inputs
 	Purchase *newPurchase;	// CALC 	 - Add new purchase
 	Product	 *newProduct;
-	int  	 memNum;			// IN & CALC - Membership #
+	int  	 memNum;		// IN & CALC - Membership #
 	int  	 addTrnMonth;	// IN & CALC - Transaction month
 	int  	 addTrnDay;		// IN & CALC - Transaction day
-	int  	 addTrnYear;		// IN & CALC - Transaction year
+	int  	 addTrnYear;	// IN & CALC - Transaction year
 	string	 itemName;		// IN & CALC - Item name to purchase
 	int		 itemQty;		// IN & CALC - Quantity of item to buy
 	float	 itemCost;		// IN & CALC - Cost of item
 	Date 	 *addTrnDate;	// CALC		 - Full transaction date
-	char	 answer;			// CALC		 - Member response to buy more
+	char	 answer;		// CALC		 - Member response to buy more
 	bool	 buyMore;		// CALC		 - Check to buy more
 	bool	 validCost;		// CALC		 - Check valid cost
 	bool	 validQty;		// CALC		 - Check valid quantity
 	bool 	 validDate;		// CALC		 - Check valid date
 	bool 	 validMemNum;	// CALC		 - Check member number
+	int		 count;
+	Purchase *tmpPurPtr;
+	bool	 foundItem;
 
+	newPurchase = NULL;
 	tempMem     = NULL;
 	addTrnDate  = NULL;
 
@@ -284,101 +289,128 @@ void PurchasesList::AddPurchaseFromConsole(MemberList &tempMemList)
 		{
 			// PROCESSING - Check if member exists in member list
 			tempMem = tempMemList.SearchForMember(memNum);
-
-			// PROCESSING - If member does NOT exist in list
-			if(tempMem == NULL)
-			{
-				validMemNum = false;
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			}
-			else
-			{
-				validMemNum = true;
-			}
 		}
-	}while(!validMemNum || tempMem == NULL);
-
+	}while(!validMemNum);
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-	// INPUT - Get valid purchase date from member
-	do
+	if(tempMem != NULL)
 	{
-		cout << "PurchaseDate Date (i.e. MM/DD/YYYY): ";
-		cin  >> addTrnMonth;
-		cin.ignore(numeric_limits<streamsize>::max(), '/');
-		cin  >> addTrnDay;
-		cin.ignore(numeric_limits<streamsize>::max(), '/');
-		cin  >> addTrnYear;
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-		validDate = addTrnDate->CheckDate(addTrnMonth, addTrnDay, addTrnYear);
-
-		// PROCESSING - If the input date is not valid
-		if(!validDate)
+		// INPUT - Get valid purchase date from member
+		do
 		{
-			if(!addTrnMonth || !addTrnDay || !addTrnYear)
+			cout << "PurchaseDate Date (i.e. MM/DD/YYYY): ";
+			cin  >> addTrnMonth;
+			cin.ignore(numeric_limits<streamsize>::max(), '/');
+			cin  >> addTrnDay;
+			cin.ignore(numeric_limits<streamsize>::max(), '/');
+			cin  >> addTrnYear;
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+			validDate = addTrnDate->CheckDate(addTrnMonth, addTrnDay, addTrnYear);
+
+			// PROCESSING - If the input date is not valid
+			if(!validDate)
 			{
-				cin.clear();
+				if(!addTrnMonth || !addTrnDay || !addTrnYear)
+				{
+					cin.clear();
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				}
+			}
+		}while(!validDate);
+
+		// PROCESSING - Add transaction date since valid
+		addTrnDate = new Date(addTrnMonth, addTrnDay, addTrnYear);
+
+		// PROCESSING - Initialize variables
+		buyMore = true;
+		answer  = 'Y';
+		count	= 0;
+
+		// PROCESSING - Keep adding items to purchase
+		while(buyMore && answer == 'Y')
+		{
+			// INPUT - Get name of item member would like to purcahse
+			cout << "Item Name: ";
+			getline(cin, itemName);
+
+			// INPUT - Get valid quantity of item member would like to purchase
+			do
+			{
+				validQty = true;
+
+				cout << "Quantity of item: ";
+				cin  >> itemQty;
+				validQty = newPurchase->ValidateItemQuantityFromConsole(itemQty);
+				count += itemQty;
+
+				if(count >= 201)
+				{
+					validQty = false;
+					count -= itemQty;
+					cout << "Sorry over 200 item limit\n"
+							" Bulk Club member has purchased " << count
+						 << " items already.\n\n";
+				}
+				else if(count == 200)
+				{
+					cout << "Bulk Club member has reached the 200 item "
+							"limit\n\n";
+					validQty = true;
+				}
+			}while(!validQty);
+
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+			foundItem = false;
+			tmpPurPtr = head;
+
+			while(tmpPurPtr != NULL)
+			{
+				if(tmpPurPtr->GetProduct().GetName() == itemName)
+				{
+					foundItem = true;
+					validCost = true;
+					itemCost  = tmpPurPtr->GetProduct().GetPrice();
+					cout << "Item cost: $" << itemCost << endl;
+				}
+				tmpPurPtr = tmpPurPtr->GetNext();
+			}
+
+			if(!foundItem)
+			{
+				// INPUT - Get valid price of item
+				do
+				{
+					validCost = true;
+
+					cout << "Price of item: ";
+					cin  >> itemCost;
+					validCost = newPurchase->ValidateItemPriceFromConsole(itemCost);
+				}while(!validCost);
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			}
+
+			// PROCESSING - Only add purchase if information is valid
+			if(validMemNum && validDate && validQty && validCost )
+			{
+				newProduct = new Product(itemName, itemCost, itemQty);
+
+				newPurchase = new Purchase(*addTrnDate, memNum, *newProduct);
+
+				AddPurchase(newPurchase);
+			}
+
+			// INPUT - Check if member would like to purchase more items (y/n)
+			do
+			{
+				cout << "Would you like to purchase more items (Y/N) ";
+				cin.get(answer);
+				answer = toupper(answer);
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				buyMore = ValidateToBuyMore(answer);
+			}while(!buyMore);
 		}
-	}while(!validDate);
-
-	// PROCESSING - Add transaction date since valid
-	addTrnDate = new Date(addTrnMonth, addTrnDay, addTrnYear);
-
-	// PROCESSING - Initialize variables
-	buyMore = true;
-	answer  = 'Y';
-
-	// PROCESSING - Keep adding items to purchase
-	while(buyMore && answer == 'Y')
-	{
-		// INPUT - Get name of item member would like to purcahse
-		cout << "Item Name: ";
-		getline(cin, itemName);
-
-		// INPUT - Get valid quantity of item member would like to purchase
-		do
-		{
-			validQty = true;
-
-			cout << "Quantity of item: ";
-			cin  >> itemQty;
-			validQty = newPurchase->ValidateItemQuantityFromConsole(itemQty);
-		}while(!validQty);
-
-		// INPUT - Get valid price of item member would like to purchase
-		do
-		{
-			validCost = true;
-
-			cout << "Price of item: ";
-			cin  >> itemCost;
-			validCost = newPurchase->ValidateItemPriceFromConsole(itemCost);
-		}while(!validCost);
-
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-		// PROCESSING - Only add purchase if information is valid
-		if(validMemNum && validDate && validQty && validCost )
-		{
-			newProduct = new Product(itemName, itemCost, itemQty);
-
-			newPurchase = new Purchase(*addTrnDate, memNum, *newProduct);
-
-			AddPurchase(newPurchase);
-		}
-
-		// INPUT - Check if member would like to purchase more items (y/n)
-		do
-		{
-			cout << "Would you like to purchase more items (Y/N) ";
-			cin.get(answer);
-			answer = toupper(answer);
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			buyMore = ValidateToBuyMore(answer);
-		}while(!buyMore);
 	} // END WHILE
 
 	// PROCESSING - Updating total spent with and without taxes
@@ -412,7 +444,8 @@ void PurchasesList::AddPurchase(Purchase *newPurchase)
 	tail = newPurchase;
 
 	purchaseCount++; //Increments purchase count
-	total = newPurchase->GetProduct().GetPrice() * newPurchase->GetProduct().GetQtySold();
+	total = newPurchase->GetProduct().GetPrice() *
+			newPurchase->GetProduct().GetQtySold();
 	purchaseTotal = purchaseTotal + total;
 }
 
@@ -455,7 +488,8 @@ void PurchasesList::AddSpentToMemberTotalFromFile(MemberList &theMemList,
 			   && tempPur->GetDate().GetMonth() == theDate->GetMonth()
 			   && tempPur->GetDate().GetYear() == theDate->GetYear())
 			{
-				amtNoTax += (tempPur->GetProduct().GetPrice() * tempPur->GetProduct().GetQtySold());
+				amtNoTax += (tempPur->GetProduct().GetPrice() *
+						tempPur->GetProduct().GetQtySold());
 			}
 			tempPur = tempPur->GetNext();
 
@@ -507,7 +541,8 @@ void PurchasesList::AddSpentToMemberTotalFromConsole(MemberList &theMemList)
 		{
 			if(tempMem->GetMemberNumber() == tempPur->GetMemberID())
 			{
-				amtNoTax += (tempPur->GetProduct().GetPrice() * tempPur->GetProduct().GetQtySold());
+				amtNoTax += (tempPur->GetProduct().GetPrice() *
+						tempPur->GetProduct().GetQtySold());
 			}
 			tempPur = tempPur->GetNext();
 
@@ -589,7 +624,8 @@ void PurchasesList::SearchForPurchaseByDate(MemberList &tempMemList,
 
 			// OUTPUT - Display item name & quantity
 			cout << setw(PRODUCT_COL) << tempPur->GetProduct().GetName() << " "
-				 << setw(QTY_COL)     << tempPur->GetProduct().GetQtySold()     << " ";
+				 << setw(QTY_COL)     << tempPur->GetProduct().GetQtySold()
+				 << " ";
 
 			// PROCESSING - Search for member
 			tempMem = tempMemList.SearchForMember(tempPur->GetMemberID());
@@ -646,7 +682,8 @@ void PurchasesList::SearchForPurchaseByDate(MemberList &tempMemList,
 				valid = true;
 
 				// PROCESSING - Update total for member for that day
-				memTotal += (tempPur->GetProduct().GetPrice() * tempPur->GetProduct().GetQtySold());
+				memTotal += (tempPur->GetProduct().GetPrice() *
+						tempPur->GetProduct().GetQtySold());
 			}
 
 			tempPur = tempPur->GetNext();
@@ -705,7 +742,7 @@ void PurchasesList::ConsoleSearchDate(int &searchMonth, // IN, CALC & OUT - mont
 	{
 		validDate = true;
 
-		cout << "Enter Expiration Date (i.e. MM/DD/YYYY): ";
+		cout << "Enter Date (i.e. MM/DD/YYYY): ";
 		cin  >> searchMonth;
 		cin.ignore(numeric_limits<streamsize>::max(), '/');
 		cin  >> searchDay;
