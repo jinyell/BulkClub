@@ -807,3 +807,56 @@ void BulkClub::MembershipsDues(MemberList& list) //IN - the member's list
 		duesList.PrintSortedMembersDue();
 	} // END IF-ELSE
 }
+
+/**************************************************************************
+ * SaveMembers
+ *************************************************************************/
+void BulkClub::SaveMembers(MemberList& memList)
+{
+	ofstream outFile;		// CALC & OUT - outfile
+	Member	*tempMem;		// CAlC		  - members
+
+	tempMem = memList.GetHeadofList();
+
+	outFile.open("defaultMembers.txt");
+
+	while(tempMem != NULL && outFile)
+	{
+		outFile << tempMem->GetName() << endl;
+		outFile << tempMem->GetMemberNumber() << endl;
+		outFile << tempMem->GetMemberType() << endl;
+		outFile << tempMem->GetExpDate().GetMonth() << "/"
+				<< tempMem->GetExpDate().GetDay() << "/"
+				<< tempMem->GetExpDate().GetYear() << endl;
+		tempMem = tempMem->GetNext();
+	}
+
+	outFile.close();
+}
+
+/**************************************************************************
+ * SavePurchases
+ *************************************************************************/
+void BulkClub::SavePurchases(PurchasesList& purList)
+{
+	ofstream outFile;		// CALC & OUT - Outfile
+	Purchase *tempPur;		// CALC		  - Purchases
+
+	tempPur = purList.GetHead();
+
+	outFile.open("defaultPurchases.txt");
+
+	while(tempPur != NULL && outFile)
+	{
+		outFile << tempPur->GetDate().GetMonth() << "/"
+				<< tempPur->GetDate().GetDay() << "/"
+				<< tempPur->GetDate().GetYear() << endl;
+		outFile << tempPur->GetMemberID() << endl;
+		outFile << tempPur->GetProduct().GetName() << endl;
+		outFile << tempPur->GetProduct().GetPrice() << "\t"
+				<< tempPur->GetProduct().GetQtySold() << endl;
+		tempPur = tempPur->GetNext();
+	}
+
+	outFile.close();
+}

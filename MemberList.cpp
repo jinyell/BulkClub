@@ -121,7 +121,7 @@ void MemberList::AddMemberFromFile(string fileName)
 			validDate = newDate->CheckDate(expMonth, expDay, expYear);
 
 			// PROCESSING - Add member if valid information
-			if(validMemNum && validType && validDate)
+			if(validMemNum && validType && validDate && getName != " ")
 			{
 				// PROCESSING - Setting new date
 				newDate = new Date(expMonth, expDay, expYear);

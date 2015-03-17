@@ -64,6 +64,9 @@ class BulkClub
 		
 		//Requirement #11
 		void PreferredToBasicConversion(MemberList& list);
+
+		void SaveMembers(MemberList& list);
+		void SavePurchases(PurchasesList& purList);
 };
 
 #endif /* BULKCLUB_H_ */

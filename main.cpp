@@ -38,6 +38,8 @@ int main()
 
 	//VARIABLE INITIALIZATIONS
 	run = true;
+	list.AddMemberFromFile("defaultMembers.txt");
+	purchases.AddPurchaseFromFile("defaultPurchases.txt", list);
 
 	//PROCESSING - DO-WHILE LOOP - Used to output the main menu, prompt for
 	//			   user input, and go into the different operations.
@@ -55,6 +57,8 @@ int main()
 		switch(selection)
 		{
 		case EXIT: 			//Program ends
+							theClub.SaveMembers(list);
+							theClub.SavePurchases(purchases);
 							cout << "PROGRAM ENDED" << endl;
 							run = false;
 							break;
